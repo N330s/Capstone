@@ -1,0 +1,8 @@
+{
+  "passed": false,
+  "max_qpos_error": 0.0035566860082412166,
+  "max_qvel_error": 1.626479419936457,
+  "commands_after_settle": 1950,
+  "expert_rerun": false,
+  "trace_sha256": "a59f0f613286613fb52c7262c2d2fb9e2e40ed172370b4b5a62323443cc4f48d"
+}

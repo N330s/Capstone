@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "hold_s": 0.25999999999999995,
+  "final_depth_m": 0.015998249983267713,
+  "pickup": {
+    "passed": true,
+    "height_gain_m": 0.07356047466637838,
+    "max_grasp_drift_m": 0.00011522522960401238,
+    "final_finger_contact_bodies": 2,
+    "max_grasp_angle_drift_deg": 0.16466772212525002,
+    "grasp_position_in_tool_m": [
+      -0.000937165174978923,
+      -6.015253345602059e-05,
+      0.018444011256804265
+    ],
+    "grasp_rotation_in_tool": [
+      [
+        0.00016239193971049747,
+        -0.9999997361245355,
+        0.0007080817163221263
+      ],
+      [
+        -0.0025990829141842777,
+        -0.0007085014040419815,
+        -0.9999963713902995
+      ],
+      [
+        0.9999966091926829,
+        0.00016055098736282832,
+        -0.0025991972832673568
+      ]
+    ],
+    "peak_unwanted_robot_force_n": 0.0,
+    "peak_unwanted_penetration_m": 0.0,
+    "rest_tool_forward_axis_world": [
+      9.79737584755337e-13,
+      3.673282136753949e-06,
+      -0.9999999999932533
+    ],
+    "physical_end_to_end_insertion": false
+  },
+  "planning": {
+    "collision_queries": 40,
+    "nodes": 2
+  },
+  "peak_socket_force_n": 0.7129624871185721,
+  "peak_socket_penetration_m": 1.5025839337212687e-06,
+  "max_grasp_drift_m": 0.0003054383182397901,
+  "max_grasp_angle_deg": 0.46594086227659015,
+  "socket_roll_deg": 90,
+  "lower_fixture": false,
+  "timestep_s": 0.0005,
+  "physical_end_to_end_insertion": true,
+  "command_hz": 50,
+  "mujoco_version": "3.11.0",
+  "duration_including_settle_s": 40.02000000000906,
+  "socket_position_m": [
+    0.4391,
+    -0.155,
+    0.478
+  ],
+  "offset_x_mm": 0,
+  "offset_y_mm": -2.0,
+  "peak_unwanted_robot_force_n": 0.0,
+  "source_hashes": {
+    "C:\\Users\\Admin\\plug_env\\scripts\\probe_table_insert.py": "57fd6077e340ed697bb302a30f13b13d4a89dc0d1c1bd3d3602d84fea7d1a72e",
+    "controllers\\table_pickup.py": "508deb7e9fcd83332a93a55de6b9f81d0fe3225a40912fbaff69d43b4000d347",
+    "controllers\\carry_path.py": "dd726aca5e35b318283ce767612cb18083db0e7bd85dce680b95529970e79a57",
+    "scripts\\preview_table_task.py": "b38be84ee6e976c987e5f7de27b08a56daf0745bc3bc0ff412bb441eef832c15",
+    "envs\\openarm_insert.py": "81dbb4e583a34a1d1ed282f801185d7aebb0902a1120a953c555f13ba5f66a28",
+    "envs\\scene.py": "427d7beea526c8ea0640ff89a9d398c8809fa3f7efecd689082d7364c976b98d"
+  }
+}

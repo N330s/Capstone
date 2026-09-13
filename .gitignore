@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.venv/
+third_party/openarm_mujoco/
+third_party/openpi/
+data/

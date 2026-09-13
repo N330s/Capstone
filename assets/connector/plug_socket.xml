@@ -1,0 +1,25 @@
+<mujoco model="two_blade_v1_straight">
+  <compiler angle="degree"/>
+  <option timestep="0.0005" integrator="implicitfast" solver="Newton"
+          iterations="100" gravity="0 0 -9.81"/>
+  <default>
+    <geom condim="3" friction="0.4 0.005 0.0001"
+          solref="0.002 1" solimp="0.9 0.95 0.001"/>
+    <site size="0.0006" group="3"/>
+  </default>
+  <visual><global offwidth="960" offheight="720"/><map znear="0.005"/></visual>
+  <worldbody>
+    <light name="key" directional="true" pos="-0.1 -0.2 0.4" dir="0.4 0.5 -1"
+           ambient="0.25 0.25 0.25" diffuse="0.9 0.9 0.9"/>
+    <light name="fill" directional="true" dir="1 -0.5 -0.3" castshadow="false"
+           diffuse="0.5 0.5 0.5"/>
+    <geom name="table" type="box" pos="0 0 -0.01" size="0.25 0.2 0.01"
+          rgba="0.23 0.26 0.29 1"/>
+    <geom name="mount" type="box" pos="0.024 0 0.052" size="0.006 0.024 0.052"
+          rgba="0.22 0.24 0.27 1"/>
+    <camera name="overview" pos="-0.135 -0.15 0.19"
+            xyaxes="0.743 -0.669 0 0.30 0.333 0.894"/>
+    <include file="socket.xml"/>
+    <include file="plug.xml"/>
+  </worldbody>
+</mujoco>

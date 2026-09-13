@@ -1,0 +1,6358 @@
+{
+  "outcome": "grasp_or_lift_failed",
+  "trace": [
+    {
+      "phase": "retreat",
+      "time_s": 2.019999999999842,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3678242299064171
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.0399999999998486,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.36375441728309216
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.0599999999998553,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3579187756487955
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.079999999999862,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3507682365139718
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.0999999999998686,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.34266878844669496
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.1199999999998753,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.33390598080032236
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.139999999999882,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.32470136053327253
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.1599999999998887,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3152586499680769
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.1799999999998954,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3056501155839796
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.199999999999902,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2959065724986623
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.2199999999999087,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.28606088094698706
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.2399999999999154,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.27614375315146567
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.259999999999922,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2661805452491954
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.2799999999999288,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2561902091859771
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.2999999999999354,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2461857561453158
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.319999999999942,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.23617537117326287
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.339999999999949,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.22616367121984782
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.3599999999999555,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.21615275576292
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.379999999999962,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.20614328635251436
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.399999999999969,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.19613566179793535
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.4199999999999755,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1861300444453074
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.439999999999982,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.176126194263841
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.459999999999989,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.16612365569800278
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.4799999999999955,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1561219892879513
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.500000000000002,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.14612085243904954
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.520000000000009,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.13611998102627249
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.5400000000000156,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.12611922562969904
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.5600000000000223,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.11611851824572478
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.580000000000029,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.10611783771398176
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.6000000000000356,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0961171852991543
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.6200000000000423,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.08651904832167889
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.640000000000049,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.07702873580082087
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.6600000000000557,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.06735780870455149
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.6800000000000623,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.05745035345802407
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.700000000000069,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.04736277299249375
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.7200000000000757,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.037171463757501466
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.7400000000000824,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.02698809636021421
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.760000000000089,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.018330442320303564
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.7800000000000957,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.011963082607666042
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.8000000000001024,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.007611609455717261
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.820000000000109,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.004784791482039252
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.8400000000001158,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0030189770524455817
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.8600000000001224,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0019513514370217422
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.880000000000129,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0013528065354846408
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.900000000000136,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.001163604936022411
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.9200000000001425,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000982706152280688
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.940000000000149,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0008190134948318217
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.960000000000156,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0006759625876533448
+    },
+    {
+      "phase": "retreat",
+      "time_s": 2.9800000000001625,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0005525762252944766
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.000000000000169,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0005141684166981575
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.020000000000176,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00048093423004524904
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.0400000000001826,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044982668038673346
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.0600000000001892,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00042063479293957817
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.080000000000196,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003932398098113743
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.1000000000002026,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036754514725556575
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.1200000000002093,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00034346029282672497
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.140000000000216,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003208974547238008
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.1600000000002226,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002997712347273529
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.1800000000002293,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027999892639285484
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.200000000000236,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00026150085538684253
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.2200000000002427,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024420063687263793
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.2400000000002493,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022802533824833882
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.260000000000256,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021290556084818668
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.2800000000002627,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019877545745322633
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.3000000000002694,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018557270058655595
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.320000000000276,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017323841390137762
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.3400000000002827,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016171707652878897
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.3600000000002894,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015095640820023126
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.380000000000296,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014090724130166876
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.400000000000303,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013152338467870006
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.4200000000003095,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012276148293577371
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.440000000000316,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011458087411581053
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.460000000000323,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010694344796380317
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.4800000000003295,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.981350642862541e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.500000000000336,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.315762762590607e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.520000000000343,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.694453414398451e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.5400000000003495,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.114496630040602e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.560000000000356,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.57315607495812e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.580000000000363,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.067873467303531e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.6000000000003696,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.596257565938402e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.6200000000003763,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.156073727953126e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.640000000000383,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.7452340292807325e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.6600000000003896,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.361787935981299e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.6800000000003963,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.003913510215341e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.700000000000403,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.6699091319490904e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.7200000000004096,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.358185715253038e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.7400000000004163,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.067259397300127e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.760000000000423,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.7957446773706494e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.7800000000004297,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.5423479830321014e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.8000000000004364,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.305861640701124e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.820000000000443,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.085158228494089e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.8400000000004497,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.8791852894671788e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.8600000000004564,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.6869603845958157e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.880000000000463,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.507566465015376e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.9000000000004698,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.3401475445272713e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.9200000000004764,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.1839046536520357e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.940000000000483,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.038092058193053e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.96000000000049,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.9020137255132408e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 3.9800000000004965,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.7750200227095725e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.000000000000503,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.6565046324523713e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.020000000000492,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.545901671806682e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.0400000000004805,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.4426830016289749e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.0600000000004695,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.3463557138548854e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.080000000000458,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.256459785209385e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.100000000000447,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1725658863037669e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.120000000000436,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0942733364049939e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.140000000000425,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0212081937133188e-05
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.160000000000414,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.530214726882758e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.180000000000403,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.893874800741663e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.200000000000392,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.300022611762436e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.220000000000381,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.745821501259353e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.24000000000037,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.228624162025632e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.260000000000359,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.7459600054387e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.2800000000003475,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.295523370170031e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.300000000000336,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.8751625164887855e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.320000000000325,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.482869353812259e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.340000000000314,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.1167698538190365e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.360000000000303,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.775115102884087e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.380000000000292,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.456272950648099e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.400000000000281,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.15872021602981e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.42000000000027,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.881035413599854e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.440000000000259,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.621891964900037e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.460000000000248,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.3800518267068647e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.480000000000237,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.1543596832328546e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.500000000000226,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.943737331395635e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.5200000000002145,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.7471785534749493e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.540000000000203,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.5637443135662075e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.560000000000192,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.3925582751105345e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.580000000000181,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.232802612689433e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.60000000000017,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 2.0837141076479604e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.620000000000159,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.9445805007345385e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.640000000000148,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.8147370905441385e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.660000000000137,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.6935635578918529e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.680000000000126,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.5804810024055982e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.700000000000115,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.4749491776266943e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.720000000000104,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.3764639094637765e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.740000000000093,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.2845546882855885e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.7600000000000815,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1987824203307795e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.78000000000007,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1187373310517224e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.800000000000059,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0440370069031424e-06
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.820000000000048,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.743245684701307e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.840000000000037,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.092669654986452e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.860000000000026,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.485533865565387e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.880000000000015,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.918937732220854e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.900000000000004,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.390174345811573e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.919999999999993,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.896717544280229e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.939999999999982,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.436209836757634e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.959999999999971,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.00645115367282e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.97999999999996,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.605388320173432e-07
+    },
+    {
+      "phase": "retreat",
+      "time_s": 4.9999999999999485,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.231105258407531e-07
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.019999999999937,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.158601595549081
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.039999999999926,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.15540788935991
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.059999999999915,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.150687959660873
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.079999999999904,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1448013776723662
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.099999999999893,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1380185056818841
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.119999999999882,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1305414153748703
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.139999999999871,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1225231899989423
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.15999999999986,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1140812520883163
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.179999999999849,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.1053065888970015
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.199999999999838,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0962702324620768
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.219999999999827,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.08702791280741
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.2399999999998155,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0776234821052966
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.259999999999804,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0680914935889012
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.279999999999793,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0584591819079971
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.299999999999782,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.048748005960031
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.319999999999771,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0389748623481216
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.33999999999976,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0291530444364057
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.359999999999749,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0192930033727698
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.379999999999738,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0094029510275584
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.399999999999727,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9994893367401709
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.419999999999716,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9895572243929669
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.439999999999705,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9796105897718964
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.4599999999996935,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9696525546219878
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.4799999999996825,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9596855705782688
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.499999999999671,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9497115635281232
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.51999999999966,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9397314543760247
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.539999999999649,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9297457526537598
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.559999999999638,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9197556583257498
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.579999999999627,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9097621253212348
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.599999999999616,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8997659102071216
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.619999999999605,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8897676123812763
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.639999999999594,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.879762402444668
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.659999999999583,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8693367469935291
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.679999999999572,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8589599143752156
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.6999999999995605,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.84872570631465
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.7199999999995494,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8386412460538768
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.739999999999538,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.82867685731738
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.759999999999527,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8187918152011195
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.779999999999516,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8089534218464725
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.799999999999505,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7991255847420038
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.819999999999494,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7892873623134344
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.839999999999483,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.779427468966031
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.859999999999472,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7695425884631928
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.879999999999461,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7596325753770141
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.89999999999945,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7497002591605062
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.919999999999439,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7397495697811638
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.9399999999994275,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.729784578526498
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.959999999999416,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7198088039851264
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.979999999999405,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7098250908375151
+    },
+    {
+      "phase": "reach",
+      "time_s": 5.999999999999394,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6998364324155479
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.019999999999383,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6898445445941791
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.039999999999372,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6798505201179512
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.059999999999361,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6698550356047411
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.07999999999935,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6598584734810283
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.099999999999339,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.649861038534949
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.119999999999328,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6398628455707279
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.139999999999317,
+      "plug_height_m": 0.32799875082031515,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6298639650157772
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.159999999999306,
+      "plug_height_m": 0.3279987508203152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6197613127725634
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.1799999999992945,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6095292651091071
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.199999999999283,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5993134002594976
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.219999999999272,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5891723408326107
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.239999999999261,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5791232009655203
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.25999999999925,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5691489841334608
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.279999999999239,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5592248947918833
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.299999999999228,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5493269759752297
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.319999999999217,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5394362812979949
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.339999999999206,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5295397917060085
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.359999999999195,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5196303569521081
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.379999999999184,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5097050887269499
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.399999999999173,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.4997639142957252
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.4199999999991615,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.489808468139989
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.43999999999915,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.47984118623779315
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.459999999999139,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.4698646608577449
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.479999999999128,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.45988126302963583
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.499999999999117,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.4498496978345733
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.519999999999106,
+      "plug_height_m": 0.3279987508203151,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.43984812794406414
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.539999999999095,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.42988925407767653
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.559999999999084,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.4199479291986302
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.579999999999073,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.40999888809770546
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.599999999999062,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.4000302832356297
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.619999999999051,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.39004092209164054
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.63999999999904,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.38003517734517145
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.6599999999990285,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.37001960330177985
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.679999999999017,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3599853026885931
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.699999999999006,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3503725751261051
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.719999999998995,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3408596774808549
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.739999999998984,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.3312296736867414
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.759999999998973,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.32141588996884485
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.779999999998962,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.31143724734367073
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.799999999998951,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.30133954744107183
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.81999999999894,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2911715383795791
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.839999999998929,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2809689972461218
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.859999999998918,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.27075626945033804
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.8799999999989065,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2605665811103586
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.8999999999988955,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2504121938526138
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.919999999998884,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.2402918508180495
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.939999999998873,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.23019995394595483
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.959999999998862,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.22013043824141465
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.979999999998851,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.21007801360462341
+    },
+    {
+      "phase": "reach",
+      "time_s": 6.99999999999884,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.20003845196405368
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.019999999998829,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1900085400702728
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.039999999998818,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.17998587269516297
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.059999999998807,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.16996864201080752
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.079999999998796,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1599555157794097
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.099999999998785,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.14994549093322174
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.1199999999987735,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1399378132194834
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.1399999999987624,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.12993191261744996
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.159999999998751,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.11992735946591115
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.17999999999874,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.10992382852882554
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.199999999998729,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.09992107384290738
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.219999999998718,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.08991890988046447
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.239999999998707,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0799171952422284
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.259999999998696,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.06991582321797263
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.279999999998685,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.059914713173130796
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.299999999998674,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.04991380424731995
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.319999999998663,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.039937365316335516
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.339999999998652,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.03196514021219765
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.3599999999986405,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0256775029959182
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.379999999998629,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.020728453912953748
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.399999999998618,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.016835982283298856
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.419999999998607,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.013775250303748043
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.439999999998596,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.011368604210102218
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.459999999998585,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.009476159659835615
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.479999999998574,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.007987925889259229
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.499999999998563,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.006817422052114219
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.519999999998552,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.005866060438623366
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.539999999998541,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.005050902734463181
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.55999999999853,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0043493444483375665
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.579999999998519,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.003745293535588834
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.5999999999985075,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.003225129703321894
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.619999999998496,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0027771880210560873
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.639999999998485,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.002391441436632169
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.659999999998474,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0020592587357104453
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.679999999998463,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.001773206533507432
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.699999999998452,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0015268821347351746
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.719999999998441,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0013147705794114284
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.73999999999843,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.001132121735626379
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.759999999998419,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0009748444266037826
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.779999999998408,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0008394151783581716
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.799999999998397,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0007227995631104989
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.819999999998386,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0006223844066755024
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.8399999999983745,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0005359193678726726
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.859999999998363,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00046146660153789654
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.879999999998352,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003973573920905693
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.899999999998341,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00034215479631161116
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.91999999999833,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002946214654058199
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.939999999998319,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002814922567492273
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.959999999998308,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027749424980882953
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.979999999998297,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027355127567707527
+    },
+    {
+      "phase": "reach",
+      "time_s": 7.999999999998286,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00026966282013585197
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.01999999999831,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002658283392223959
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.039999999998335,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002620472646355232
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.05999999999836,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00025831900842976374
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.079999999998384,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00025464296707533585
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.099999999998408,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00025101852495945653
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.119999999998432,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024744505740004197
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.139999999998457,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024392193323319322
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.159999999998481,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002404485170309778
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.179999999998506,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00023702417099447093
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.19999999999853,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000233648256574015
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.219999999998555,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00023032013584367572
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.23999999999858,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022703917266952978
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.259999999998604,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022380473369942866
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.279999999998628,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022061618919833048
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.299999999998652,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021747291374807354
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.319999999998677,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021437428683601656
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.339999999998701,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021131969334275968
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.359999999998726,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020830852394626564
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.37999999999875,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020534017545392746
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.399999999998775,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020241405107079835
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.419999999998799,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019952956061641824
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.439999999998824,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019668612069323466
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.459999999998848,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019388315481783103
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.479999999998872,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001911200935184043
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.499999999998897,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018839637440237755
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.519999999998921,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018571144220236313
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.539999999998946,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018306474879603574
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.55999999999897,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000180455753214126
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.579999999998995,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001778839216303174
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.599999999999019,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001753487273383758
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.619999999999044,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017284965071917568
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.639999999999068,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017038617919873378
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.659999999999092,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016795780719891518
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.679999999999117,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016556403607947967
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.699999999999141,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016320437407935096
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.719999999999166,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016087833624767178
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.73999999999919,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015858544437596933
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.759999999999215,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001563252269268789
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.779999999999239,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015409721895787154
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.799999999999264,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015190096204664716
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.819999999999288,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014973600421119837
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.839999999999312,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014760189983276106
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.859999999999337,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014549820957543425
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.879999999999361,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014342450030646603
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.899999999999386,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014138034501676167
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.91999999999941,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001393653227395042
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.939999999999435,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013737901847166167
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.959999999999459,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013542102309249682
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.979999999999484,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013349093328574035
+    },
+    {
+      "phase": "reach",
+      "time_s": 8.999999999999508,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000131588351459766
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.019999999999532,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000129712885670763
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.039999999999557,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012786414954246705
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.059999999999581,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012604176219188634
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.079999999999606,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012424534815147492
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.09999999999963,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001224745372954139
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.119999999999655,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001207289647630061
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.139999999999679,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011900827088662247
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.159999999999703,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011731210111765034
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.179999999999728,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011564010595521701
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.199999999999752,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011399194087524656
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.219999999999777,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011236726625840632
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.239999999999801,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011076574732471478
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.259999999999826,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010918705406071094
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.27999999999985,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010763086115461729
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.299999999999875,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010609684792939333
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.319999999999899,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010458469827634431
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.339999999999923,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010309410059083923
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.359999999999948,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001016247477075849
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.379999999999972,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001001763368380093
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.399999999999997,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.874856950875532e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.420000000000021,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.734115149950817e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.440000000000046,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.595379278293237e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.46000000000007,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.45862074642756e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.480000000000095,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.3238113723082e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.500000000000119,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.190923375590465e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.520000000000143,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.059929371835196e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.540000000000168,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.930802366780011e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.560000000000192,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.80351575092142e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.580000000000217,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.67804329400812e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.600000000000241,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.55435913971192e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.620000000000266,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.432437800065529e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.64000000000029,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.312254150466547e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.660000000000315,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.193783424337298e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.680000000000339,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.077001208106616e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.700000000000363,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.961883436113926e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.720000000000388,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.848406385779771e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.740000000000412,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.736546672565403e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.760000000000437,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.626281245298738e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.780000000000461,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.51758738123387e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.800000000000486,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.410442681543561e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.82000000000051,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.304825066656306e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.840000000000535,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.200712771671114e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.860000000000559,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.098084341927713e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.880000000000583,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.99691862855456e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.900000000000608,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.897194783994642e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.920000000000632,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.798892257975364e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.940000000000657,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.701990792956636e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.960000000000681,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.60647042033391e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 9.980000000000706,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.512311455875164e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.00000000000073,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.419494496090472e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.020000000000755,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.328000413957646e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.040000000000779,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.23781035505866e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.060000000000803,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.148905733771581e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.080000000000828,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.061268229273775e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.100000000000852,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.974879781922571e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.120000000000877,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.889722589413893e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.140000000000901,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.80577910329616e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.160000000000926,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.7230320250512e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.18000000000095,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.641464302852395e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.200000000000975,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.56105912786764e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.220000000000999,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.481799930784348e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.240000000001023,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.4036703785342866e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.260000000001048,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.3266543708296865e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.280000000001072,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.2507360367770595e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.300000000001097,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.1758997317019606e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.320000000001121,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.102130033929342e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.340000000001146,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.029411741619416e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.36000000000117,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.957729869536909e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.380000000001194,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.887069646086761e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.400000000001219,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.817416510127792e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.420000000001243,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.748756108186036e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.440000000001268,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.681074291179588e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.460000000001292,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.614357111809575e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.480000000001317,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.548590821595866e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.500000000001341,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.483761867868363e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.520000000001366,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.4198568912467984e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.54000000000139,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.3568627226209244e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.560000000001414,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.2947663807302305e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.580000000001439,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.233555069255157e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.600000000001463,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.17321617429689e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.620000000001488,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.1137372616240064e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.640000000001512,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 4.055106074374315e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.660000000001537,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.997310530234888e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.680000000001561,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.940338719210512e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.700000000001586,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.88417890102577e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.72000000000161,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.828819502693648e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.740000000001634,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.774249116261785e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.760000000001659,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.720456496181246e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.780000000001683,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.6674305573969335e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.800000000001708,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.615160372727466e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.820000000001732,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.563635170755752e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.840000000001757,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.512844333619647e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.860000000001781,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.462777394691585e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.880000000001806,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.413424036613488e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.90000000000183,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.36477408904301e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.920000000001854,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.316817526610727e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.940000000001879,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.269544466877328e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.960000000001903,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.2229451680909627e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 10.980000000001928,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.1770100274886026e-05
+    },
+    {
+      "phase": "reach",
+      "time_s": 11.000000000001952,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 3.131729579131104e-05
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.020000000001977,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.25282649520578815
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.040000000002001,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.24840931514814235
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.060000000002026,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.24216909165062606
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.08000000000205,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.23461889274253345
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.100000000002074,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.22616259428428687
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.120000000002099,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.21710369244102212
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.140000000002123,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.20765877075240935
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.160000000002148,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.19796521716161108
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.180000000002172,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.18798204868981494
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.200000000002197,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.17748767817234357
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.220000000002221,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.16696670246892875
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.240000000002246,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1566642531227911
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.26000000000227,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.14664645803859888
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.280000000002294,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.13682520663303155
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.300000000002319,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.12737201556110667
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.320000000002343,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.11824454938431983
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.340000000002368,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.10901517391070148
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.360000000002392,
+      "plug_height_m": 0.32798032209954237,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.10056427730355089
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.380000000002417,
+      "plug_height_m": 0.32799496926366095,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0933520437984765
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.400000000002441,
+      "plug_height_m": 0.32799418348746456,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.08466581634447645
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.420000000002466,
+      "plug_height_m": 0.3280370951529263,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.07618358258202051
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.44000000000249,
+      "plug_height_m": 0.3282820550758259,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.06776758432235841
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.460000000002514,
+      "plug_height_m": 0.32949330157147344,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.059554700973068586
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.480000000002539,
+      "plug_height_m": 0.33257057315571553,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.049355104905324465
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.500000000002563,
+      "plug_height_m": 0.3340997015763994,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.03710382371833165
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.520000000002588,
+      "plug_height_m": 0.33440401831850547,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.02590312035729836
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.540000000002612,
+      "plug_height_m": 0.3336977646144015,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.01724212471445119
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.560000000002637,
+      "plug_height_m": 0.3321449750461276,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.011060688173527122
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.580000000002661,
+      "plug_height_m": 0.3331607486585559,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.009042106449505316
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.600000000002685,
+      "plug_height_m": 0.33315114769939974,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.007946503714175268
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.62000000000271,
+      "plug_height_m": 0.33260065543979705,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.007024059120606996
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.640000000002734,
+      "plug_height_m": 0.33226069379404044,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00617655873384515
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.660000000002759,
+      "plug_height_m": 0.3321913223103009,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.005384279525454505
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.680000000002783,
+      "plug_height_m": 0.33204183414426186,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.004662599072064788
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.700000000002808,
+      "plug_height_m": 0.33199769786607647,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.004026867917011678
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.720000000002832,
+      "plug_height_m": 0.33199874828583315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.003472084958473176
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.740000000002857,
+      "plug_height_m": 0.33199875081053837,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.002990314286671736
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.760000000002881,
+      "plug_height_m": 0.3319987508165741,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00257353367974289
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.780000000002905,
+      "plug_height_m": 0.33199875081657887,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0022144313804822735
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.80000000000293,
+      "plug_height_m": 0.3319987508165811,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0019062280146875388
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.820000000002954,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.001641296337138054
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.840000000002979,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.001413212722844004
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.860000000003003,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0012167589523003342
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.880000000003028,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0010475744791210717
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.900000000003052,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0009018875150749173
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.920000000003077,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0007764381791789399
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.940000000003101,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0006684157038794325
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.960000000003125,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0005753992175993039
+    },
+    {
+      "phase": "descend",
+      "time_s": 11.98000000000315,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004953044265826323
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.000000000003174,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044980245708303723
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.020000000003199,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044342452570111934
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.040000000003223,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004371316732146857
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.060000000003248,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004309237939503774
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.080000000003272,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000424800557663918
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.100000000003297,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004187614622974678
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.120000000003321,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004128058743962937
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.140000000003345,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004069330601862431
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.16000000000337,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00040114220959175384
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.180000000003394,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003954324549013677
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.200000000003419,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000389802885346624
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.220000000003443,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003842525585504575
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.240000000003468,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00037878050955530984
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.260000000003492,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00037338575797218887
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.280000000003517,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036806731365512935
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.300000000003541,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003628241812219102
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.320000000003565,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003576553636615021
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.34000000000359,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003525598652130979
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.360000000003614,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003475366936646074
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.380000000003639,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00034258486218818884
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.400000000003663,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00033770339080085865
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.420000000003688,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000332891307523564
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.440000000003712,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00032814764929767204
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.460000000003737,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003234714627018409
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.480000000003761,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000318861804511128
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.500000000003785,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003143177421215393
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.52000000000381,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00030983835387021763
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.540000000003834,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003054227292715872
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.560000000003859,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003010699691752272
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.580000000003883,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002967791858746738
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.600000000003908,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000292549503162709
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.620000000003932,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002883800563519001
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.640000000003957,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000284269992262165
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.660000000003981,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002802184691815812
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.680000000004005,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027622465681098607
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.70000000000403,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027228773618726
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.720000000004054,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00026840689959628516
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.740000000004079,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002645813504729144
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.760000000004103,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00026081030329450083
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.780000000004128,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002570929834657676
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.800000000004152,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002534286272003472
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.820000000004176,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024981648139610346
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.840000000004201,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024625580351023135
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.860000000004225,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000242745861429583
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.88000000000425,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002392859333401054
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.900000000004274,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00023587530759794362
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.920000000004299,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002325132825954368
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.940000000004323,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022919916663122208
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.960000000004348,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022593227777933933
+    },
+    {
+      "phase": "descend",
+      "time_s": 12.980000000004372,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022271194375811376
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.000000000004396,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021953750179903864
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.020000000004421,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021640829851887755
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.040000000004445,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021332368979243288
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.06000000000447,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021028304062264969
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.080000000004494,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002072857250190463
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.100000000004519,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020433112586992763
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.120000000004543,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020141863482003863
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.140000000004568,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019854765214966097
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.160000000004592,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019571758665382077
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.180000000004616,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001929278555236058
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.200000000004641,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019017788422859283
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.220000000004665,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001874671064017175
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.24000000000469,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018479496372292292
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.260000000004714,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018216090580858157
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.280000000004739,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017956439009780834
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.300000000004763,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017700488174388074
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.320000000004788,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000174481853504882
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.340000000004812,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017199478563756365
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.360000000004836,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016954316578954298
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.380000000004861,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001671264888966073
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.400000000004885,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016474425708090656
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.42000000000491,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001623959795463703
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.440000000004934,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001600811724812301
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.460000000004959,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015779935895732233
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.480000000004983,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015555006883560818
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.500000000005008,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001533328386668087
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.520000000005032,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015114721159836808
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.540000000005056,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014899273728097295
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.56000000000508,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014686897177618174
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.580000000005105,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014477547746560848
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.60000000000513,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014271182296154983
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.620000000005154,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014067758301883337
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.640000000005179,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001386723384459998
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.660000000005203,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013669567602225818
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.680000000005228,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013474718841088862
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.700000000005252,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013282647407597548
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.720000000005276,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013093313719980681
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.7400000000053,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012906678760293833
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.760000000005325,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012722704066270296
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.78000000000535,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012541351723505123
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.800000000005374,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012362584357672457
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.820000000005399,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012186365126753973
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.840000000005423,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012012657713722508
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.860000000005448,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011841426318659476
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.880000000005472,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011672635651915897
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.900000000005496,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011506250926429651
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.92000000000552,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011342237850775483
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.940000000005545,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011180562622126189
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.96000000000557,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011021191919258211
+    },
+    {
+      "phase": "descend",
+      "time_s": 13.980000000005594,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010864092895712663
+    },
+    {
+      "phase": "descend",
+      "time_s": 14.000000000005619,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010709233172989663
+    },
+    {
+      "phase": "close",
+      "time_s": 14.020000000005643,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010556580833365192
+    },
+    {
+      "phase": "close",
+      "time_s": 14.040000000005668,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010406104415272566
+    },
+    {
+      "phase": "close",
+      "time_s": 14.060000000005692,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010257772905808427
+    },
+    {
+      "phase": "close",
+      "time_s": 14.080000000005716,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010111555733416377
+    },
+    {
+      "phase": "close",
+      "time_s": 14.10000000000574,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.967422761425482e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.120000000005765,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.825344282521353e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.14000000000579,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.68529101283977e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.160000000005814,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.547234085904854e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.180000000005839,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.411145046711589e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.200000000005863,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.2769958456973e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.220000000005887,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.14475883310173e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.240000000005912,
+      "plug_height_m": 0.33199801645725346,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.127487730919981e-05
+    },
+    {
+      "phase": "close",
+      "time_s": 14.260000000005936,
+      "plug_height_m": 0.33199913335856274,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011086080877054094
+    },
+    {
+      "phase": "close",
+      "time_s": 14.28000000000596,
+      "plug_height_m": 0.33199911878107546,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001764825381382895
+    },
+    {
+      "phase": "close",
+      "time_s": 14.300000000005985,
+      "plug_height_m": 0.3319995239777712,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002352461391649241
+    },
+    {
+      "phase": "close",
+      "time_s": 14.32000000000601,
+      "plug_height_m": 0.3319990181256254,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002785221092594936
+    },
+    {
+      "phase": "close",
+      "time_s": 14.340000000006034,
+      "plug_height_m": 0.33199915036422434,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00031431470454612587
+    },
+    {
+      "phase": "close",
+      "time_s": 14.360000000006059,
+      "plug_height_m": 0.3320003303338511,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035482607810066735
+    },
+    {
+      "phase": "close",
+      "time_s": 14.380000000006083,
+      "plug_height_m": 0.3319993491208138,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036113647880686717
+    },
+    {
+      "phase": "close",
+      "time_s": 14.400000000006107,
+      "plug_height_m": 0.33200208182930285,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00037958610935096004
+    },
+    {
+      "phase": "close",
+      "time_s": 14.420000000006132,
+      "plug_height_m": 0.33199714276466324,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003886450672588859
+    },
+    {
+      "phase": "close",
+      "time_s": 14.440000000006156,
+      "plug_height_m": 0.33199923248972607,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004252061900601456
+    },
+    {
+      "phase": "close",
+      "time_s": 14.46000000000618,
+      "plug_height_m": 0.33199925281210235,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044930068207260643
+    },
+    {
+      "phase": "close",
+      "time_s": 14.480000000006205,
+      "plug_height_m": 0.3320006048817156,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004498695036400102
+    },
+    {
+      "phase": "close",
+      "time_s": 14.50000000000623,
+      "plug_height_m": 0.33200068394915905,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044955292774606637
+    },
+    {
+      "phase": "close",
+      "time_s": 14.520000000006254,
+      "plug_height_m": 0.33199931446617437,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004401574400221264
+    },
+    {
+      "phase": "close",
+      "time_s": 14.540000000006279,
+      "plug_height_m": 0.3319997404571304,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004369673371146243
+    },
+    {
+      "phase": "close",
+      "time_s": 14.560000000006303,
+      "plug_height_m": 0.3319996178347715,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004468668900351469
+    },
+    {
+      "phase": "close",
+      "time_s": 14.580000000006327,
+      "plug_height_m": 0.33200068895325197,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004458616383805625
+    },
+    {
+      "phase": "close",
+      "time_s": 14.600000000006352,
+      "plug_height_m": 0.33199653879563823,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004527177511907121
+    },
+    {
+      "phase": "close",
+      "time_s": 14.620000000006376,
+      "plug_height_m": 0.33200167532139896,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00045732053071290135
+    },
+    {
+      "phase": "close",
+      "time_s": 14.6400000000064,
+      "plug_height_m": 0.3320005100720649,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004480090341704157
+    },
+    {
+      "phase": "close",
+      "time_s": 14.660000000006425,
+      "plug_height_m": 0.33200205711838704,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000438828400135316
+    },
+    {
+      "phase": "close",
+      "time_s": 14.68000000000645,
+      "plug_height_m": 0.33199937917079075,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004419326884058661
+    },
+    {
+      "phase": "close",
+      "time_s": 14.700000000006474,
+      "plug_height_m": 0.33200111234296187,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004434273214506401
+    },
+    {
+      "phase": "close",
+      "time_s": 14.720000000006499,
+      "plug_height_m": 0.33200050993707586,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004488437500764775
+    },
+    {
+      "phase": "close",
+      "time_s": 14.740000000006523,
+      "plug_height_m": 0.3319985518421628,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004561863652168263
+    },
+    {
+      "phase": "close",
+      "time_s": 14.760000000006547,
+      "plug_height_m": 0.33199991990850375,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004446620285495362
+    },
+    {
+      "phase": "close",
+      "time_s": 14.780000000006572,
+      "plug_height_m": 0.3320006884462864,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004481297817248153
+    },
+    {
+      "phase": "close",
+      "time_s": 14.800000000006596,
+      "plug_height_m": 0.3319993389519322,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044262735317124324
+    },
+    {
+      "phase": "close",
+      "time_s": 14.82000000000662,
+      "plug_height_m": 0.3319997277471593,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004293601067659747
+    },
+    {
+      "phase": "close",
+      "time_s": 14.840000000006645,
+      "plug_height_m": 0.3319981513522866,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00042712874302153203
+    },
+    {
+      "phase": "close",
+      "time_s": 14.86000000000667,
+      "plug_height_m": 0.33199756366003486,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004176849693797724
+    },
+    {
+      "phase": "close",
+      "time_s": 14.880000000006694,
+      "plug_height_m": 0.3320000118651748,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00042263715085111286
+    },
+    {
+      "phase": "close",
+      "time_s": 14.900000000006719,
+      "plug_height_m": 0.332000090223112,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004132229456089709
+    },
+    {
+      "phase": "close",
+      "time_s": 14.920000000006743,
+      "plug_height_m": 0.3320006439098993,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004255208949637268
+    },
+    {
+      "phase": "close",
+      "time_s": 14.940000000006767,
+      "plug_height_m": 0.3319982927251058,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004241762823595785
+    },
+    {
+      "phase": "close",
+      "time_s": 14.960000000006792,
+      "plug_height_m": 0.33199918813617774,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004291201726219773
+    },
+    {
+      "phase": "close",
+      "time_s": 14.980000000006816,
+      "plug_height_m": 0.33200187572340245,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004293802497286059
+    },
+    {
+      "phase": "close",
+      "time_s": 15.00000000000684,
+      "plug_height_m": 0.33199923800167186,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00042883287908068723
+    },
+    {
+      "phase": "close",
+      "time_s": 15.020000000006865,
+      "plug_height_m": 0.33199860980916895,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00041508080585062057
+    },
+    {
+      "phase": "close",
+      "time_s": 15.04000000000689,
+      "plug_height_m": 0.3319997552001264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004120621212272413
+    },
+    {
+      "phase": "close",
+      "time_s": 15.060000000006914,
+      "plug_height_m": 0.3320000710731657,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000421132528909407
+    },
+    {
+      "phase": "close",
+      "time_s": 15.080000000006939,
+      "plug_height_m": 0.33199979931427875,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004193428429070112
+    },
+    {
+      "phase": "close",
+      "time_s": 15.100000000006963,
+      "plug_height_m": 0.3319993121770485,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00040953331903775814
+    },
+    {
+      "phase": "close",
+      "time_s": 15.120000000006987,
+      "plug_height_m": 0.33199956295129884,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004032985168882508
+    },
+    {
+      "phase": "close",
+      "time_s": 15.140000000007012,
+      "plug_height_m": 0.3319968020020684,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003998671449267355
+    },
+    {
+      "phase": "close",
+      "time_s": 15.160000000007036,
+      "plug_height_m": 0.3319997736499046,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00040039925161167167
+    },
+    {
+      "phase": "close",
+      "time_s": 15.18000000000706,
+      "plug_height_m": 0.33199974319949477,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003998453312925032
+    },
+    {
+      "phase": "close",
+      "time_s": 15.200000000007085,
+      "plug_height_m": 0.3319994711830601,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00040439839575845404
+    },
+    {
+      "phase": "close",
+      "time_s": 15.22000000000711,
+      "plug_height_m": 0.3319987986821193,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003860117601140467
+    },
+    {
+      "phase": "close",
+      "time_s": 15.240000000007134,
+      "plug_height_m": 0.3319988580588886,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00037078818269542513
+    },
+    {
+      "phase": "close",
+      "time_s": 15.260000000007159,
+      "plug_height_m": 0.33199880935914017,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036687586709660547
+    },
+    {
+      "phase": "close",
+      "time_s": 15.280000000007183,
+      "plug_height_m": 0.33199879276509214,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036766443754310263
+    },
+    {
+      "phase": "close",
+      "time_s": 15.300000000007207,
+      "plug_height_m": 0.33199876416723456,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036814414619013025
+    },
+    {
+      "phase": "close",
+      "time_s": 15.320000000007232,
+      "plug_height_m": 0.33199873326401613,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036845936840201876
+    },
+    {
+      "phase": "close",
+      "time_s": 15.340000000007256,
+      "plug_height_m": 0.3319987207199853,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003687126245243144
+    },
+    {
+      "phase": "close",
+      "time_s": 15.36000000000728,
+      "plug_height_m": 0.33199869435123147,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003684753214853176
+    },
+    {
+      "phase": "close",
+      "time_s": 15.380000000007305,
+      "plug_height_m": 0.3319986615126065,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003671952392095834
+    },
+    {
+      "phase": "close",
+      "time_s": 15.40000000000733,
+      "plug_height_m": 0.3319986176745154,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036566457314524126
+    },
+    {
+      "phase": "close",
+      "time_s": 15.420000000007354,
+      "plug_height_m": 0.33199857961832324,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003639335206866434
+    },
+    {
+      "phase": "close",
+      "time_s": 15.440000000007378,
+      "plug_height_m": 0.33199855271863155,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003621182303265025
+    },
+    {
+      "phase": "close",
+      "time_s": 15.460000000007403,
+      "plug_height_m": 0.3319985389353882,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036038980244801344
+    },
+    {
+      "phase": "close",
+      "time_s": 15.480000000007427,
+      "plug_height_m": 0.33199851992985774,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035873767316041416
+    },
+    {
+      "phase": "close",
+      "time_s": 15.500000000007452,
+      "plug_height_m": 0.33199846806182465,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000357114619708887
+    },
+    {
+      "phase": "close",
+      "time_s": 15.520000000007476,
+      "plug_height_m": 0.3319984207527993,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035581816723306847
+    },
+    {
+      "phase": "close",
+      "time_s": 15.5400000000075,
+      "plug_height_m": 0.33199843603424245,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035497384550275957
+    },
+    {
+      "phase": "close",
+      "time_s": 15.560000000007525,
+      "plug_height_m": 0.33199842754276226,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035416362995410733
+    },
+    {
+      "phase": "close",
+      "time_s": 15.58000000000755,
+      "plug_height_m": 0.33199843158099185,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035388452947549
+    },
+    {
+      "phase": "close",
+      "time_s": 15.600000000007574,
+      "plug_height_m": 0.33199844715848503,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035419775579637047
+    },
+    {
+      "phase": "close",
+      "time_s": 15.620000000007598,
+      "plug_height_m": 0.33199843914073,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003544585949284418
+    },
+    {
+      "phase": "close",
+      "time_s": 15.640000000007623,
+      "plug_height_m": 0.331998417568347,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003546581775251134
+    },
+    {
+      "phase": "close",
+      "time_s": 15.660000000007647,
+      "plug_height_m": 0.3319984057041743,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035491881560412164
+    },
+    {
+      "phase": "close",
+      "time_s": 15.680000000007672,
+      "plug_height_m": 0.33199843141863683,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003551835655840607
+    },
+    {
+      "phase": "close",
+      "time_s": 15.700000000007696,
+      "plug_height_m": 0.33199844603762557,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003552822673877354
+    },
+    {
+      "phase": "close",
+      "time_s": 15.72000000000772,
+      "plug_height_m": 0.331998436301367,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035535868515568225
+    },
+    {
+      "phase": "close",
+      "time_s": 15.740000000007745,
+      "plug_height_m": 0.3319984199685351,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000355531298432854
+    },
+    {
+      "phase": "close",
+      "time_s": 15.76000000000777,
+      "plug_height_m": 0.33199842920125855,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003555431874326387
+    },
+    {
+      "phase": "close",
+      "time_s": 15.780000000007794,
+      "plug_height_m": 0.3319984136062464,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035555705086859346
+    },
+    {
+      "phase": "close",
+      "time_s": 15.800000000007818,
+      "plug_height_m": 0.33199842195263485,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003556441709659519
+    },
+    {
+      "phase": "close",
+      "time_s": 15.820000000007843,
+      "plug_height_m": 0.33199842878817637,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003555847016727953
+    },
+    {
+      "phase": "close",
+      "time_s": 15.840000000007867,
+      "plug_height_m": 0.3319984101460709,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035561638065495504
+    },
+    {
+      "phase": "close",
+      "time_s": 15.860000000007892,
+      "plug_height_m": 0.3319983947062234,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003556412259708708
+    },
+    {
+      "phase": "close",
+      "time_s": 15.880000000007916,
+      "plug_height_m": 0.33199841285415077,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035551920232551604
+    },
+    {
+      "phase": "close",
+      "time_s": 15.90000000000794,
+      "plug_height_m": 0.33199841716805234,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035538047579170007
+    },
+    {
+      "phase": "close",
+      "time_s": 15.920000000007965,
+      "plug_height_m": 0.33199842281547726,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003552381835469909
+    },
+    {
+      "phase": "close",
+      "time_s": 15.94000000000799,
+      "plug_height_m": 0.3319984147682695,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035508723016608457
+    },
+    {
+      "phase": "close",
+      "time_s": 15.960000000008014,
+      "plug_height_m": 0.3319984074974852,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003550731607985802
+    },
+    {
+      "phase": "close",
+      "time_s": 15.980000000008038,
+      "plug_height_m": 0.3319984266521849,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003549876465279156
+    },
+    {
+      "phase": "close",
+      "time_s": 16.00000000000806,
+      "plug_height_m": 0.33199839686408505,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003549392694956466
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.020000000008014,
+      "plug_height_m": 0.33202080275933377,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.25297030752056515
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.040000000007968,
+      "plug_height_m": 0.3325578430562534,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.24868224846063702
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.06000000000792,
+      "plug_height_m": 0.3320955704973152,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.24257359582990845
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.080000000007875,
+      "plug_height_m": 0.3321622923472954,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.23510340884089387
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.100000000007828,
+      "plug_height_m": 0.331999714081405,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.22664886858417432
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.12000000000778,
+      "plug_height_m": 0.3319981890381249,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.21753306057570465
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.140000000007735,
+      "plug_height_m": 0.331998741168502,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.20799845653381932
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.160000000007688,
+      "plug_height_m": 0.33199875079321683,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.19820818705945942
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.18000000000764,
+      "plug_height_m": 0.33199875081652624,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1881333029991228
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.200000000007595,
+      "plug_height_m": 0.33199875081657926,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.17752298532429323
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.22000000000755,
+      "plug_height_m": 0.3319987508165817,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.16690119787293844
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.2400000000075,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.15654040088184762
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.260000000007455,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1465160554102507
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.28000000000741,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.13672498397083221
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.300000000007362,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.12732498611741594
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.320000000007315,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.1182501221875425
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.34000000000727,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.10904440108426261
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.360000000007222,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.09951784139164466
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.380000000007175,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.08968724169598152
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.40000000000713,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.07964232847407038
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.420000000007082,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.06947518571897837
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.440000000007036,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.05924781411027191
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.46000000000699,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.04904952902197324
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.480000000006942,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.03890997334221469
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.500000000006896,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.028810891636740887
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.52000000000685,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.01982132034556039
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.540000000006803,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.014840739559269345
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.560000000006756,
+      "plug_height_m": 0.3319987508165826,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.012332987343065538
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.58000000000671,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.010335597041123856
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.600000000006663,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.008724051216437045
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.620000000006616,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.007432820598603174
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.64000000000657,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.006396380505209187
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.660000000006523,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.005516411645909214
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.680000000006476,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.004754925588277503
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.70000000000643,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.004096320212808147
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.720000000006383,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0035283386320765775
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.740000000006336,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0030390613714026404
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.76000000000629,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0026176452889115076
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.780000000006243,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.002254643944746837
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.800000000006197,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0019419300583913834
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.82000000000615,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0016725327504316656
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.840000000006103,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0014404772205152128
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.860000000006057,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0012405233973187269
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.88000000000601,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0010682639775849712
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.900000000005964,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0009198924936708597
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.920000000005917,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0007921084473996309
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.94000000000587,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0006820598795116428
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.960000000005824,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0005872872726953027
+    },
+    {
+      "phase": "lift",
+      "time_s": 16.980000000005777,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0005056713360769294
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.00000000000573,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00045958367485998686
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.020000000005684,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004530697846392151
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.040000000005637,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044664272972605445
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.06000000000559,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00044030231305891565
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.080000000005544,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004340481527039808
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.100000000005497,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00042787971969848737
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.12000000000545,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00042179636854156044
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.140000000005404,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004157973617336941
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.160000000005358,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0004098818895518219
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.18000000000531,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00040404908601709977
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.200000000005264,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003982980418227866
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.220000000005218,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00039262781482030107
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.24000000000517,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00038703743854073824
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.260000000005125,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003815259291277684
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.280000000005078,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003760922909858966
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.30000000000503,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003707355213833363
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.320000000004985,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00036545461420334213
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.340000000004938,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003602485629988772
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.36000000000489,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00035511636347973496
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.380000000004845,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003500570155342553
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.4000000000048,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000345069524865238
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.42000000000475,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003401529043147722
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.440000000004705,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00033530617492572024
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.46000000000466,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00033052836679492437
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.480000000004612,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000325818519747334
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.500000000004565,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003211756838658042
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.52000000000452,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003165989199021002
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.540000000004472,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00031208729958875914
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.560000000004425,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003076399058669077
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.58000000000438,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0003032558330532398
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.600000000004332,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002989341869430451
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.620000000004286,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002946740848746021
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.64000000000424,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002904746557526039
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.660000000004192,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002863350400406084
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.680000000004146,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00028225438972806494
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.7000000000041,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027823186827813373
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.720000000004053,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027426665055607646
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.740000000004006,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00027035792274576753
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.76000000000396,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00026650488225365976
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.780000000003913,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002627067376042014
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.800000000003866,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002589627083285917
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.82000000000382,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00025527202484665334
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.840000000003773,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002516339283454849
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.860000000003726,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024804767065289557
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.88000000000368,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00024451251411250485
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.900000000003633,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002410277314498499
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.920000000003586,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002375926056449318
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.94000000000354,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00023420642979954387
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.960000000003493,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00023086850700604344
+    },
+    {
+      "phase": "lift",
+      "time_s": 17.980000000003447,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022757815021401395
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.0000000000034,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022433468210081298
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.020000000003353,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00022113743493912263
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.040000000003307,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021798575046849678
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.06000000000326,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021487897976479875
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.080000000003214,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00021181648311230372
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.100000000003167,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020879762987779937
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.12000000000312,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0002058217983845756
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.140000000003074,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00020288837578730234
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.160000000003027,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000199996757949239
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.18000000000298,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019714634932122
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.200000000002934,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00019433656282086265
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.220000000002887,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001915668197142173
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.24000000000284,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018883654949786166
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.260000000002794,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018614518978443684
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.280000000002747,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018349218618674001
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.3000000000027,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00018087699220603604
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.320000000002654,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001782990691200359
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.340000000002608,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001757578858739839
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.36000000000256,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00017325291897052342
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.380000000002514,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.000170783652364892
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.400000000002468,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016834957735833989
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.42000000000242,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016595019249365794
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.440000000002374,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00016358500345325933
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.460000000002328,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001612535229581491
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.48000000000228,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015895527066689397
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.500000000002235,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001566897730791439
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.520000000002188,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015445656343671121
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.54000000000214,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015225518162831353
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.560000000002095,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00015008517409642597
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.580000000002048,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014794609374313428
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.600000000002,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014583749983809735
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.620000000001955,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014375895792873017
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.64000000000191,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00014171003975071983
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.66000000000186,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013969032313998486
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.680000000001815,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013769939194663294
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.70000000000177,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013573683594847452
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.720000000001722,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001338022507677561
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.740000000001675,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013189523778645018
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.76000000000163,
+      "plug_height_m": 0.33199875081658264,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00013001540406676337
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.780000000001582,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001281623622674255
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.800000000001535,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012633573056675118
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.82000000000149,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012453513258314786
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.840000000001442,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00012276019729640097
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.860000000001396,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.0001210105589735111
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.88000000000135,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011928585709197748
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.900000000001302,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011758573626596824
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.920000000001256,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011590984617382283
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.94000000000121,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011425784148522133
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.960000000001163,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011262938179124049
+    },
+    {
+      "phase": "lift",
+      "time_s": 18.980000000001116,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00011102413153207813
+    },
+    {
+      "phase": "lift",
+      "time_s": 19.00000000000107,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010944175993066185
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.020000000001023,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010788194092226089
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.040000000000976,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010634435308842782
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.06000000000093,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010482867959238362
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.080000000000883,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010333460811073891
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.100000000000836,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010186183077098843
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.12000000000079,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.00010041004408833931
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.140000000000743,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.897894890253944e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.160000000000696,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.756825031637106e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.18000000000065,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.61776576344775e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.200000000000603,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.480688430574258e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.220000000000557,
+      "plug_height_m": 0.33199875081658275,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.345564786067406e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.24000000000051,
+      "plug_height_m": 0.3319987508165827,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.212366985633658e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.260000000000463,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 9.08106758180649e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.280000000000417,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.95163951818434e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.30000000000037,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.82405612404602e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.320000000000324,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.69829110867748e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.340000000000277,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.574318556042737e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.36000000000023,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.452112919454802e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.380000000000184,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.331649016357634e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.400000000000137,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.212902023030377e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.42000000000009,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 8.095847469535844e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.440000000000044,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.980461234680103e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.459999999999997,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.866719540983169e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.47999999999995,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.75459894988284e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.499999999999904,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.644076356894125e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.519999999999857,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.535128986690953e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.53999999999981,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.427734388643081e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.559999999999764,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.32187043203103e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.579999999999718,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.217515301605193e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.59999999999967,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.114647492956205e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.619999999999624,
+      "plug_height_m": 0.33199875081658287,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 7.013245808162871e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.639999999999578,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.913289351417884e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.65999999999953,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.814757524742365e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.679999999999485,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.717630023711507e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.699999999999438,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.621886833246826e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.71999999999939,
+      "plug_height_m": 0.331998750816583,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.527508223586054e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.739999999999345,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.434474746064289e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.759999999999298,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.342767229305935e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.77999999999925,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.252366775061358e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.799999999999205,
+      "plug_height_m": 0.3319987508165829,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.163254754576464e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.81999999999916,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 6.075412804507074e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.83999999999911,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.988822823166373e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.859999999999065,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.9034669669055795e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.87999999999902,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.819327646450212e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.899999999998972,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.736387523147535e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.919999999998925,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.654629505447151e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.93999999999888,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.574036745403799e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.959999999998832,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.4945926352467644e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.979999999998785,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.416280803838269e-05
+    },
+    {
+      "phase": "hold",
+      "time_s": 19.99999999999874,
+      "plug_height_m": 0.3319987508165828,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 5.3390851133761075e-05
+    }
+  ],
+  "config": {
+    "version": "table_task_layout_v2",
+    "instruction": "Pick up the plug from the table and insert it into the socket.",
+    "plug_mating_position_m": [
+      0.381,
+      -0.22,
+      0.33
+    ],
+    "plug_quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "open_finger_travel_m": 0.035,
+    "settle_s": 1.0,
+    "pregrasp_clearance_m": 0.07,
+    "grasp_height_offset_m": 0.004,
+    "tool_pitch_deg": 60,
+    "cameras": {
+      "task_rgb": {
+        "model_camera": "scene_rgb",
+        "position_m": [
+          0.12,
+          -0.65,
+          0.7
+        ],
+        "target_m": [
+          0.4,
+          -0.18,
+          0.4
+        ],
+        "fovy_deg": 45
+      },
+      "socket_rgb": {
+        "model_camera": "inspection",
+        "position_m": [
+          0.36,
+          -0.32,
+          0.66
+        ],
+        "target_m": [
+          0.435,
+          -0.155,
+          0.478
+        ],
+        "fovy_deg": 25
+      }
+    },
+    "status": "candidate angled pickup grasp; physical validation required"
+  },
+  "end_to_end_validated": false,
+  "demonstration_exported": false
+}

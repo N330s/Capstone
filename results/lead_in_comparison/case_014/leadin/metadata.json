@@ -1,0 +1,42 @@
+{
+  "scene_version": "two_blade_v2_leadin",
+  "mujoco_version": "3.11.0",
+  "model_hashes": {
+    "plug.xml": "57d6ab27c6a8f0cbade030b6b263993a53d4a2385c1491b196ff393c4f75e48c",
+    "plug_socket.xml": "2c509c00a4607cbba056fbb658a00469cc3fc7a32e3cb133347dac8440c0516a",
+    "socket.xml": "ac06946ce3975ec51e06f4816a687f3515e06b827d0c1c5e170ae8e276df3bab"
+  },
+  "config": {
+    "speed_m_s": 0.01,
+    "translation_stiffness_n_m": 300.0,
+    "translation_damping_ns_m": 6.0,
+    "rotation_stiffness_nm_rad": 0.12,
+    "rotation_damping_nms_rad": 0.002,
+    "force_limit_n": 2.0,
+    "torque_limit_nm": 0.03,
+    "target_overtravel_m": 0.001,
+    "duration_s": 3.5,
+    "hold_s": 0.25,
+    "contact_abort_n": 8.0,
+    "penetration_limit_m": 0.0002,
+    "success_angle_deg": 3.0,
+    "success_depth_m": 0.015,
+    "success_face_gap_m": 0.001,
+    "fit_tolerance_m": 5e-05,
+    "jam_window_s": 0.4,
+    "jam_progress_m": 0.0001,
+    "jam_contact_n": 0.1,
+    "trace_interval_s": 0.01
+  },
+  "timestep_s": 0.0005,
+  "pose": {
+    "offset_y_mm": 0.0,
+    "offset_z_mm": 0.0,
+    "roll_deg": -2,
+    "pitch_deg": 0.0,
+    "yaw_deg": 0.0
+  },
+  "seed": 0,
+  "randomization": "none; deterministic initial conditions",
+  "controller": "bounded grasp-frame spring damper plus ideal COM gravity compensation"
+}

@@ -1,0 +1,71 @@
+<mujoco model="box connector insertion">
+  <compiler angle="degree" coordinate="local"/>
+
+  <option timestep="0.0005"
+          integrator="implicitfast"
+          solver="Newton"
+          iterations="100"
+          gravity="0 0 -9.81"/>
+
+  <visual>
+    <global azimuth="135" elevation="-20"/>
+    <quality shadowsize="2048"/>
+  </visual>
+
+  <default>
+    <!--
+      MuJoCo's 20 ms default contact time constant allowed about 2 mm of
+      backstop penetration at this millimetre scale.  A 2 ms time constant
+      removes that artifact while remaining four simulation steps long.
+    -->
+    <geom condim="3"
+          friction="0.4 0.005 0.0001"
+          solref="0.002 1"
+          solimp="0.9 0.95 0.001"/>
+  </default>
+
+  <asset>
+    <material name="table_mat" rgba="0.28 0.31 0.34 1"/>
+    <material name="plug_mat" rgba="0.85 0.47 0.12 1"/>
+    <material name="socket_mat" rgba="0.18 0.42 0.68 1"/>
+  </asset>
+
+  <worldbody>
+    <light name="key" pos="-0.15 -0.12 0.22" dir="0.5 0.3 -1"/>
+    <camera name="overview" pos="-0.095 -0.105 0.080" xyaxes="0.74 -0.67 0 0.31 0.34 0.89"/>
+
+    <!-- The table top is z=0.  It supports the free plug before insertion. -->
+    <geom name="table" type="box" pos="0 0 -0.005"
+          size="0.14 0.09 0.005" material="table_mat"/>
+
+    <!--
+      Opening: 13.5 mm wide (Y) by 9.5 mm high (Z), from x=0 to
+      x=32 mm.  Each collision geom is convex; empty space is the cavity.
+    -->
+    <body name="socket" pos="0 0 0.004">
+      <geom name="socket_top" type="box" pos="0.016 0 0.00625"
+            size="0.016 0.00975 0.0015" material="socket_mat"/>
+      <geom name="socket_bottom" type="box" pos="0.016 0 -0.00625"
+            size="0.016 0.00975 0.0015" material="socket_mat"/>
+      <geom name="socket_left" type="box" pos="0.016 0.00825 0"
+            size="0.016 0.0015 0.00475" material="socket_mat"/>
+      <geom name="socket_right" type="box" pos="0.016 -0.00825 0"
+            size="0.016 0.0015 0.00475" material="socket_mat"/>
+      <geom name="socket_back" type="box" pos="0.0335 0 0"
+            size="0.0015 0.00975 0.00775" material="socket_mat"/>
+      <site name="socket_entry" pos="0 0 0" size="0.0008"
+            rgba="0.1 1 0.1 1"/>
+      <site name="socket_target" pos="0.028 0 0" size="0.0008"
+            rgba="0.1 1 0.1 0.35"/>
+    </body>
+
+    <!-- The front face begins 5 mm behind the socket entrance. -->
+    <body name="plug" pos="-0.020 0 0.004">
+      <freejoint name="plug_free"/>
+      <geom name="plug_collision" type="box" size="0.015 0.006 0.004"
+            mass="0.03" material="plug_mat"/>
+      <site name="plug_tip" pos="0.015 0 0" size="0.0008"
+            rgba="1 0.1 0.1 1"/>
+    </body>
+  </worldbody>
+</mujoco>

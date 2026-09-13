@@ -1,0 +1,14 @@
+{
+  "version": "table_task_layout_v1",
+  "instruction": "Pick up the plug from the table and insert it into the socket.",
+  "plug_mating_position_m": [0.381, -0.22, 0.330],
+  "plug_quaternion_wxyz": [1, 0, 0, 0],
+  "open_finger_travel_m": 0.035,
+  "settle_s": 1.0,
+  "pregrasp_clearance_m": 0.070,
+  "cameras": {
+    "task_rgb": {"model_camera": "scene_rgb", "position_m": [0.12, -0.65, 0.70], "target_m": [0.40, -0.18, 0.40], "fovy_deg": 45},
+    "socket_rgb": {"model_camera": "inspection", "position_m": [0.30, -0.38, 0.56], "target_m": [0.435, -0.155, 0.478], "fovy_deg": 30}
+  },
+  "status": "layout, settled table reset and kinematic feasibility only; not a pickup controller"
+}

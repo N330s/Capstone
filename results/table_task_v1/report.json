@@ -1,0 +1,270 @@
+{
+  "config": {
+    "version": "table_task_layout_v1",
+    "instruction": "Pick up the plug from the table and insert it into the socket.",
+    "plug_mating_position_m": [
+      0.381,
+      -0.22,
+      0.33
+    ],
+    "plug_quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "open_finger_travel_m": 0.035,
+    "settle_s": 1.0,
+    "pregrasp_clearance_m": 0.07,
+    "cameras": {
+      "task_rgb": {
+        "model_camera": "scene_rgb",
+        "position_m": [
+          0.12,
+          -0.65,
+          0.7
+        ],
+        "target_m": [
+          0.4,
+          -0.18,
+          0.4
+        ],
+        "fovy_deg": 45
+      },
+      "socket_rgb": {
+        "model_camera": "inspection",
+        "position_m": [
+          0.3,
+          -0.38,
+          0.56
+        ],
+        "target_m": [
+          0.435,
+          -0.155,
+          0.478
+        ],
+        "fovy_deg": 30
+      }
+    },
+    "status": "layout, settled table reset and kinematic feasibility only; not a pickup controller"
+  },
+  "settled_table_reset": {
+    "plug_position_m": [
+      0.381000089220612,
+      -0.22000000000117,
+      0.32799875082031504
+    ],
+    "plug_speed_norm": 1.3065827158401821e-10,
+    "housing_table_contacts": 4,
+    "max_table_penetration_m": 1.249179192338093e-06,
+    "unexpected_robot_contacts": [],
+    "warnings": 0
+  },
+  "kinematic_probes": {
+    "pregrasp": {
+      "ik_converged": true,
+      "position_error_m": 3.4502120320570964e-09,
+      "minimum_joint_limit_margin_rad": 0.04029305840880082,
+      "unexpected_contacts": [],
+      "joint_targets_rad": [
+        0.9687576001233112,
+        0.546728720640388,
+        -0.8771260516539591,
+        0.9459540832894419,
+        0.9751770940214057,
+        -0.2306347926618675,
+        -1.5305029415911993
+      ]
+    },
+    "grasp": {
+      "ik_converged": true,
+      "position_error_m": 5.6740856372171595e-09,
+      "minimum_joint_limit_margin_rad": 0.27431939279047635,
+      "unexpected_contacts": [
+        {
+          "geoms": [
+            "work_table",
+            "openarm_right_right_finger_collision"
+          ],
+          "penetration_m": 0.0024213343438722616
+        },
+        {
+          "geoms": [
+            "work_table",
+            "openarm_right_left_finger_collision"
+          ],
+          "penetration_m": 0.002421334362531835
+        }
+      ],
+      "joint_targets_rad": [
+        0.8951999417665204,
+        0.4010727435128831,
+        -0.8546807240162937,
+        0.6338007029898179,
+        0.918247604049137,
+        -0.09685922785482429,
+        -1.2964766072095237
+      ]
+    },
+    "seated_same_topdown_grasp": {
+      "ik_converged": true,
+      "position_error_m": 1.9861484796856885e-06,
+      "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+      "unexpected_contacts": [],
+      "joint_targets_rad": [
+        1.4087400907640995,
+        0.21349007107232829,
+        -1.2100629941325083,
+        0.45967014078276774,
+        1.2097274491718601,
+        -0.21750592633608898,
+        -1.5697960000000002
+      ]
+    }
+  },
+  "physical_pickup_validated": false,
+  "end_to_end_success": false,
+  "camera_schema": "candidate 640x480 task+socket fixed views; original wrist retained in model",
+  "source_hashes": {
+    "scripts\\preview_table_task.py": "e19e5b9e3899893cf74288758b4963b5f248efcb4b056a314a30ead5360cd76f",
+    "envs\\openarm_insert.py": "81dbb4e583a34a1d1ed282f801185d7aebb0902a1120a953c555f13ba5f66a28",
+    "envs\\scene.py": "427d7beea526c8ea0640ff89a9d398c8809fa3f7efecd689082d7364c976b98d",
+    "configs\\table_task_v1.json": "4fe8a70c0300c4b346ea666ed01146ff670eaae4846e47e58951a87cf65cd466"
+  },
+  "baseline_manifest": {
+    "schema": "openarm_v1_joint_targets_v1",
+    "robot": {
+      "repository": "https://github.com/enactic/openarm_mujoco",
+      "commit": "161039cd74ea8675fb8197836fe5674659825c75",
+      "variant": "v1/openarm_bimanual.xml",
+      "robot_xml_sha256": "bcd6ab2318594908acf0a61e1947a1e4200a4eb2f0f67ae31b292d56f7df9386",
+      "license": "Apache-2.0",
+      "active_arm": "right",
+      "parked_arm": "left"
+    },
+    "scene_sha256": "223e74d54687dc2249264578d6894b5c953c4cd90cbcf50c9f6c302f5b589714",
+    "source_hashes": {
+      "envs/scene.py": "427d7beea526c8ea0640ff89a9d398c8809fa3f7efecd689082d7364c976b98d",
+      "envs/openarm_insert.py": "81dbb4e583a34a1d1ed282f801185d7aebb0902a1120a953c555f13ba5f66a28",
+      "connector/geometry.py": "ae26b18c84f5eba194d3d672cc6e508eabc314607c7ffa414d0b168ab73e7cc4",
+      "connector/simulation.py": "307cdcd19f581e17c358dc42077be4308be726b9f4824bf9496ae39128e71e39",
+      "controllers/expert.py": "e900650dd4e39bd28ac882de38fb2b861db32ad8aefdf0003a52ced1b3bd72b8"
+    },
+    "robot_config": {
+      "schema_version": "openarm_v1_joint_targets_v1",
+      "active_arm": "right",
+      "command_hz": 50,
+      "kp_nm_rad": [
+        200,
+        200,
+        150,
+        150,
+        40,
+        40,
+        40
+      ],
+      "kd_nms_rad": [
+        12,
+        12,
+        8,
+        8,
+        3,
+        3,
+        3
+      ],
+      "joint_target_rate_rad_s": 0.5,
+      "finger_target_rate_m_s": 0.02,
+      "home_arm_rad": [
+        0,
+        0,
+        0,
+        1.5707963267948966,
+        0,
+        0,
+        0
+      ],
+      "initial_finger_travel_m": 0.0138,
+      "grip_target_travel_m": 0.008,
+      "settle_s": 1.0,
+      "episode_limit_s": 8.0,
+      "robot_contact_abort_n": 5.0,
+      "grasp_slip_limit_m": 0.001,
+      "grasp_angle_limit_deg": 5.0,
+      "image_width": 320,
+      "image_height": 240,
+      "instruction": "Insert the plug into the socket."
+    },
+    "contact_config": {
+      "speed_m_s": 0.01,
+      "translation_stiffness_n_m": 300.0,
+      "translation_damping_ns_m": 6.0,
+      "rotation_stiffness_nm_rad": 0.12,
+      "rotation_damping_nms_rad": 0.002,
+      "force_limit_n": 2.0,
+      "torque_limit_nm": 0.03,
+      "target_overtravel_m": 0.001,
+      "duration_s": 3.5,
+      "hold_s": 0.25,
+      "contact_abort_n": 8.0,
+      "penetration_limit_m": 0.0002,
+      "success_angle_deg": 3.0,
+      "success_depth_m": 0.015,
+      "success_face_gap_m": 0.001,
+      "fit_tolerance_m": 5e-05,
+      "jam_window_s": 0.4,
+      "jam_progress_m": 0.0001,
+      "jam_contact_n": 0.1,
+      "trace_interval_s": 0.01
+    },
+    "mujoco_version": "3.11.0",
+    "physics_timestep_s": 0.0005,
+    "command_interval_s": 0.02,
+    "seed": 0,
+    "reset_options": {},
+    "action_names": [
+      "openarm_right_joint1",
+      "openarm_right_joint2",
+      "openarm_right_joint3",
+      "openarm_right_joint4",
+      "openarm_right_joint5",
+      "openarm_right_joint6",
+      "openarm_right_joint7",
+      "right_finger_travel"
+    ],
+    "state_order": "left joint1..7, left mean finger travel, right joint1..7, right mean finger travel",
+    "grasp": "physical_finger_contact; no weld or plug force",
+    "controller": "joint PD plus model bias feedforward through capped upstream torque actuators",
+    "camera_calibration": {
+      "scene_rgb": {
+        "position_body_m": [
+          0.12,
+          -0.65,
+          0.7
+        ],
+        "quaternion_wxyz": [
+          0.8296064735043273,
+          0.49122690385817824,
+          -0.13523331867699295,
+          -0.22838821678280355
+        ],
+        "fovy_deg": 45.0,
+        "parent_body": "world"
+      },
+      "wrist_rgb": {
+        "position_body_m": [
+          0.05,
+          -0.04,
+          0.01
+        ],
+        "quaternion_wxyz": [
+          0.2673745917180725,
+          0.6546073843943361,
+          0.7071062928496367,
+          0.0008310309524210606
+        ],
+        "fovy_deg": 55.0,
+        "parent_body": "openarm_right_hand"
+      }
+    }
+  }
+}

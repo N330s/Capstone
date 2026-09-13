@@ -1,0 +1,22 @@
+<mujocoinclude>
+  <!-- Slots: Y half-width 1.15 mm, Z half-height 3.4 mm.
+       Five disjoint boxes preserve both openings and the central separator.
+       Front face x=0 seats the housing; back face x=18 mm clears 16 mm blades. -->
+  <body name="socket" pos="0 0 0.10">
+    <geom name="socket_top" type="box" pos="0.009 0 0.0092"
+          size="0.009 0.02 0.0058" rgba="0.82 0.81 0.76 1"/>
+    <geom name="socket_bottom" type="box" pos="0.009 0 -0.0092"
+          size="0.009 0.02 0.0058" rgba="0.82 0.81 0.76 1"/>
+    <geom name="socket_middle" type="box" pos="0.009 0 0"
+          size="0.009 0.00535 0.0034" rgba="0.82 0.81 0.76 1"/>
+    <geom name="socket_left" type="box" pos="0.009 -0.013825 0"
+          size="0.009 0.006175 0.0034" rgba="0.82 0.81 0.76 1"/>
+    <geom name="socket_right" type="box" pos="0.009 0.013825 0"
+          size="0.009 0.006175 0.0034" rgba="0.82 0.81 0.76 1"/>
+    <site name="socket_entry" pos="0 0 0" rgba="0.2 0.5 1 1"/>
+    <site name="slot_left_entry" pos="0 -0.0065 0"/>
+    <site name="slot_right_entry" pos="0 0.0065 0"/>
+    <site name="socket_seated_frame" pos="0 0 0"/>
+    <site name="socket_preinsert_frame" pos="-0.022 0 0"/>
+  </body>
+</mujocoinclude>

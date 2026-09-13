@@ -1,0 +1,42 @@
+{
+  "schema": "openarm-v1-pi0-absolute-v1",
+  "checks": {
+    "train_only_statistics_recomputed": true,
+    "full_window_shapes_and_boundaries": true,
+    "float32_action_roundtrip_below_1e_6": true,
+    "split_episodes_disjoint": true,
+    "float32_replay_success_same_command_count": true,
+    "float32_replay_state_tolerance": false
+  },
+  "max_action_roundtrip_error": 2.1163506502830387e-09,
+  "full_windows": {
+    "train": 1968,
+    "validation": 492
+  },
+  "excluded_tail_start_positions_per_episode": 49,
+  "model_training_run": false,
+  "upstream_runtime_tested": false,
+  "lerobot_exported": false,
+  "openpi_commit": "215abfb217dbac7d5f1273282331b9b1866c0479",
+  "source_hashes": {
+    "configs\\vla_pi0.json": "8496e3d88e11fa41574360b1b7a2374334ec1279fadafd4462df9437a81c4609",
+    "learning\\vla\\openpi_adapter.py": "8ae3f0065eb8301fad249bdd12f7eabf65b4f04df5e1b48c73caa17d4d9edc68",
+    "learning\\vla\\pilot_dataset.py": "cb58c2ab4e42df3f6ffd1b6b3b2e664262bd0eeb8d0af2e6e0bcf6f27f006811",
+    "learning\\vla\\openpi_integration.py": "86ef4e5d5343d041beb5513ed2988a77c5bf1518338b2f743ab80338ce713993",
+    "third_party\\openpi\\src\\openpi\\models\\pi0.py": "19b25188bd1c7a56c84c93762776a480c103d4060d30e790234939f5063640a2",
+    "third_party\\openpi\\src\\openpi\\training\\data_loader.py": "055dd4496d5cf68d6e3a36fb7ebd8a431649c3e29748ea5a6ed9bfe2b93f790e",
+    "third_party\\openpi\\src\\openpi\\training\\config.py": "eca2804c7be88c3097f6d5ac63109c30ad5a968b11d0468a96b7f5fadfc39a2a",
+    "third_party\\openpi\\LICENSE": "5ad8c213095c573921d7388edf93f6a9f54490b8ebf3b165ae8ef1947cf70846"
+  },
+  "pilot_manifest_sha256": "9691e2eec329b4fbf749bd9f9c5bda26334f5663aa5469bec7a53c7ce822b1a9",
+  "normalization_sha256": "6e11c621cc96e7041b21df7b80b09829217ca041c4677d0562ce14396232cecf",
+  "float32_replay": {
+    "episode": "episode_0000",
+    "outcome": "success",
+    "commands": 172,
+    "max_qpos_error": 1.4740489751812846e-06,
+    "max_qvel_error": 0.002159378859361008,
+    "note": "Numeric transport audit, not learned-policy inference; qpos/qvel contain mixed joint units"
+  },
+  "passed": false
+}

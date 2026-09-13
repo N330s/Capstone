@@ -1,0 +1,16 @@
+{
+  "purpose": "Additional diagnostic comparisons; separate from the eight acceptance cases",
+  "vertical_90deg_closed_travel_0_008m": {
+    "passed": false,
+    "height_gain_m": 0.003999999996267933,
+    "max_grasp_drift_m": 0.07860369755548056,
+    "final_finger_contact_bodies": 0
+  },
+  "angled_60deg_closed_travel_0_006m": {
+    "passed": false,
+    "reason": "substep contact abort on the new path",
+    "observed_unwanted_force_n": 41.4171
+  },
+  "interpretation": "The old 8 mm per-finger target loses the plug even with a vertical approach; the new 6 mm target retains bilateral contact after closure-induced plug rotation. Orientation and path clearance must also be validated.",
+  "contact_geometry_or_friction_changed": false
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "openarm-v1-pi0-absolute-v1",
+  "openpi_commit": "215abfb217dbac7d5f1273282331b9b1866c0479",
+  "lerobot_commit": "0cf864870cf29f4738d3ade893e6fd13fbd7cdb5",
+  "checkpoint_candidate": "gs://openpi-assets/checkpoints/pi0_base",
+  "checkpoint_downloaded": false,
+  "backend_target": "JAX LoRA on a separate Linux GPU host",
+  "model_action_dim": 32,
+  "action_horizon": 50,
+  "execution_prefix_candidate": 1,
+  "command_hz": 50,
+  "state_dimensions": 16,
+  "command_dimensions": 8,
+  "actions": "absolute right joint1..7 radians plus per-finger travel metres",
+  "normalization_owner": "OpenArmCodec; upstream norm_stats must be empty",
+  "terminal_window_rule": "full windows only; no padded suffix enters stock pi0 loss",
+  "image_resize_owner": "upstream ModelTransformFactory ResizeImages(224,224)",
+  "rlt_status": "internal source access audited; contextual feature hook not implemented or validated"
+}

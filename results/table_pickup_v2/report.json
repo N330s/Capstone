@@ -1,0 +1,450 @@
+{
+  "outcome": "Contact or numerical safety abort",
+  "trace": [
+    {
+      "phase": "reach",
+      "time_s": 2.019999999999842,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.08547016581501
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.0399999999998486,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0821254713971258
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.0599999999998553,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0768518433860128
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.079999999999862,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0705286158370415
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.0999999999998686,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0635029938376825
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.1199999999998753,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0559709157589712
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.139999999999882,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0480493030884006
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.1599999999998887,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.039787832862765
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.1799999999998954,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0312261821599051
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.199999999999902,
+      "plug_height_m": 0.32799875082031504,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0224016031138747
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.2199999999999087,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.013351666973856
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.2399999999999154,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 1.0041117590429463
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.259999999999922,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9947143345660117
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.2799999999999288,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9851884324576753
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.2999999999999354,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9755593120294489
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.319999999999942,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.965848318728559
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.339999999999949,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9560730402023332
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.3599999999999555,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9462476516327274
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.379999999999962,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9363833583369803
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.399999999999969,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.926488923201044
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.4199999999999755,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9165711416193354
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.439999999999982,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.9066352547513592
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.459999999999989,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8966852947035074
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.4799999999999955,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.886724363273684
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.500000000000002,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8767548513025593
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.520000000000009,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8667786079806677
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.5400000000000156,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.856797069749491
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.5600000000000223,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.846811357600462
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.580000000000029,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8368223551165828
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.6000000000000356,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8268307512549735
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.6200000000000423,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8168370869390824
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.640000000000049,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.8068417926597455
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.6600000000000557,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.796845210564284
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.6800000000000623,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7868476124704138
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.700000000000069,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7768492141337929
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.7200000000000757,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7668501936278264
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.7400000000000824,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7568506822146525
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.760000000000089,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7468507806399907
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.7800000000000957,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7368505718126197
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.8000000000001024,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7268501227784685
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.820000000000109,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.716851771199448
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.8400000000001158,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.7068546227541757
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.8600000000001224,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6968580753934268
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.880000000000129,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6868607917019378
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.900000000000136,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.676862131471069
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.9200000000001425,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6668618344171742
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.940000000000149,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6568600330420433
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.960000000000156,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6470978018030528
+    },
+    {
+      "phase": "reach",
+      "time_s": 2.9800000000001625,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6375888400544749
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.000000000000169,
+      "plug_height_m": 0.32799875082031493,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6280555749812071
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.020000000000176,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6183572314532049
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.0400000000001826,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.6084703586893072
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.0600000000001892,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5984296586370165
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.080000000000196,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5882579870093273
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.1000000000002026,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 0.0,
+      "joint_error_rad": 0.5780361230812192
+    },
+    {
+      "phase": "reach",
+      "time_s": 3.1200000000002093,
+      "plug_height_m": 0.327998750820315,
+      "robot_contact_n": 98.6702342909362,
+      "joint_error_rad": 0.5740958177422754
+    }
+  ],
+  "config": {
+    "version": "table_task_layout_v2",
+    "instruction": "Pick up the plug from the table and insert it into the socket.",
+    "plug_mating_position_m": [
+      0.381,
+      -0.22,
+      0.33
+    ],
+    "plug_quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "open_finger_travel_m": 0.035,
+    "settle_s": 1.0,
+    "pregrasp_clearance_m": 0.07,
+    "grasp_height_offset_m": 0.004,
+    "tool_pitch_deg": 60,
+    "cameras": {
+      "task_rgb": {
+        "model_camera": "scene_rgb",
+        "position_m": [
+          0.12,
+          -0.65,
+          0.7
+        ],
+        "target_m": [
+          0.4,
+          -0.18,
+          0.4
+        ],
+        "fovy_deg": 45
+      },
+      "socket_rgb": {
+        "model_camera": "inspection",
+        "position_m": [
+          0.36,
+          -0.32,
+          0.66
+        ],
+        "target_m": [
+          0.435,
+          -0.155,
+          0.478
+        ],
+        "fovy_deg": 25
+      }
+    },
+    "status": "candidate angled pickup grasp; physical validation required"
+  },
+  "end_to_end_validated": false,
+  "demonstration_exported": false
+}

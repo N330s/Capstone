@@ -1,0 +1,19 @@
+{
+  "version": "table_task_pickup_v3",
+  "instruction": "Pick up the plug from the table and insert it into the socket.",
+  "rest_arm_rad": [0,0,0,0,0,0,0],
+  "rest_description": "Both OpenArm v1 hands point downward, behind the table",
+  "plug_mating_position_m": [0.381,-0.22,0.330],
+  "plug_quaternion_wxyz": [1,0,0,0],
+  "open_finger_travel_m": 0.035,
+  "closed_finger_target_m": 0.006,
+  "settle_s": 1.0,
+  "pregrasp_clearance_m": 0.070,
+  "grasp_height_offset_m": 0.003,
+  "tool_pitch_deg": 90,
+  "cameras": {
+    "task_rgb": {"model_camera":"scene_rgb","position_m":[0.12,-0.65,0.70],"target_m":[0.40,-0.18,0.40],"fovy_deg":45},
+    "socket_rgb": {"model_camera":"inspection","position_m":[0.36,-0.32,0.66],"target_m":[0.435,-0.155,0.478],"fovy_deg":25}
+  },
+  "status": "physical pickup validation; transport and insertion with this grasp remain separate gates"
+}

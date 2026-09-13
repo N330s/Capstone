@@ -1,0 +1,14 @@
+{
+  "purpose": "Follow-up diagnosis of the retained failed float32 replay tolerance",
+  "episode": "episode_0000",
+  "largest_velocity_error_step_zero_based": 167,
+  "largest_velocity_error_dof": 21,
+  "joint": "plug_free",
+  "component": "first rotational velocity component",
+  "max_plug_angular_velocity_error_rad_s": 0.002159378859361008,
+  "max_plug_linear_velocity_error_m_s": 0.00003947896823447245,
+  "max_right_arm_joint_velocity_error_rad_s": 0.000009894595527032294,
+  "final_max_qvel_error_mixed_units": 0.0003325104579684391,
+  "interpretation": "Tiny command quantization perturbs contact dynamics during seating. Outcome and command count remain unchanged; strict reference velocity tolerance still fails.",
+  "physics_or_tolerance_changed": false
+}

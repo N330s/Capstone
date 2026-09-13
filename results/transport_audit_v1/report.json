@@ -1,0 +1,1648 @@
+{
+  "seed": 20260913,
+  "results": [
+    {
+      "variant": "original",
+      "socket_position_m": [
+        0.4391,
+        -0.155,
+        0.478
+      ],
+      "socket_roll_deg": 0,
+      "valid_solutions": 0,
+      "best": {
+        "ik_converged": false,
+        "position_error_m": 0.23714574047843687,
+        "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+        "unexpected_contacts": [],
+        "joint_targets_rad": [
+          1.4068820270680362,
+          -0.17353267320510335,
+          -0.3884374525762067,
+          0.001,
+          -1.5632603747858944,
+          -0.6873278575748157,
+          -1.5697960000000002
+        ]
+      },
+      "trials": [
+        {
+          "ik_converged": false,
+          "position_error_m": 0.25938520144560184,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4737490020864772,
+            -0.17353267320510335,
+            -0.37254176870122857,
+            0.001,
+            -1.5358896953214334,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.24771006838825524,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4246219165788687,
+            -0.17353267320510335,
+            -0.405594993008675,
+            0.001,
+            -1.5697960000000002,
+            -0.7320321620337734,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.24807185180876873,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.424910464004742,
+            -0.17353267320510335,
+            -0.40742619142253717,
+            0.001,
+            -1.5697960000000002,
+            -0.7324240351190509,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.47382950649122757,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            3.489659,
+            3.3151253267948966,
+            -1.5697960000000002,
+            2.442461,
+            -1.5697960000000002,
+            -0.784398,
+            0.7313981081987283
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.27212094254344027,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5121850595948392,
+            -0.17353267320510335,
+            -0.36362573849786134,
+            0.001,
+            -1.5201950336525456,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.2907767348470789,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.21695226529815617,
+            0.37222363672903425,
+            1.5697960000000002,
+            -0.6136050273823087,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.23714574047843687,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4068820270680362,
+            -0.17353267320510335,
+            -0.3884374525762067,
+            0.001,
+            -1.5632603747858944,
+            -0.6873278575748157,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.29067888037682804,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.21807723239205737,
+            0.37408050104724766,
+            1.5697960000000002,
+            -0.616625467868086,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.27419905784458415,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [
+            {
+              "geoms": [
+                "work_table",
+                "openarm_right_left_finger_collision"
+              ],
+              "penetration_m": 0.018191599400450148
+            }
+          ],
+          "joint_targets_rad": [
+            3.489659,
+            3.3151253267948966,
+            1.5697960000000002,
+            0.5557207944365952,
+            -0.49702184935860777,
+            -0.39786242517725734,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6581325314387435,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.2900506598739634,
+            -0.17353267320510335,
+            -0.9052726516089846,
+            0.001,
+            0.17042552084095514,
+            0.6733233700503104,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.2533038731115781,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4299983692478049,
+            -0.17353267320510335,
+            -0.43100036509874035,
+            0.001,
+            -1.5697960000000002,
+            -0.734398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.24193067684073807,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5287690675850683,
+            -0.17353267320510335,
+            -0.6675801205217315,
+            0.001,
+            -0.9707142862561483,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.26018798247353286,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.47465396943107,
+            -0.17353267320510335,
+            -0.375798831516332,
+            0.001,
+            -1.535674466239218,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6235940815876791,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.2434472658319686,
+            -0.17353267320510335,
+            -1.0148196964706444,
+            0.001,
+            0.05223718287770554,
+            0.5296847549605477,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.26287420243721027,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4776685426715064,
+            -0.17353267320510335,
+            -0.3867659470051,
+            0.001,
+            -1.5349392961947537,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.30125866616489466,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.22311474040842105,
+            0.3169060836841409,
+            1.5697960000000002,
+            -0.5605585029790556,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.28973703474760887,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.21066286135342258,
+            0.3713777819299604,
+            1.5697960000000002,
+            -0.5991959442842578,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.29788793141680253,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.21269501480191466,
+            0.3255289339323984,
+            1.5697960000000002,
+            -0.5404227363688257,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.30117933842842126,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.22329257869530444,
+            0.3175615085927141,
+            1.5697960000000002,
+            -0.5611608380783288,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.2604289642192656,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4751723590108046,
+            -0.17353267320510335,
+            -0.37599919533159293,
+            0.001,
+            -1.5356315098256665,
+            -0.7834589312957986,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.7151353544479705,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.3933747217332515,
+            -0.17353267320510335,
+            -0.4753813556492222,
+            0.001,
+            0.3092836915729581,
+            0.12657886790412176,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.27419905784458426,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [
+            {
+              "geoms": [
+                "work_table",
+                "openarm_right_left_finger_collision"
+              ],
+              "penetration_m": 0.018191599400450037
+            }
+          ],
+          "joint_targets_rad": [
+            3.489659,
+            3.3151253267948966,
+            1.5697960000000002,
+            0.5557207944365957,
+            -0.4970218493586073,
+            -0.3978624251772584,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.2878029559405811,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -0.20638895440063637,
+            0.37812829636979456,
+            1.5697960000000002,
+            -0.5913614528250404,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.2527736880975263,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4294342565071712,
+            -0.17353267320510335,
+            -0.4287653816012893,
+            0.001,
+            -1.5697960000000002,
+            -0.734398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.24098709150101244,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4113942939851678,
+            -0.17353267320510335,
+            -0.4034873270703086,
+            0.001,
+            -1.5630432473931712,
+            -0.684398,
+            -1.5697960000000002
+          ]
+        }
+      ],
+      "note": "Robot endpoint screen only; carried plug and modified fixture collision/path checks are still required"
+    },
+    {
+      "variant": "original_half_turn",
+      "socket_position_m": [
+        0.4391,
+        -0.155,
+        0.478
+      ],
+      "socket_roll_deg": 180,
+      "valid_solutions": 0,
+      "best": {
+        "ik_converged": false,
+        "position_error_m": 0.07757076447993637,
+        "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+        "unexpected_contacts": [],
+        "joint_targets_rad": [
+          0.69969881981687,
+          -0.17353267320510335,
+          -1.5697960000000002,
+          0.001,
+          -1.5697960000000002,
+          -0.784398,
+          -1.5697960000000002
+        ]
+      },
+      "trials": [
+        {
+          "ik_converged": false,
+          "position_error_m": 0.27644579634677197,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.551158043044646,
+            0.6380007433037134,
+            0.2593744559711215,
+            0.001,
+            1.5197960000000001,
+            0.7420043883898656,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.16378943790716052,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4802547162685398,
+            -0.17353267320510335,
+            -1.377217813738165,
+            0.0010000000000000009,
+            -1.2866148320479647,
+            -0.015602000000000102,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.07757076447993637,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            0.69969881981687,
+            -0.17353267320510335,
+            -1.5697960000000002,
+            0.001,
+            -1.5697960000000002,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6845632421882651,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            3.489659,
+            2.03001299563093,
+            -0.8257422252479161,
+            0.001,
+            -0.31360660992613576,
+            -0.12472867105249281,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.1520621989770535,
+          "minimum_joint_limit_margin_rad": 0.050999999999999934,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4123882973916402,
+            -0.12353267320510335,
+            -1.5197960000000001,
+            0.051000000000000004,
+            -1.1577928662363113,
+            -0.015602000000000102,
+            1.5197960000000001
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.3576359300971314,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.5093499554668584,
+            0.5008628710484441,
+            0.24111391660190135,
+            -1.5697960000000002,
+            0.42650312440997656,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.27688607737264426,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5326740901121578,
+            0.6444874160621935,
+            0.2983202818959104,
+            0.001,
+            1.5197960000000001,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.338977764244877,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.5119467855109643,
+            0.44007155330762504,
+            0.27801676334089487,
+            -1.5697960000000002,
+            0.417174046804728,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.07757076448007534,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            0.6996988198193452,
+            -0.17353267320510335,
+            -1.5697960000000002,
+            0.001,
+            -1.5697960000000002,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6973829421171095,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.4102712943272486,
+            -0.17353267320510335,
+            -0.15688406080646872,
+            0.001,
+            0.7348894081548303,
+            -0.19256282843985767,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.277085030524748,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5401849209732144,
+            0.6394989992185646,
+            0.28705311640160824,
+            0.001,
+            1.5197960000000001,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.27377090071990506,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5721344237745947,
+            0.7495822988516774,
+            0.50587259872637,
+            0.001,
+            1.0609096516817904,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.26548121867829866,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.48365229776841,
+            0.5939058589184755,
+            0.3489120492844394,
+            0.001,
+            1.5697960000000002,
+            0.734398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.7157803499024585,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.9841222724507135,
+            1.15777560378588,
+            0.6718664241530508,
+            0.001,
+            0.12570060119407722,
+            0.07015670743941095,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.07757076448040338,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            0.6996988198251914,
+            -0.17353267320510335,
+            -1.5697960000000002,
+            0.001,
+            -1.5697960000000002,
+            -0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.25759978535375444,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5006618042950566,
+            0.5862237541701687,
+            0.270868878642758,
+            0.001,
+            1.5697960000000002,
+            0.7396340647390117,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.14052224468401406,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            1.5697960000000002,
+            0.001,
+            1.5697960000000002,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.3498730366312735,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.566651270175396,
+            0.47586882932834673,
+            0.23024081718552447,
+            -1.5697960000000002,
+            0.3677430518529579,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6862786966442417,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.0000957231887417,
+            -1.428447584471386,
+            0.001,
+            -0.5515953155252022,
+            0.48439799999999983,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.14052224468401406,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            1.5697960000000002,
+            0.001,
+            1.5697960000000002,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6910481430427547,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.6783212675472856,
+            1.1653261148290839,
+            1.0077709623786677,
+            0.001,
+            0.06193617210172439,
+            0.21737755435039108,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.33863962568162886,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.514029117572172,
+            0.43949512240195077,
+            0.27808305427845015,
+            -1.5697960000000002,
+            0.41478515093020174,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.34665580996353035,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.462328044727128,
+            0.4600292273642961,
+            0.2865098035408449,
+            -1.5697960000000002,
+            0.4684047774045481,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.6895129427429549,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.6817772155710282,
+            1.2425553000119887,
+            1.2751631191483874,
+            0.001,
+            0.28973995200077074,
+            -0.14231142465362534,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.2719083312033408,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.5013919543455738,
+            0.5851587719135944,
+            0.35124837218792393,
+            0.001,
+            1.5697960000000002,
+            0.684398,
+            -1.5697960000000002
+          ]
+        }
+      ],
+      "note": "Robot endpoint screen only; carried plug and modified fixture collision/path checks are still required"
+    },
+    {
+      "variant": "rotated_socket",
+      "socket_position_m": [
+        0.4391,
+        -0.155,
+        0.478
+      ],
+      "socket_roll_deg": 90,
+      "valid_solutions": 10,
+      "best": {
+        "ik_converged": true,
+        "position_error_m": 1.517683112033217e-07,
+        "minimum_joint_limit_margin_rad": 0.019051369033119325,
+        "unexpected_contacts": [],
+        "joint_targets_rad": [
+          1.4206974156071837,
+          0.2515450069318935,
+          -1.3159431706299145,
+          0.5247756682117929,
+          1.314724180103226,
+          -0.252402751209165,
+          -1.5517446309668808
+        ]
+      },
+      "trials": [
+        {
+          "ik_converged": true,
+          "position_error_m": 2.0979536945179437e-08,
+          "minimum_joint_limit_margin_rad": 0.01088766588684531,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.412681129170854,
+            0.24938612523721698,
+            -1.2836448393608832,
+            0.5247734374448173,
+            1.282422814962321,
+            -0.2501942310086586,
+            -1.5599083341131548
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.9845656678582516e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.402960848209544,
+            0.24639927606700984,
+            -1.2440864705546473,
+            0.5247730696952642,
+            1.2428624709656986,
+            -0.2471403319219219,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 2.0991720008431515e-08,
+          "minimum_joint_limit_margin_rad": 0.009851039297077424,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4116631882007562,
+            0.24909259117094854,
+            -1.2795235599121975,
+            0.5247734375335915,
+            1.2783012370703608,
+            -0.24989403335223367,
+            -1.5609449607029227
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.5878020237944238,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            3.489659,
+            3.3151253267948966,
+            -1.5697960000000002,
+            2.442461,
+            -1.5697960000000002,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 9.234080365279167e-07,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4852791799881808,
+            0.2595845853475251,
+            -1.5697960000000002,
+            0.524774873853232,
+            1.5686363157198746,
+            -0.26066722927111685,
+            -1.485959898777718
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896871,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117558,
+            0.7033413211622686,
+            1.5697960000000002,
+            -0.3581468934302976,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 7.491420246299256e-08,
+          "minimum_joint_limit_margin_rad": 0.006715511097671323,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4838091425923434,
+            0.2595788780106634,
+            -1.5640804889023288,
+            0.524774407753378,
+            1.5629148476879093,
+            -0.2606597265706994,
+            -1.4874575724653205
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.3581468934302978,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.35814689343029776,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.2045751590470004e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.485279516160155,
+            0.2595844737662065,
+            -1.5697960000000002,
+            0.5247746462524305,
+            1.5686376217292803,
+            -0.2606671142464836,
+            -1.4859595574156181
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.517683112033217e-07,
+          "minimum_joint_limit_margin_rad": 0.019051369033119325,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4206974156071837,
+            0.2515450069318935,
+            -1.3159431706299145,
+            0.5247756682117929,
+            1.314724180103226,
+            -0.252402751209165,
+            -1.5517446309668808
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.972741211591395e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.402960910943119,
+            0.24639929668391491,
+            -1.2440867274051088,
+            0.5247730696982017,
+            1.2428627278223539,
+            -0.24714035299647746,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.982007246193294e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4029608617830156,
+            0.24639928052783017,
+            -1.2440865261286,
+            0.5247730696959034,
+            1.2428625265409916,
+            -0.24714033648176242,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.7474517854575041,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.5034237393689485,
+            -0.17353267320510335,
+            -0.22887983913645527,
+            0.001,
+            0.35203673655118806,
+            -0.10867818111713744,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.033406108669678934,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [
+            {
+              "geoms": [
+                "openarm_right_right_finger_collision",
+                "socket_top_lead"
+              ],
+              "penetration_m": 0.0012745497203544732
+            },
+            {
+              "geoms": [
+                "socket_top",
+                "openarm_right_right_finger_collision"
+              ],
+              "penetration_m": 0.0003169060406670512
+            }
+          ],
+          "joint_targets_rad": [
+            1.3714504619336736,
+            -0.17353267320510335,
+            1.1277912563110966,
+            0.54537084246822,
+            -1.1290105937863382,
+            0.25467998868547004,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.3581468934302978,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.3581468934302978,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.1216571830676648,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            3.3151253267948966,
+            -1.4725897500633232,
+            0.7753527949914072,
+            -1.5697960000000002,
+            0.4142871785327977,
+            -1.453544809903543
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.35814689343029776,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.3581468934302978,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.0007966162549889415,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.3987533870420004,
+            0.24497688522920477,
+            -1.2267957683970452,
+            0.52477568269528,
+            1.2255715713757611,
+            -0.24568651129091498,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896875,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.7947920011058835,
+            1.4952917835117556,
+            0.7033413211622674,
+            1.5697960000000002,
+            -0.3581468934302969,
+            -1.4703114743745092
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.10863290455896872,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.794792001105883,
+            1.4952917835117554,
+            0.7033413211622689,
+            1.5697960000000002,
+            -0.3581468934302978,
+            -1.470311474374509
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.7360623192425035,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.459410705513386,
+            0.19556004670679245,
+            0.02442537949424435,
+            0.001,
+            -0.06348948109063102,
+            0.23802488295792307,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.9797438470530744e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.4029608737912735,
+            0.2463992844742504,
+            -1.2440865752940844,
+            0.5247730696964626,
+            1.2428625757076612,
+            -0.24714034051578476,
+            -1.5697960000000002
+          ]
+        }
+      ],
+      "note": "Robot endpoint screen only; carried plug and modified fixture collision/path checks are still required"
+    },
+    {
+      "variant": "lower_rotated_socket",
+      "socket_position_m": [
+        0.4191,
+        -0.22,
+        0.44
+      ],
+      "socket_roll_deg": 90,
+      "valid_solutions": 11,
+      "best": {
+        "ik_converged": true,
+        "position_error_m": 4.1813839622241307e-08,
+        "minimum_joint_limit_margin_rad": 0.11894141168834094,
+        "unexpected_contacts": [],
+        "joint_targets_rad": [
+          1.344603926062043,
+          0.4896669350244814,
+          -1.439681285625696,
+          0.6742170592791252,
+          1.4518545883116591,
+          -0.1752919326222123,
+          -1.427764463797037
+        ]
+      },
+      "trials": [
+        {
+          "ik_converged": true,
+          "position_error_m": 5.718952619369658e-07,
+          "minimum_joint_limit_margin_rad": 0.01312806324750837,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.2051566616300202,
+            0.44335299388980043,
+            -0.9909516449062281,
+            0.6742236110132114,
+            1.0468460918351807,
+            -0.13248575126667123,
+            -1.5576679367524917
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.940311157908618e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.1925757715486007,
+            0.4355185171053842,
+            -0.9457533974820779,
+            0.6742164863396986,
+            1.0055303221901704,
+            -0.125189952456779,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 2.908445302889869e-07,
+          "minimum_joint_limit_margin_rad": 0.017471466862149843,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.209684362540374,
+            0.44598170227899026,
+            -1.0069090028832322,
+            0.6742201385770421,
+            1.0614033077985403,
+            -0.13492944334149867,
+            -1.5533245331378502
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.5647927002610793,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            3.489659,
+            3.3151253267948966,
+            -1.5697960000000002,
+            2.442461,
+            -1.5697960000000002,
+            0.784398,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.1352324845275972,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547733,
+            1.413865432203821,
+            0.8915886406814154,
+            1.5697960000000002,
+            -0.2959194252113877,
+            -1.346908353482983
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.13523248452759704,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547732,
+            1.4138654322038209,
+            0.8915886406814165,
+            1.5697960000000002,
+            -0.2959194252113882,
+            -1.3469083534829835
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.1091119381277551e-08,
+          "minimum_joint_limit_margin_rad": 0.06215487890888993,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.3655576041845703,
+            0.49151005297676187,
+            -1.5031072964095493,
+            0.6742166421611319,
+            1.5086411210911101,
+            -0.17700241900126407,
+            -1.4086279402749966
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.13523248452759704,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547732,
+            1.4138654322038209,
+            0.8915886406814165,
+            1.5697960000000002,
+            -0.2959194252113882,
+            -1.3469083534829835
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.13523248452759704,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547732,
+            1.4138654322038209,
+            0.8915886406814165,
+            1.5697960000000002,
+            -0.2959194252113882,
+            -1.3469083534829835
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.0395773976675998e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.3876759324627166,
+            0.4921798249641123,
+            -1.5697960000000002,
+            0.6742164868493599,
+            1.5683208231306156,
+            -0.17764432960381993,
+            -1.3884527717634496
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 4.1813839622241307e-08,
+          "minimum_joint_limit_margin_rad": 0.11894141168834094,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.344603926062043,
+            0.4896669350244814,
+            -1.439681285625696,
+            0.6742170592791252,
+            1.4518545883116591,
+            -0.1752919326222123,
+            -1.427764463797037
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.993273641491642e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.1925754763259264,
+            0.4355183239650484,
+            -0.945752321390636,
+            0.6742164863273133,
+            1.005529337063222,
+            -0.12518977237759552,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.984382404913734e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.1925755258873123,
+            0.43551835638908853,
+            -0.945752502042751,
+            0.6742164863293888,
+            1.0055295024444013,
+            -0.12518980260895435,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.7400127521679514,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.3394664431424146,
+            -0.17353267320510335,
+            -0.31128214264661186,
+            0.001,
+            0.20165311457543283,
+            -0.11156113560625817,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.9781805625161556e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.2256774876711114,
+            -0.13381796692906034,
+            1.0621610777256376,
+            0.6742164862697112,
+            -1.0055296178354318,
+            0.4559236499460831,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.1352324845275972,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547733,
+            1.413865432203821,
+            0.8915886406814154,
+            1.5697960000000002,
+            -0.2959194252113877,
+            -1.346908353482983
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.1352324845275972,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547733,
+            1.413865432203821,
+            0.8915886406814154,
+            1.5697960000000002,
+            -0.2959194252113877,
+            -1.346908353482983
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.5184059036550425,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.953648416438547,
+            0.8687841872779463,
+            0.0010000000000000009,
+            -0.6197959999999993,
+            -0.784398,
+            -1.0697959999999997
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.1352324845275972,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547733,
+            1.413865432203821,
+            0.8915886406814154,
+            1.5697960000000002,
+            -0.2959194252113877,
+            -1.346908353482983
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.13523248452759704,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547732,
+            1.4138654322038209,
+            0.8915886406814165,
+            1.5697960000000002,
+            -0.2959194252113882,
+            -1.3469083534829835
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.9785769508116427e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.1925755582479831,
+            0.435518377560075,
+            -0.9457526199979495,
+            0.6742164863307464,
+            1.0055296104285762,
+            -0.12518982234824877,
+            -1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.13523248452759704,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547732,
+            1.4138654322038209,
+            0.8915886406814165,
+            1.5697960000000002,
+            -0.2959194252113882,
+            -1.3469083534829835
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.13523248452759704,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            -1.3952630000000001,
+            2.540845046547732,
+            1.4138654322038209,
+            0.8915886406814165,
+            1.5697960000000002,
+            -0.2959194252113882,
+            -1.3469083534829835
+          ]
+        },
+        {
+          "ik_converged": false,
+          "position_error_m": 0.7238270815333128,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            2.353888685685719,
+            0.46087718228772806,
+            0.11163054572892227,
+            0.001,
+            -0.20679173508882054,
+            0.3318061906733232,
+            1.5697960000000002
+          ]
+        },
+        {
+          "ik_converged": true,
+          "position_error_m": 1.9353620961124265e-06,
+          "minimum_joint_limit_margin_rad": 0.0009999999999998899,
+          "unexpected_contacts": [],
+          "joint_targets_rad": [
+            1.1925757991355939,
+            0.4355185351533018,
+            -0.9457534980370709,
+            0.6742164863408604,
+            1.0055304142450143,
+            -0.1251899692842023,
+            -1.5697960000000002
+          ]
+        }
+      ],
+      "note": "Robot endpoint screen only; carried plug and modified fixture collision/path checks are still required"
+    }
+  ]
+}

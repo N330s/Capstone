@@ -1,0 +1,698 @@
+{
+  "checks": {
+    "20_repeatable_aligned": true,
+    "no_numerical_or_contact_aborts": true,
+    "some_improvement": true,
+    "failure_region_remains": true,
+    "timestep_consistency": true
+  },
+  "cases": [
+    {
+      "pose": {
+        "offset_y_mm": -0.25,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.601268112752554e-06,
+      "peak_force_n": 0.3155861998051809
+    },
+    {
+      "pose": {
+        "offset_y_mm": -0.5,
+        "offset_z_mm": -0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 1.6109569614536424e-05,
+      "peak_force_n": 2.0306308387893663
+    },
+    {
+      "pose": {
+        "offset_y_mm": -0.5,
+        "offset_z_mm": -0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 5.548914370115724e-06,
+      "peak_force_n": 0.5645137704867251
+    },
+    {
+      "pose": {
+        "offset_y_mm": -0.5,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 4.6992958675846e-06,
+      "peak_force_n": 0.32774364016470514
+    },
+    {
+      "pose": {
+        "offset_y_mm": -0.5,
+        "offset_z_mm": 0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 1.6109569614536468e-05,
+      "peak_force_n": 2.0306308387893717
+    },
+    {
+      "pose": {
+        "offset_y_mm": -0.5,
+        "offset_z_mm": 0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 6.7678292748188165e-06,
+      "peak_force_n": 0.6252010930753691
+    },
+    {
+      "pose": {
+        "offset_y_mm": -1,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.5996263605503105e-06,
+      "peak_force_n": 1.3019317459212014
+    },
+    {
+      "pose": {
+        "offset_y_mm": -3,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.598926419447169e-06,
+      "peak_force_n": 1.3019321764354408
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": -0.25,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.600507966075215e-06,
+      "peak_force_n": 0.31558593705400884
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": -0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 3.6128075546173126e-06,
+      "peak_force_n": 0.39324394615231006
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": -1,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.6019055825244e-06,
+      "peak_force_n": 1.296651706794426
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": -3,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.605685869479711e-06,
+      "peak_force_n": 1.30151286344565
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": -1,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.60023426765684e-06,
+      "peak_force_n": 0.31558620620125283
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": -10,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.5989384576270545e-06,
+      "peak_force_n": 1.3019321826498589
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": -2,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.6002342192293685e-06,
+      "peak_force_n": 0.31558620620224526
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": -5,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 4.444334384667825e-06,
+      "peak_force_n": 1.8232835045026332
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": -1,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 7.286399204444578e-06,
+      "peak_force_n": 0.3175329927336086
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": -10,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.002080150353285e-06,
+      "peak_force_n": 1.2766179691785555
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": -2,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 7.529141315415467e-06,
+      "peak_force_n": 0.35027693455083286
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": -5,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 5.414429632572021e-06,
+      "peak_force_n": 1.286721484699524
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -1
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 7.1066424909858655e-06,
+      "peak_force_n": 0.35339993496795213
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -10
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 4.294269924782244e-06,
+      "peak_force_n": 1.300051694163669
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -2
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 6.7511837344543446e-06,
+      "peak_force_n": 0.35444117865595487
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -5
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 5.842997872198719e-06,
+      "peak_force_n": 2.0000280861853765
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.6002342191091474e-06,
+      "peak_force_n": 0.31558620620257594
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 1
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 7.106642490985866e-06,
+      "peak_force_n": 0.35339993496795225
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 10
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 4.294269924782244e-06,
+      "peak_force_n": 1.3000516941636688
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 2
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 6.751183734457815e-06,
+      "peak_force_n": 0.35444117865594854
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 5
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 1.1813723364889532e-05,
+      "peak_force_n": 2.014294471294602
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 1,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 7.286399204444576e-06,
+      "peak_force_n": 0.31753296486147764
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 10,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.002080150353285e-06,
+      "peak_force_n": 1.276617898382572
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 2,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 7.529141315417201e-06,
+      "peak_force_n": 0.35027684045755136
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 5,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 5.414429632570944e-06,
+      "peak_force_n": 1.2867214566707474
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 1,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.600234268911324e-06,
+      "peak_force_n": 0.31558620620125283
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 10,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.598938457621849e-06,
+      "peak_force_n": 1.3019321828528887
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 2,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.6002342546310804e-06,
+      "peak_force_n": 0.31558620620257594
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 5,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 4.444334384572617e-06,
+      "peak_force_n": 1.8232835044527247
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.25,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.6005079660717454e-06,
+      "peak_force_n": 0.31558593705425814
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 3.6128075546728233e-06,
+      "peak_force_n": 0.3932439493177826
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 1,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.6019055825244e-06,
+      "peak_force_n": 1.29665170769714
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 3,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.605685869479711e-06,
+      "peak_force_n": 1.301366124245289
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.25,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "success",
+      "leadin": "success",
+      "peak_penetration_m": 3.6012681130353145e-06,
+      "peak_force_n": 0.31558619980501557
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.5,
+        "offset_z_mm": -0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 6.207511497456956e-06,
+      "peak_force_n": 0.5635352988075106
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.5,
+        "offset_z_mm": -0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 1.6109569614536468e-05,
+      "peak_force_n": 2.0306308387893717
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.5,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 4.699295871576198e-06,
+      "peak_force_n": 0.3277436401710957
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.5,
+        "offset_z_mm": 0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": -1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 6.167951102052975e-06,
+      "peak_force_n": 0.5613148214909292
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.5,
+        "offset_z_mm": 0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 1
+      },
+      "straight": "jam",
+      "leadin": "success",
+      "peak_penetration_m": 1.6109569614536943e-05,
+      "peak_force_n": 2.0306308387893717
+    },
+    {
+      "pose": {
+        "offset_y_mm": 1,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.599626360551353e-06,
+      "peak_force_n": 1.3019317459356732
+    },
+    {
+      "pose": {
+        "offset_y_mm": 3,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "straight": "jam",
+      "leadin": "jam",
+      "peak_penetration_m": 7.598926419434917e-06,
+      "peak_force_n": 1.3019321764576481
+    }
+  ],
+  "half_timestep": [
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "outcomes_match": true,
+      "depth_delta_m": 1.9359513991901167e-14,
+      "force_delta_n": 0.0187290675168324
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.5,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "outcomes_match": true,
+      "depth_delta_m": 5.66673552110375e-07,
+      "force_delta_n": 4.713511404891291e-05
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": -0.5,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 0.0
+      },
+      "outcomes_match": true,
+      "depth_delta_m": 3.7446071937674574e-10,
+      "force_delta_n": 0.09682278183132709
+    },
+    {
+      "pose": {
+        "offset_y_mm": 0.0,
+        "offset_z_mm": 0.0,
+        "roll_deg": 0.0,
+        "pitch_deg": 0.0,
+        "yaw_deg": 5
+      },
+      "outcomes_match": true,
+      "depth_delta_m": 4.063642396537337e-09,
+      "force_delta_n": 0.004448078537283795
+    }
+  ]
+}

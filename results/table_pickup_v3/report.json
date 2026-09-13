@@ -1,0 +1,402 @@
+{
+  "config": {
+    "version": "table_task_pickup_v3",
+    "instruction": "Pick up the plug from the table and insert it into the socket.",
+    "rest_arm_rad": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "rest_description": "Both OpenArm v1 hands point downward, behind the table",
+    "plug_mating_position_m": [
+      0.381,
+      -0.22,
+      0.33
+    ],
+    "plug_quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "open_finger_travel_m": 0.035,
+    "closed_finger_target_m": 0.006,
+    "settle_s": 1.0,
+    "pregrasp_clearance_m": 0.07,
+    "grasp_height_offset_m": 0.003,
+    "tool_pitch_deg": 90,
+    "cameras": {
+      "task_rgb": {
+        "model_camera": "scene_rgb",
+        "position_m": [
+          0.12,
+          -0.65,
+          0.7
+        ],
+        "target_m": [
+          0.4,
+          -0.18,
+          0.4
+        ],
+        "fovy_deg": 45
+      },
+      "socket_rgb": {
+        "model_camera": "inspection",
+        "position_m": [
+          0.36,
+          -0.32,
+          0.66
+        ],
+        "target_m": [
+          0.435,
+          -0.155,
+          0.478
+        ],
+        "fovy_deg": 25
+      }
+    },
+    "status": "physical pickup validation; transport and insertion with this grasp remain separate gates"
+  },
+  "cases": [
+    {
+      "passed": true,
+      "height_gain_m": 0.07356918709224786,
+      "max_grasp_drift_m": 0.00012992932715732525,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.21195949094247232,
+      "grasp_position_in_tool_m": [
+        -0.00095473385260466,
+        -9.7983481154254e-05,
+        0.01951703414615483
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00014019424723876942,
+          -0.9999997230308111,
+          0.0007309472443119654
+        ],
+        [
+          -0.0046016595680680025,
+          -0.0007315846384842243,
+          -0.9999891446976494
+        ],
+        [
+          0.9999894024812426,
+          0.00013682915500729936,
+          -0.004601760857507768
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "nominal_0",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07356918709224786,
+      "max_grasp_drift_m": 0.00012992932715732525,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.21195949094247232,
+      "grasp_position_in_tool_m": [
+        -0.00095473385260466,
+        -9.7983481154254e-05,
+        0.01951703414615483
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00014019424723876942,
+          -0.9999997230308111,
+          0.0007309472443119654
+        ],
+        [
+          -0.0046016595680680025,
+          -0.0007315846384842243,
+          -0.9999891446976494
+        ],
+        [
+          0.9999894024812426,
+          0.00013682915500729936,
+          -0.004601760857507768
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "nominal_1",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07356918709224786,
+      "max_grasp_drift_m": 0.00012992932715732525,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.21195949094247232,
+      "grasp_position_in_tool_m": [
+        -0.00095473385260466,
+        -9.7983481154254e-05,
+        0.01951703414615483
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00014019424723876942,
+          -0.9999997230308111,
+          0.0007309472443119654
+        ],
+        [
+          -0.0046016595680680025,
+          -0.0007315846384842243,
+          -0.9999891446976494
+        ],
+        [
+          0.9999894024812426,
+          0.00013682915500729936,
+          -0.004601760857507768
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "nominal_2",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07356073730137541,
+      "max_grasp_drift_m": 0.00010967267115071228,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.15033661796833464,
+      "grasp_position_in_tool_m": [
+        -0.0009351200126476219,
+        -3.463486356732289e-05,
+        0.01786548408887394
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00017717925764309527,
+          -0.9999996588448983,
+          0.0008067946431228121
+        ],
+        [
+          -0.0011762632390599644,
+          -0.0008070025070305703,
+          -0.9999989825753546
+        ],
+        [
+          0.9999992925059005,
+          0.0001762300744963402,
+          -0.0011764058218768725
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "x_plus",
+      "offset_x_m": 0.002,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07332278390999569,
+      "max_grasp_drift_m": 0.00047191958529214174,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.9640666170729119,
+      "grasp_position_in_tool_m": [
+        -0.0009757565191822659,
+        0.0003407551110204468,
+        0.022300362888023985
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          -5.327428733565771e-05,
+          -0.9999997390710271,
+          0.0007204302380674193
+        ],
+        [
+          0.01712941715716378,
+          -0.0007212370953759929,
+          -0.999853020640988
+        ],
+        [
+          0.9998532793513787,
+          -4.0925907034483104e-05,
+          0.017129451110994807
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "x_minus",
+      "offset_x_m": -0.002,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07356381084212321,
+      "max_grasp_drift_m": 0.0001354174233881584,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.21759182715081246,
+      "grasp_position_in_tool_m": [
+        -0.0009556004336283897,
+        -9.732884718578114e-05,
+        0.01984545053455751
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00013121285690055978,
+          -0.9999997334929867,
+          0.0007181901862941208
+        ],
+        [
+          -0.004456507867563527,
+          -0.0007187678116297437,
+          -0.9999898114033267
+        ],
+        [
+          0.9999900611110165,
+          0.00012801089981014712,
+          -0.004456600991450934
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "y_plus",
+      "offset_x_m": 0,
+      "offset_y_m": 0.002,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07356047466637838,
+      "max_grasp_drift_m": 0.00011522522960401238,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.16466772212525002,
+      "grasp_position_in_tool_m": [
+        -0.000937165174978923,
+        -6.015253345602059e-05,
+        0.018444011256804265
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00016239193971049747,
+          -0.9999997361245355,
+          0.0007080817163221263
+        ],
+        [
+          -0.0025990829141842777,
+          -0.0007085014040419815,
+          -0.9999963713902995
+        ],
+        [
+          0.9999966091926829,
+          0.00016055098736282832,
+          -0.0025991972832673568
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.79737584755337e-13,
+        3.673282136753949e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "y_minus",
+      "offset_x_m": 0,
+      "offset_y_m": -0.002,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.07358889643476474,
+      "max_grasp_drift_m": 0.00011451197838533878,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.19368557136359338,
+      "grasp_position_in_tool_m": [
+        -0.0009555546790674136,
+        -0.00010056548978072554,
+        0.019501660008999232
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00013002668849494296,
+          -0.9999997343327178,
+          0.0007172360527692886
+        ],
+        [
+          -0.0047998751941825445,
+          -0.0007178519083763984,
+          -0.9999882228740291
+        ],
+        [
+          0.9999884720791443,
+          0.0001265825136162409,
+          -0.004799967258919219
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "rest_tool_forward_axis_world": [
+        1.5441425176375866e-15,
+        3.673200201003794e-06,
+        -0.9999999999932538
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "half_timestep",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.00025
+    }
+  ],
+  "complete": true,
+  "passed": true,
+  "source_hashes": {
+    "C:\\Users\\Admin\\plug_env\\scripts\\validate_table_pickup.py": "18833e423c85308cf96d7b2910abc7f2c1cd7a4b3d1a7defa3de8b2034139299",
+    "controllers\\table_pickup.py": "508deb7e9fcd83332a93a55de6b9f81d0fe3225a40912fbaff69d43b4000d347",
+    "envs\\openarm_insert.py": "81dbb4e583a34a1d1ed282f801185d7aebb0902a1120a953c555f13ba5f66a28",
+    "configs\\table_task_v3.json": "6ed8d938fa1545dafb0a88e9b34f40eb22d0b2827d2782969faaad2cea4c48c6"
+  }
+}
