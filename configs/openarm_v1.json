@@ -10,7 +10,7 @@
   "initial_finger_travel_m": 0.0138,
   "grip_target_travel_m": 0.008,
   "settle_s": 1.0,
-  "episode_limit_s": 8.0,
+  "episode_limit_s": 240.0,
   "robot_contact_abort_n": 5.0,
   "grasp_slip_limit_m": 0.001,
   "grip_open_travel_m": 0.044,
