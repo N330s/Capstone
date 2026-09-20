@@ -40,8 +40,8 @@ class Workspace:
     base_pos_m: tuple = (0.0, 0.0, 0.0)      # robot base, for the reach annulus
     table_height_m: float = 0.32
     plug_half_height_m: float = 0.012
-    x_range: tuple = (0.35, 0.50)            # Changed from (0.30, 0.62)
-    y_range: tuple = (-0.15, 0.15)           # Changed from (-0.30, 0.30)
+    x_range: tuple = (0.30, 0.45)            # Changed from (0.30, 0.62)
+    y_range: tuple = (-0.30, 0.0)           # Changed from (-0.30, 0.30)
     reach_range_m: tuple = (0.32, 0.66)      # planar distance from base
     min_separation_m: float = 0.16           # plug centre to socket face
     max_separation_m: float = 0.46
@@ -144,6 +144,23 @@ def sample_scene(seed, ws=WORKSPACE):
 def as_reset_options(options):
     """Single place to remap keys if your env uses different names."""
     return dict(options)
+
+
+def workspace_for_env(env, ws=WORKSPACE, **overrides):
+    """A Workspace with base_pos_m read from the actual model instead of the
+    (0,0,0) guess. Call this once with a live env before generating a bank:
+
+        env = OpenArmInsertEnv(images=False)
+        ws = workspace_for_env(env)
+        bank = collection_bank(200, ws=ws)
+
+    If your robot really is mounted at the world origin this changes nothing;
+    if it isn't (e.g. it sits on a column, as in the screenshot where the arm
+    was stretched flat-out reaching for a socket the sampler placed near the
+    edge of an annulus centered on the wrong point), this corrects it.
+    """
+    base = tuple(float(v) for v in env.reach_anchor_m())
+    return replace(ws, base_pos_m=base, **overrides)
 
 
 def _row(index, seed, split, ws):

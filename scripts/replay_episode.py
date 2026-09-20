@@ -7,6 +7,14 @@ Plays back stored qpos frames as kinematics only: no physics is re-run, so what
 you see is exactly the trajectory that was recorded, not a re-simulation that
 might diverge. The failed_attempts npz written by the collector already contains
 qpos, qvel and both action streams.
+Bug fixed here: the socket is a static body positioned via model.body_pos /
+model.body_quat during reset(), not through qpos. A fresh env never calls
+reset(seed=..., options=...), so the socket used to render at whatever pose
+ships in the XML -- which is what you saw in the screenshot, even though the
+arm and plug (both qpos-driven) played back correctly. This now reconstructs
+the original options from the summary json (or regenerates them from the seed
+via the scene sampler, since sampling is a pure function of the seed) and
+replays reset() once before stepping through the recorded qpos frames.
 """
 import argparse
 import json
@@ -19,6 +27,26 @@ import numpy as np
 import mujoco
 
 from envs.openarm_insert import OpenArmInsertEnv
+
+
+def resolve_reset_call(summary):
+    """Return (seed, options) to replay with, regenerating options from the
+    seed if the summary didn't carry them (older recordings, hand-edited
+    files). Returns (None, None) if there is nothing to go on."""
+    seed = summary.get("seed")
+    options = summary.get("options")
+    if options is not None:
+        return seed, options
+    if seed is None:
+        return None, None
+    try:
+        from data_pipeline.scene_bank import sample_scene, as_reset_options
+    except ImportError as error:
+        print(f"no options in the summary and can't import the scene sampler to "
+              f"regenerate them ({error}); static bodies will render at XML defaults")
+        return seed, None
+    options, _ = sample_scene(seed)
+    return seed, as_reset_options(options)
 
 
 def main():
@@ -36,17 +64,31 @@ def main():
         raise SystemExit(f"{args.npz} has no qpos array; keys are {list(payload.keys())}")
     qpos = payload["qpos"]
     summary_path = args.npz.with_suffix(".json")
+    summary = {}
     if summary_path.exists():
         summary = json.loads(summary_path.read_text(encoding="utf-8"))
         print(f"outcome: {summary.get('outcome')}  expert: {summary.get('expert', {}).get('failure')}")
         for entry in summary.get("expert", {}).get("phase_log", []):
             print(f"  {entry['phase']:<14} {entry['duration_s']:>6.2f} s")
+    else:
+        print(f"no sidecar {summary_path.name}; socket and other static bodies "
+              f"will render at their XML default pose, not the recorded one")
 
     env = OpenArmInsertEnv(images=False)
     try:
+        seed, options = resolve_reset_call(summary)
+        if seed is not None and options is not None:
+            try:
+                env.reset(seed=seed, options=options)
+            except (ValueError, RuntimeError) as error:
+                print(f"could not re-apply reset(seed={seed}, options=...): {error}\n"
+                      f"continuing anyway; static bodies (the socket) may be wrong")
         dt = env.dt
         if args.video:
-            from rollout_viewer import VideoRecorder
+            try:
+                from rollout_viewer import VideoRecorder
+            except ImportError:
+                from tools.rollout_viewer import VideoRecorder
             recorder = VideoRecorder(env, camera=args.camera, stride=1)
             for frame in qpos:
                 env.data.qpos[:] = frame

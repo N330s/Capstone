@@ -21,9 +21,15 @@ Two layers of information, deliberately separated:
   * Privileged closed-loop pose feedback is used only once the plug is held and
     contact matters, exactly as the old insertion expert did.
 
-The grasp pose is read from the model: the plug_grasp_frame site's placement
-relative to the plug body (CAD knowledge, not state knowledge). The EULER/OFFSET
-constants below are only a fallback for scenes without that site.
+The grasp pose is TOP-DOWN by default: pass grasp_pose_source="model" to use the
+plug_grasp_frame site's rotation instead. That site is left over from the old
+grasped-mode scene, where the plug started already pinched in a horizontal,
+side-on orientation for direct insertion -- it was never meant for a tabletop
+pick, which is why using it produced the side-on approach in the screenshot.
+The EULER/OFFSET constants below define the top-down pose: GRASP_IN_PLUG_EULER_DEG
+rotates the tool so its approach axis (local +x, same convention as the
+socket's mating axis) points straight down through the plug's local -z when
+the plug lies flat on the table.
 
 Env contract beyond the original expert: env.reset_options, info["grip_travel_m"],
 info["grip_force_n"], config["grip_open_travel_m"].
@@ -99,7 +105,8 @@ class PickInsertExpert:
     """Phase machine. ``action()`` is called once per env step."""
 
     def __init__(self, env, *, rng=None, detector_mode="noisy",
-                 probe_offset_y_m=0.0, max_retries=2, max_regrasps=1):
+                 probe_offset_y_m=0.0, max_retries=2, max_regrasps=1,
+                 grasp_pose_source="top_down"):
         self.env = env
         self.rng = rng if rng is not None else np.random.default_rng(0)
         self.detector = Detector(env, self.rng, mode=detector_mode)
@@ -117,21 +124,33 @@ class PickInsertExpert:
         self.table_z = float(getattr(env, "reset_options", {}).get("table_height_m", 0.0))
         self.safe_z = self.table_z + SAFE_HEIGHT_M
         self.grip = env.config["grip_open_travel_m"]
+        self.grasp_pose_source = grasp_pose_source
         self.grasp_rot, self.grasp_off = self._grasp_in_plug()
         self.jacp = np.zeros((3, env.model.nv))
         self.jacr = np.zeros((3, env.model.nv))
 
     # ---------------------------------------------------------------- helpers
     def _grasp_in_plug(self):
-        m = self.env.model
-        try:
-            sid = m.site("plug_grasp_frame").id
-        except KeyError:
-            return euler_xyz(GRASP_IN_PLUG_EULER_DEG), np.array(GRASP_OFFSET_IN_PLUG_M)
-        mat = np.zeros(9)
-        mujoco.mju_quat2Mat(mat, m.site_quat[sid])
-        return mat.reshape(3, 3).copy(), m.site_pos[sid].copy()
-        # return euler_xyz((0.0, 180.0, 0.0)), np.array([-0.010, 0.0, 0.020])
+        """Grasp pose in the plug frame.
+
+        Bug fixed here: this used to try the model's plug_grasp_frame site
+        first and return immediately, so a top-down override placed after
+        that return was dead code -- uncommenting it changed nothing. The
+        source is now an explicit choice, defaulting to the computed
+        top-down pose, which is the one that actually works for a plug
+        lying flat on the table.
+        """
+        if self.grasp_pose_source == "model":
+            m = self.env.model
+            try:
+                sid = m.site("plug_grasp_frame").id
+            except KeyError:
+                pass
+            else:
+                mat = np.zeros(9)
+                mujoco.mju_quat2Mat(mat, m.site_quat[sid])
+                return mat.reshape(3, 3).copy(), m.site_pos[sid].copy()
+        return euler_xyz(GRASP_IN_PLUG_EULER_DEG), np.array(GRASP_OFFSET_IN_PLUG_M)
 
     def _goto(self, phase):
         self.phase_log.append({"phase": self.phase, "duration_s": round(self.phase_time, 3)})

@@ -79,6 +79,18 @@ class OpenArmInsertEnv:
         self.lower = self.model.jnt_range[self.joints["right"], 0]
         self.upper = self.model.jnt_range[self.joints["right"], 1]
         self.reset()
+        # The fixed mount point for the right arm, in world coordinates: the
+        # parent of joint1's body, i.e. wherever the chain is welded to the
+        # world. Read this instead of assuming the base sits at the origin --
+        # scene_bank.workspace_for_env() uses it to center the reach annulus
+        # correctly, whatever the actual mount location turns out to be.
+        joint1_body = int(self.model.jnt_bodyid[self.joints["right"][0]])
+        mount_body = int(self.model.body_parentid[joint1_body])
+        self.base_pos_right = self.data.xpos[mount_body].copy()
+
+    def reach_anchor_m(self):
+        """World position to center a reach annulus on for the right arm."""
+        return self.base_pos_right.copy()
 
     def _free_joint_qadr(self, body):
         for j in range(self.model.njnt):
