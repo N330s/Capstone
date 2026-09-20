@@ -278,15 +278,16 @@ class Collector:
             # Save success manually. The environment itself may also terminate
             # naturally when its success hold condition is reached.
             if command == "save":
-                if info.get("outcome") == "success":
-                    done = True
-                else:
-                    print(
-                        "[collector] Cannot save yet: environment outcome is "
-                        f"{info.get('outcome', 'running')}. "
-                        "Continue until MuJoCo reports success."
-                    )
-                    continue
+                done = True
+                # if info.get("outcome") == "success":
+                #     done = True
+                # else:
+                #     print(
+                #         "[collector] Cannot save yet: environment outcome is "
+                #         f"{info.get('outcome', 'running')}. "
+                #         "Continue until MuJoCo reports success."
+                #     )
+                #     continue
 
             self.draw_status(
                 episode_number, row, action, info, saved_count
@@ -335,19 +336,21 @@ class Collector:
         if not self.running:
             return False, saved_count
 
-        # A manual save is only valid if the environment says success.
+        if command == "save" and terminated:
+            terminated[-1] = True
+            infos[-1]["manual_save"] = True
+        # Manual save (S) always saves the trajectory, regardless of
+        # whether the environment reports success, failure, or another
+        # terminal outcome.
         if not infos:
+            print(
+                f"[collector] Episode {episode_number} has no recorded "
+                "actions yet, so there is nothing to save."
+            )
             return False, saved_count
 
         final_info = infos[-1]
         outcome = final_info.get("outcome", "unknown")
-
-        if outcome != "success":
-            print(
-                f"[collector] Episode {episode_number} ended with "
-                f"'{outcome}', so it will NOT be saved."
-            )
-            return False, saved_count
 
         # Need T+1 observations and T actions.
         if len(observations) != len(requested) + 1:
@@ -398,7 +401,7 @@ class Collector:
 
         print(
             f"[collector] SAVED {episode_dir} "
-            f"({len(requested)} actions, outcome=success)"
+            f"({len(requested)} actions, outcome={outcome})"
         )
 
         return True, saved_count

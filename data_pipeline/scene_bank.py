@@ -47,7 +47,7 @@ class Workspace:
     max_separation_m: float = 0.46
     plug_yaw_range_deg: tuple = (0,0)
     socket_yaw_range_deg: tuple = (0, 90.0)
-    socket_tilt_range_deg: tuple = (-90.0, -90.0)
+    socket_tilt_range_deg: tuple = (180, 180)
     standoff_m: float = 0.10                 # pre-insert point along -mating axis
     keepout_m: float = 0.09                  # plug must clear the socket approach cone
     randomize_visual: bool = True
