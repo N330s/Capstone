@@ -36,8 +36,8 @@ def scene_xml():
     ET.SubElement(world, "geom", name="floor", type="plane", size="2 2 .01", rgba=".25 .28 .3 1")
     ET.SubElement(world, "geom", name="work_table", type="box", pos=".47 0 .29",
                   size=".22 .4 .03", rgba=".45 .43 .4 1")
-    ET.SubElement(world, "geom", name="fixture", type="box", pos=".4631 -.155 .399",
-                  size=".006 .024 .079", rgba=".3 .32 .35 1")
+    # ET.SubElement(world, "geom", name="fixture", type="box", pos=".4631 -.155 .399",
+    #               size=".006 .024 .079", rgba=".3 .32 .35 1")
     ET.SubElement(world, "camera", name="scene_rgb", pos=".85 -.9 .85",
                   xyaxes=".8 .6 0 -.25 .333 .91", fovy="48")
     ET.SubElement(world, "camera", name="inspection", pos=".56 -.32 .59",

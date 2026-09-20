@@ -1,9 +1,9 @@
 {
-  "offset_y_mm": 0,
-  "offset_z_mm": 0,
-  "roll_deg": 0,
-  "pitch_deg": 0,
-  "yaw_deg": 0,
+  "offset_y_mm": 0.0,
+  "offset_z_mm": 0.0,
+  "roll_deg": 0.0,
+  "pitch_deg": 0.0,
+  "yaw_deg": 0.0,
   "success": true,
   "outcome": "success",
   "final": {

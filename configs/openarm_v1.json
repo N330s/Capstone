@@ -13,6 +13,7 @@
   "episode_limit_s": 8.0,
   "robot_contact_abort_n": 5.0,
   "grasp_slip_limit_m": 0.001,
+  "grip_open_travel_m": 0.044,
   "grasp_angle_limit_deg": 5.0,
   "image_width": 320,
   "image_height": 240,
