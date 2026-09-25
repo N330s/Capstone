@@ -18,6 +18,14 @@ LEGACY_KEYS = {"offset_x_m", "offset_y_m", "offset_z_m", "roll_deg", "pitch_deg"
 TABLETOP_KEYS = {"plug_pos_m", "plug_yaw_deg", "socket_pos_m", "socket_yaw_deg",
                  "socket_tilt_deg", "table_height_m"}
 WORKSPACE_BOX = np.array([[-0.9, -0.9, -0.05], [0.9, 0.9, 0.6]])
+# Tabletop grasp latch. A table pick does not use the legacy plug_grasp_frame
+# pinch, so the hand-to-plug pose is latched once a physical grasp exists and
+# drift is measured against that: both right pads touch the plug, the pads are
+# still, the finger command sits inside the pads (squeezing) and has not changed
+# for TABLETOP_GRASP_SETTLE_S. Grasped (legacy) mode never uses these.
+TABLETOP_GRASP_SETTLE_S = 0.1
+TABLETOP_FINGER_STILL_M_S = 0.005
+TABLETOP_SQUEEZE_M = 0.001
 
 
 class OpenArmInsertEnv:
@@ -61,6 +69,7 @@ class OpenArmInsertEnv:
         self.mode = "grasped"
         self.grasp_established = False
         self.drops = 0
+        self._clear_tabletop_grasp()
         self.robot_bodies = {i for i in range(self.model.nbody) if self.model.body(i).name.startswith("openarm")}
         # Geoms the robot is allowed to brush while picking off the table. Light
         # contact here is unavoidable for a tabletop grasp and must not be scored
@@ -208,6 +217,7 @@ class OpenArmInsertEnv:
         self.seed, self.reset_options = int(seed), options
         mujoco.mj_resetData(self.model,self.data)
         self.grasp_established, self.drops = False, 0
+        self._clear_tabletop_grasp()
         right_travel = (self._open_travel() if self.mode == "tabletop"
                         else self.config["initial_finger_travel_m"])
         for side in ("left","right"):
@@ -343,6 +353,55 @@ class OpenArmInsertEnv:
         return (self.data.site_xpos[self.grasp_site].copy(),
                 self.data.site_xmat[self.grasp_site].reshape(3,3).copy())
 
+    # ---------------------------------------------------- tabletop grasp latch
+    def _clear_tabletop_grasp(self):
+        self._grasp_reference = None       # (plug position, rotation) in the robot_grasp frame
+        self._grasp_candidate_s = 0.
+        self._latched_finger_command = None
+
+    def plug_in_hand(self):
+        """Current plug body pose in the robot_grasp site frame: (position (3,), rotation (3,3)).
+        p_plug_world = p_site + R_site @ position; R_plug_world = R_site @ rotation."""
+        rot = self.data.site_xmat[self.grasp_site].reshape(3,3)
+        return (rot.T @ (self.data.xpos[self.plug] - self.data.site_xpos[self.grasp_site]),
+                rot.T @ self.data.xmat[self.plug].reshape(3,3))
+
+    def latched_grasp(self):
+        """Tabletop mode: plug_in_hand() as latched when the current physical grasp
+        was established (copies), or None while no grasp is established. The
+        tabletop info["grasp_slip_m"] / ["grasp_angle_deg"] are measured against it.
+        Always None in grasped (legacy) mode."""
+        if self._grasp_reference is None:
+            return None
+        return self._grasp_reference[0].copy(), self._grasp_reference[1].copy()
+
+    def _update_tabletop_grasp(self, info):
+        """Latch, drop and release bookkeeping for a physical table pick."""
+        limit = self.config["grasp_slip_limit_m"]
+        command = float(self.target[7])
+        if self.grasp_established:
+            if command > self._latched_finger_command + 1e-4:
+                # The command opened: a deliberate release, not a drop.
+                self.grasp_established = False
+                self._grasp_reference = None
+            elif info["grasp_slip_m"] > limit:
+                self.grasp_established = False
+                self._grasp_reference = None
+                self.drops += 1
+            self._grasp_candidate_s = 0.
+            return
+        travel = self.data.qpos[self.fqa["right"]]
+        candidate = (info["plug_finger_contacts"] == 2
+                     and float(np.max(np.abs(self.data.qvel[self.fva["right"]]))) < TABLETOP_FINGER_STILL_M_S
+                     and command < float(np.min(travel)) - TABLETOP_SQUEEZE_M)
+        self._grasp_candidate_s = self._grasp_candidate_s + self.model.opt.timestep if candidate else 0.
+        if self._grasp_candidate_s >= TABLETOP_GRASP_SETTLE_S:
+            self._grasp_reference = self.plug_in_hand()
+            self._latched_finger_command = command
+            self.grasp_established = True
+            self._grasp_candidate_s = 0.
+            info["grasp_slip_m"], info["grasp_angle_deg"] = 0., 0.
+
     def _info(self):
         info = self.metrics.diagnostics()
         pos,rot = self.grasp_pose()
@@ -370,11 +429,13 @@ class OpenArmInsertEnv:
         )
         external = support = 0.
         wrench = np.zeros(6)
+        pads = set()
         for i,contact in enumerate(self.data.contact):
             bodies = [int(self.model.geom_bodyid[g]) for g in contact.geom]
             if not any(b in self.robot_bodies for b in bodies):
                 continue
             if self.plug in bodies and any(b in self.fingers for b in bodies):
+                pads.update(b for b in bodies if b in self.fingers)
                 continue
             mujoco.mj_contactForce(self.model,self.data,i,wrench)
             force = float(np.linalg.norm(wrench[:3]))
@@ -384,6 +445,15 @@ class OpenArmInsertEnv:
                 external += force
         info["robot_unwanted_contact_n"] = external
         info["robot_support_contact_n"] = support
+        if self.mode == "tabletop":
+            # Tabletop grasps are scored against the latched hand-to-plug pose,
+            # not the legacy side-on plug_grasp_frame (see TABLETOP_GRASP_*).
+            info["plug_finger_contacts"] = len(pads)
+            if self._grasp_reference is not None:
+                relative_position, relative_rotation = self.plug_in_hand()
+                info["grasp_slip_m"] = float(np.linalg.norm(relative_position - self._grasp_reference[0]))
+                info["grasp_angle_deg"] = float(np.degrees(np.linalg.norm(rotation_vector(
+                    relative_rotation @ self._grasp_reference[1].T))))
         info["grasp_established"] = bool(self.grasp_established)
         info["drops"] = int(self.drops)
         info["reset_mode"] = self.mode
@@ -418,8 +488,11 @@ class OpenArmInsertEnv:
         bounded = np.r_[np.clip(a[:7],self.lower,self.upper),np.clip(a[7],0,.044)]
         max_delta = np.r_[np.full(7,self.config["joint_target_rate_rad_s"]*self.dt),
                           self.config["finger_target_rate_m_s"]*self.dt]
+        finger_command = float(self.target[7])
         self.target = self.target + np.clip(bounded-self.target,-max_delta,max_delta)
         self.last_action = self.target.copy()
+        if self.mode == "tabletop" and self.target[7] != finger_command:
+            self._grasp_candidate_s = 0.   # the latch needs a steady finger command
         count = 0
         interval_peak_force = 0.
         for _ in range(self.substeps):
@@ -436,13 +509,16 @@ class OpenArmInsertEnv:
             self.peak_support_contact = max(self.peak_support_contact,info["robot_support_contact_n"])
             # In tabletop mode the plug is metres from the gripper at t=0, so the
             # slip guard only becomes meaningful once a grasp actually exists.
-            held = (info["grip_force_n"] > self.config.get("grasp_detect_force_n", .5)
-                    and info["grasp_slip_m"] < self.config["grasp_slip_limit_m"])
-            if held:
-                self.grasp_established = True
-            elif self.grasp_established and info["grasp_slip_m"] > self.config["grasp_slip_limit_m"]:
-                self.grasp_established = False
-                self.drops += 1
+            if self.mode == "tabletop":
+                self._update_tabletop_grasp(info)
+            else:
+                held = (info["grip_force_n"] > self.config.get("grasp_detect_force_n", .5)
+                        and info["grasp_slip_m"] < self.config["grasp_slip_limit_m"])
+                if held:
+                    self.grasp_established = True
+                elif self.grasp_established and info["grasp_slip_m"] > self.config["grasp_slip_limit_m"]:
+                    self.grasp_established = False
+                    self.drops += 1
             slipped = self.grasp_established and info["grasp_slip_m"] > self.config["grasp_slip_limit_m"]
             rotated = self.grasp_established and info["grasp_angle_deg"] > self.config["grasp_angle_limit_deg"]
             valid = (info["valid_pose"] and self.grasp_established
@@ -463,6 +539,8 @@ class OpenArmInsertEnv:
                 self.outcome = "force_limit_abort"
             elif slipped and (self.mode == "grasped"
                               or self.drops > self.config.get("max_drops", 2)):
+                self.outcome = "grasp_slip"
+            elif self.mode == "tabletop" and self.drops > self.config.get("max_drops", 2):
                 self.outcome = "grasp_slip"
             elif rotated and self.mode == "grasped":
                 self.outcome = "grasp_rotation"

@@ -1,6 +1,6 @@
 """Replay a recorded attempt so you can see what went wrong, after the fact.
 
-    python scripts/replay_episode.py data/openarm_v2_random/failed_attempts/train_00003.npz
+    python scripts/replay_episode.py data/openarm_v2_random/failed_preflight/train_00001.npz
     python scripts/replay_episode.py data/.../train_00003.npz --speed .25 --video out.mp4
 
 Plays back stored qpos frames as kinematics only: no physics is re-run, so what

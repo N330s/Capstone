@@ -4,3 +4,5 @@ __pycache__/
 third_party/openarm_mujoco/
 third_party/openpi/
 data/
+CLAUDE.md
+.claude/

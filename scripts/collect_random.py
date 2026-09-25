@@ -36,7 +36,8 @@ import numpy as np
 
 from controllers.pick_insert_expert import PickInsertExpert
 from data_pipeline.scene_bank import (collection_bank, evaluation_bank, as_reset_options,
-                                      COLLECTION_SEED_BASE, EVALUATION_SEED_BASE)
+                                      workspace_for_env, COLLECTION_SEED_BASE, EVALUATION_SEED_BASE,
+                                      iter_collection_bank)
 from data_pipeline.episodes import SCHEMA, save_episode, clean_info
 from envs.openarm_insert import OpenArmInsertEnv
 from rollout_viewer import LiveViewer, VideoRecorder, ViewerClosed
@@ -133,7 +134,7 @@ def make_recorder(env, args):
         return None
 
 
-def preflight_pass(args, out):
+def preflight_pass(args, out, ws):
     """Walk sampled scenes until enough succeed or the attempt budget runs out."""
     accepted, rejected = [], []
     budget = int(args.episodes * args.attempt_ratio)
@@ -142,9 +143,15 @@ def preflight_pass(args, out):
     started, cursor = time.time(), 0
     try:
         while len(accepted) < args.episodes and cursor < budget:
-            batch = collection_bank(n=min(64, budget - cursor),
-                                    validation_fraction=args.validation_fraction,
-                                    start=cursor)
+            # Same (n, start) grid collection_bank would use for this stretch
+            # -- and therefore the same seed/split assignment -- but rows are
+            # generated one at a time, so a batch is never fully materialized
+            # (each row costs a live PickFeasibility/InsertFeasibility plan)
+            # when the target is reached partway through it.
+            batch_n = min(64, budget - cursor)
+            batch = iter_collection_bank(n=batch_n,
+                                         validation_fraction=args.validation_fraction,
+                                         ws=ws, start=cursor)
             for row in batch:
                 if len(accepted) >= args.episodes:
                     break
@@ -165,7 +172,9 @@ def preflight_pass(args, out):
                                  recorder=recorder)
                 elif ok and recorder is not None and args.video == "all":
                     recorder.save(out / "video" / row["id"], metadata={"outcome": "success"})
-                detail = result.get("error") or (result.get("expert") or {}).get("failure") or ""
+                expert_diag = result.get("expert") or {}
+                detail = (result.get("error") or expert_diag.get("failure_detail")
+                          or expert_diag.get("failure") or "")
                 print(f"{row['id']} {result['outcome']} "
                       f"({len(accepted)}/{args.episodes} accepted, {cursor} attempted)"
                       f"{' | ' + str(detail) if detail else ''}", flush=True)
@@ -295,8 +304,12 @@ def main():
 
     out = args.output
     out.mkdir(parents=True, exist_ok=args.resume)
+    # Center the sampler on the real right-arm mount, as the manual collectors do.
+    probe = OpenArmInsertEnv(images=False)
+    ws = workspace_for_env(probe)
+    probe.close()
     write_json(out / "evaluation_bank.json",
-               {"status": "reserved; not executed or used for tuning", "resets": evaluation_bank()})
+               {"status": "reserved; not executed or used for tuning", "resets": evaluation_bank(ws=ws)})
 
     accepted_path = out / "preflight_accepted.json"
     if args.resume and accepted_path.exists():
@@ -304,7 +317,7 @@ def main():
         attempted = len(accepted)
         print(f"resuming with {len(accepted)} accepted scenes", flush=True)
     else:
-        accepted, attempted = preflight_pass(args, out)
+        accepted, attempted = preflight_pass(args, out, ws)
 
     write_json(out / "collection_bank.json", accepted)
     if not accepted:
