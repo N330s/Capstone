@@ -28,6 +28,9 @@ def plan_carry(env, start, goal, relative_position, relative_rotation, seed=13, 
         for c in scratch.contact:
             bodies={int(m.geom_bodyid[g]) for g in (c.geom1,c.geom2)}
             if env.plug in bodies and bodies & set(env.fingers):continue
+            # Only the plug is teleported with the hand; the cable chain is stale on scratch
+            # data, so it is ignored here and monitored during physical execution instead.
+            if bodies & env.cable_bodies:continue
             if (bodies & env.robot_bodies or env.plug in bodies) and c.dist<.0005:return False
         return True
 

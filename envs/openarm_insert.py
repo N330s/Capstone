@@ -8,19 +8,38 @@ from pathlib import Path
 import mujoco
 import numpy as np
 from connector.simulation import ConnectorMetrics, CONFIG_PATH, ROOT, rotation_vector
+from connector.spec import ConnectorSpec
 from envs.scene import build_model, source_manifest, scene_xml
+from envs import workspace as wsp
 
 ROBOT_CONFIG = ROOT / "configs/openarm_v1.json"
 
 
+def _repo_relative(path):
+    """Repo-relative POSIX path when inside the repo, else the absolute path (external specs)."""
+    path = Path(path).resolve()
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
 class OpenArmInsertEnv:
-    def __init__(self, *, images=True, timestep=None):
+    def __init__(self, *, images=True, timestep=None, workspace=None):
         self.config = json.loads(ROBOT_CONFIG.read_text())
-        self.model = build_model()
+        self.workspace = wsp.load_workspace(workspace)
+        self.model = build_model(self.workspace)
         if timestep is not None:
             if not np.isfinite(timestep) or timestep <= 0:
                 raise ValueError("Invalid physics timestep")
             self.model.opt.timestep = timestep
+        # Right finger position servos: upstream kp (100 N/m) pinches with well under 1 N, which
+        # cannot react cable loads or socket retention. The gain lives in the robot config and is
+        # part of the manifest; see PHYSICS_CHANGELOG.md (workspace_v1).
+        for i in (1, 2):
+            a = self.model.actuator(f"right_finger{i}_ctrl").id
+            self.model.actuator_gainprm[a, 0] = self.config["finger_servo_kp_n_m"]
+            self.model.actuator_biasprm[a, 1] = -self.config["finger_servo_kp_n_m"]
         self.data = mujoco.MjData(self.model)
         self.ik_data = mujoco.MjData(self.model)
         self.images = images
@@ -40,9 +59,35 @@ class OpenArmInsertEnv:
         self.plug_qadr = self.model.jnt_qposadr[self.model.joint("plug_free").id]
         self.grasp_site = self.model.site("robot_grasp").id
         self.robot_bodies = {i for i in range(self.model.nbody) if self.model.body(i).name.startswith("openarm")}
+        self.cable_bodies = {self.model.body(n).id for n in wsp.cable_body_names(self.workspace)}
+        self.cable_joints = [self.model.joint(f"cable_j_{k:02d}").id
+                             for k in range(self.workspace["cable"]["segments"])] if self.cable_bodies else []
+        # Connector geometry (pins, openings, clearances, every derived distance) comes from the
+        # spec embedded in the model; the legacy two-blade assets map onto the catalog legacy entry.
+        self.connector = ConnectorSpec.from_model(self.model)
+        self.derived = self.connector.derived()
+        self.spawn_position = np.array(self.workspace["plug_spawn"]["mating_position_m"], float)
+        leaves = self.workspace["socket_leaves"]
+        self.leaf_geoms = wsp.leaf_names_in_model(self.model) if leaves["enabled"] else ()
+        self.leaf_joints = [self.model.joint(f"{n}_slide").id for n in self.leaf_geoms]
+        self.socket_bodies = {self.model.body("socket").id} | {
+            int(self.model.geom_bodyid[self.model.geom(n).id]) for n in self.leaf_geoms}
         self.metrics = ConnectorMetrics()
         self.metric_config = json.loads(CONFIG_PATH.read_text())
-        self.metrics.bind(self.model, self.data, self.metric_config, self.fingers)
+        self.metric_config["success_depth_m"] = self.derived["success_depth_m"]
+        if leaves["enabled"]:
+            self.metric_config["leaf_penetration_limit_m"] = leaves["leaf_penetration_limit_m"]
+            self.metric_config["leaf_force_abort_n"] = leaves["leaf_force_abort_n"]
+            self.metric_config["contact_abort_n"] = leaves["wall_force_abort_n"]
+        self.metrics.bind(self.model, self.data, self.metric_config, self.fingers, self.leaf_geoms,
+                          ("cable_root_force", "cable_root_torque") if self.cable_bodies else None,
+                          spec=self.connector)
+        # Finger travel follows the housing width: pads touch at ``finger_contact_travel`` and the
+        # insertion grip squeezes a further ``grip_squeeze_m`` (legacy 13.8 mm / 8 mm for 24 mm).
+        self.finger_contact_travel = wsp.finger_travel_for_width(
+            self.workspace, self.derived["housing_width_m"], self.config["finger_base_gap_m"])
+        self.grip_travel = self.finger_contact_travel - self.config["grip_squeeze_m"]
+        self.pickup_travel = self.finger_contact_travel - self.config["pickup_squeeze_m"]
         self.substeps = round(1 / self.config["command_hz"] / self.model.opt.timestep)
         self.dt = self.substeps * self.model.opt.timestep
         if abs(self.dt - 1/self.config["command_hz"]) > 1e-12:
@@ -71,6 +116,19 @@ class OpenArmInsertEnv:
                                               np.clip(delta,-.05,.05), self.lower+.001,self.upper-.001)
         raise ValueError(f"IK target unreachable: translation residual {np.linalg.norm(error[:3]):.6g} m")
 
+    def place_plug(self, position, quat_wxyz, cable_bulge=None):
+        """Write the plug free-joint pose and lay the cable consistently from it to the anchor.
+
+        The only sanctioned way to position the plug outside physics (reset/probe reset).
+        ``cable_bulge`` is the world direction the slack arc bows toward (default: the spec's
+        table layout direction); pass ``(0, 0, -1)`` for a hanging loop when the plug is held.
+        """
+        self.data.qpos[self.plug_qadr:self.plug_qadr+3] = position
+        self.data.qpos[self.plug_qadr+3:self.plug_qadr+7] = quat_wxyz
+        if self.cable_bodies:
+            wsp.write_cable_qpos(self.model, self.data, self.workspace, cable_bulge)
+        mujoco.mj_forward(self.model, self.data)
+
     def reset(self, *, seed=0, options=None):
         options = dict(options or {})
         allowed = {"offset_x_m", "offset_y_m", "offset_z_m", "roll_deg", "pitch_deg", "yaw_deg"}
@@ -83,7 +141,7 @@ class OpenArmInsertEnv:
         mujoco.mj_resetData(self.model,self.data)
         for side in ("left","right"):
             self.data.qpos[self.qa[side]] = self.config["home_arm_rad"]
-            self.data.qpos[self.fqa[side]] = self.config["initial_finger_travel_m"] if side == "right" else .025
+            self.data.qpos[self.fqa[side]] = self.finger_contact_travel if side == "right" else .025
         mujoco.mj_forward(self.model,self.data)
         if options:
             pos = self.data.site_xpos[self.grasp_site].copy()
@@ -97,15 +155,14 @@ class OpenArmInsertEnv:
             rot = rz @ ry @ rx @ rot
             self.data.qpos[self.qa["right"]] = self.solve_ik(pos,rot)
             mujoco.mj_forward(self.model,self.data)
-        # Only reset sets the plug pose. It is free and physically pinched thereafter.
+        # Only reset sets the plug pose. It is free and physically pinched thereafter. The mating
+        # frame sits at minus the plug's grasp offset from the robot grasp site (16 mm ahead).
         rot = self.data.site_xmat[self.grasp_site].reshape(3,3)
-        pos = self.data.site_xpos[self.grasp_site] + rot @ np.array([.016,0,0])
+        pos = self.data.site_xpos[self.grasp_site] - rot @ np.array(self.connector.plug.grasp_offset_m)
         quat = np.zeros(4)
         mujoco.mju_mat2Quat(quat,rot.ravel())
-        self.data.qpos[self.plug_qadr:self.plug_qadr+3] = pos
-        self.data.qpos[self.plug_qadr+3:self.plug_qadr+7] = quat
-        mujoco.mj_forward(self.model,self.data)
-        self.target = np.r_[self.data.qpos[self.qa["right"]],self.config["grip_target_travel_m"]]
+        self.place_plug(pos, quat, cable_bulge=(0, 0, -1))
+        self.target = np.r_[self.data.qpos[self.qa["right"]],self.grip_travel]
         self.park_target = self.data.qpos[self.qa["left"]].copy()
         self.outcome, self.hold, self.elapsed = None, 0., 0.
         self.last_action = self.target.copy()
@@ -157,6 +214,7 @@ class OpenArmInsertEnv:
         info["left_park_error_rad"] = float(np.max(np.abs(
             self.data.qpos[self.qa["left"]]-self.park_target)))
         external = 0.
+        cable_robot = 0.
         wrench = np.zeros(6)
         for i,contact in enumerate(self.data.contact):
             bodies = [int(self.model.geom_bodyid[g]) for g in contact.geom]
@@ -165,8 +223,14 @@ class OpenArmInsertEnv:
             if self.plug in bodies and any(b in self.fingers for b in bodies):
                 continue
             mujoco.mj_contactForce(self.model,self.data,i,wrench)
+            if any(b in self.cable_bodies for b in bodies):
+                # Brushing the cable is not a collision failure; it is reported, not aborted.
+                cable_robot += float(np.linalg.norm(wrench[:3]))
+                continue
             external += float(np.linalg.norm(wrench[:3]))
         info["robot_unwanted_contact_n"] = external
+        info["cable_robot_contact_n"] = cable_robot
+        info["leaf_travel_m"] = [float(self.data.qpos[self.model.jnt_qposadr[j]]) for j in self.leaf_joints]
         info["outcome"] = self.outcome or "running"
         return info
 
@@ -226,6 +290,10 @@ class OpenArmInsertEnv:
                 self.outcome = "penetration_abort"
             elif info["contact_force_n"] > self.metric_config["contact_abort_n"]:
                 self.outcome = "force_limit_abort"
+            elif info["leaf_contact_force_n"] > self.metric_config.get("leaf_force_abort_n", math.inf):
+                self.outcome = "leaf_force_abort"
+            elif info["leaf_penetration_m"] > self.metric_config.get("leaf_penetration_limit_m", math.inf):
+                self.outcome = "penetration_abort"
             elif info["grasp_slip_m"] > self.config["grasp_slip_limit_m"]:
                 self.outcome = "grasp_slip"
             elif info["grasp_angle_deg"] > self.config["grasp_angle_limit_deg"]:
@@ -249,11 +317,20 @@ class OpenArmInsertEnv:
         return self.observe(), float(self.outcome=="success"), terminated, truncated, self.info.copy()
 
     def manifest(self):
-        canonical_xml = scene_xml().replace(str((ROOT/"third_party/openarm_mujoco/v1/meshes").resolve()), "UPSTREAM_V1_MESHES")
-        source_paths = ("envs/scene.py", "envs/openarm_insert.py", "connector/geometry.py", "connector/simulation.py", "controllers/expert.py")
+        canonical_xml = scene_xml(self.workspace).replace(str((ROOT/"third_party/openarm_mujoco/v1/meshes").resolve()), "UPSTREAM_V1_MESHES")
+        source_paths = ("envs/scene.py", "envs/workspace.py", "envs/openarm_insert.py", "connector/geometry.py",
+                        "connector/simulation.py", "connector/spec.py", "connector/catalog.py", "connector/slab.py",
+                        "connector/builder.py", "controllers/expert.py")
+        workspace = {k: v for k, v in self.workspace.items() if not k.startswith("_")}
         return {"schema": self.config["schema_version"], "robot": source_manifest(),
                 "scene_sha256": hashlib.sha256(canonical_xml.encode()).hexdigest(),
+                "connector": {"plug": self.connector.plug.name, "socket": self.connector.socket.name,
+                              "spec": self.connector.to_dict(), "derived": self.derived,
+                              "finger_contact_travel_m": self.finger_contact_travel,
+                              "grip_travel_m": self.grip_travel, "leaf_geoms": list(self.leaf_geoms)},
                 "source_hashes": {p: hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in source_paths},
+                "workspace": {"path": _repo_relative(self.workspace["_path"]),
+                              "sha256": self.workspace["_sha256"], "spec": workspace},
                 "robot_config": self.config, "contact_config": self.metric_config,
                 "mujoco_version": mujoco.__version__, "physics_timestep_s": self.model.opt.timestep,
                 "command_interval_s": self.dt, "seed": self.seed, "reset_options": self.reset_options,

@@ -10,7 +10,10 @@ class InsertionExpert:
         self.phase = "align"
         self.retries = 0
         self.phase_time = 0.0
-        self.forward = -.022
+        # Pre-insert / retreat distances follow the plug's longest pin (legacy: -22 / -18 mm).
+        self.preinsert = env.derived["preinsert_x_m"]
+        self.retreat = env.derived["retreat_x_m"]
+        self.forward = self.preinsert
         self.last_depth = -1.
         self.stall_time = 0.
         self.probe_offset_y_m = probe_offset_y_m
@@ -25,7 +28,7 @@ class InsertionExpert:
         self.phase_time += e.dt
         # Closed-loop privileged pose feedback compensates calibrated grasp offset.
         if self.phase == "align":
-            self.forward = -.022
+            self.forward = self.preinsert
             if self.phase_time > .5 and abs(info["offset_y_m"]) < .0001 and abs(info["offset_z_m"]) < .0001 and info["orientation_error_deg"] < .2:
                 self.phase,self.phase_time = "insert",0.
         elif self.phase == "insert":
@@ -36,12 +39,12 @@ class InsertionExpert:
             if (self.stall_time > .4 or info.get("interval_peak_contact_force_n",0) > .3) and not info["valid_pose"] and self.retries < 2:
                 self.phase,self.phase_time = "withdraw",0.
                 self.retries += 1
-                self.forward = min(self.forward, -.018)
+                self.forward = min(self.forward, self.retreat)
             if info["valid_pose"]:
                 self.phase = "hold"
         elif self.phase == "withdraw":
-            self.forward = max(-.022,self.forward-.015*e.dt)
-            if self.forward <= -.022:
+            self.forward = max(self.preinsert,self.forward-.015*e.dt)
+            if self.forward <= self.preinsert:
                 self.phase,self.phase_time,self.stall_time = "align",0.,0.
         elif self.phase == "hold":
             self.forward = .00003
@@ -58,4 +61,4 @@ class InsertionExpert:
         error = np.r_[np.clip(delta_pos,-.001,.001),np.clip(delta_rot,-.01,.01)]
         change = jac.T @ np.linalg.solve(jac@jac.T+np.eye(6)*1e-5,error)
         base = d.qpos[e.qa["right"]] if self.phase == "withdraw" else e.target[:7]
-        return np.r_[base+.3*change,e.config["grip_target_travel_m"]]
+        return np.r_[base+.3*change,e.grip_travel]

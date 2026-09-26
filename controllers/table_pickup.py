@@ -10,20 +10,23 @@ class PickupProbe:
         self.env=env
         self.trace=[]
         self.peak_robot_force=0.
+        self.peak_cable_robot_force=0.
         self.peak_penetration=0.
         self.reference=None
         self.max_slip=0.
         self.max_angle=0.
 
-    def reset(self, position=(.381,-.22,.330)):
+    def reset(self, position=None):
+        """Rest the plug on the table at ``position`` (default: the workspace spawn pose)."""
         e=self.env; m,d=e.model,e.data
+        if position is None:position=e.spawn_position
         mujoco.mj_resetData(m,d)
         # Official v1 zero-joint posture: both hands hang down, behind the table.
         for side in ('left','right'):
             d.qpos[e.qa[side]]=0
             d.qpos[e.fqa[side]]=.035 if side=='right' else .025
-        d.qpos[e.plug_qadr:e.plug_qadr+3]=position
-        d.qpos[e.plug_qadr+3:e.plug_qadr+7]=[1,0,0,0]
+        # Plug on the table with the cable laid out from it to the appliance anchor.
+        e.place_plug(position,[1,0,0,0])
         e.target=np.r_[np.zeros(7),.035]
         e.park_target=np.zeros(7)
         mujoco.mj_forward(m,d)
@@ -36,7 +39,7 @@ class PickupProbe:
     def physics_step(self):
         e=self.env; m,d=e.model,e.data
         e._physics_step()
-        force=0.; wrench=np.zeros(6)
+        force=0.; cable=0.; wrench=np.zeros(6)
         for index,c in enumerate(d.contact):
             bodies={int(m.geom_bodyid[g]) for g in (c.geom1,c.geom2)}
             if not bodies & e.robot_bodies:
@@ -44,9 +47,14 @@ class PickupProbe:
             if e.plug in bodies and bodies & set(e.fingers):
                 continue
             mujoco.mj_contactForce(m,d,index,wrench)
+            if bodies & e.cable_bodies:
+                # Brushing the cable is reported, not treated as a collision abort.
+                cable+=np.linalg.norm(wrench[:3])
+                continue
             force+=np.linalg.norm(wrench[:3])
             self.peak_penetration=max(self.peak_penetration,float(-c.dist))
         self.peak_robot_force=max(self.peak_robot_force,float(force))
+        self.peak_cable_robot_force=max(self.peak_cable_robot_force,float(cable))
         if force>5 or any(w.number for w in d.warning):
             raise RuntimeError(f'contact/numerical abort: {force:.4f} N')
 
@@ -77,7 +85,8 @@ class PickupProbe:
                 'plug_height_m':float(e.data.xpos[e.plug,2]),'finger_contacts':len(self.finger_contacts()),
                 'grasp_drift_m':slip,'joint_error_rad':float(np.max(np.abs(goal-e.data.qpos[e.qa['right']]))),
                 'left_park_error_rad':float(np.max(np.abs(e.data.qpos[e.qa['left']]))),
-                'finger_travel_m':e.data.qpos[e.fqa['right']].tolist()})
+                'finger_travel_m':e.data.qpos[e.fqa['right']].tolist(),
+                'cable_tension_n':float(e.data.sensordata[e.model.sensor_adr[e.model.sensor('cable_root_force').id]]) if e.cable_bodies else 0.})
             if frame_callback and i%5==0: frame_callback(phase)
 
     def ik(self, position, rotation, initial):
@@ -86,9 +95,11 @@ class PickupProbe:
             raise RuntimeError(f'Invalid IK endpoint: {check}')
         return q
 
-    def run(self, *, pitch=90., height=.003, x_shift=0., position=(.381,-.22,.330), frame_callback=None, closed_travel=.006):
+    def run(self, *, pitch=90., height=.003, x_shift=0., position=None, frame_callback=None, closed_travel=None):
         self.reset(position)
         e=self.env
+        # Closed travel follows the housing width (legacy 24 mm housing: 6 mm).
+        if closed_travel is None:closed_travel=e.pickup_travel
         if frame_callback: frame_callback('rest')
         angle=np.radians(pitch)
         rotation=np.array([[np.cos(angle),0,np.sin(angle)],[0,1,0],[-np.sin(angle),0,np.cos(angle)]])
@@ -100,8 +111,12 @@ class PickupProbe:
             q=self.ik(pos,rotation,q)
             self.move(name,q,.035,seconds,frame_callback)
         above=q.copy()
-        down=self.ik(grasp,rotation,q)
-        self.move('descend',down,.035,3.,frame_callback)
+        # Descend through Cartesian sub-targets: a single joint-space interpolation from 7 cm up
+        # bows the fingertip path sideways by more than the pad clearance of a wide housing.
+        down=q
+        for k in range(1,8):
+            down=self.ik(grasp+[0,0,.07*(1-k/7)],rotation,down)
+            self.move('descend',down,.035,3./7,frame_callback)
         self.move('close',down,closed_travel,4.,frame_callback)
         self.reference=self.relative_plug().copy()
         self.reference_rotation=e.data.site_xmat[e.grasp_site].reshape(3,3).T @ e.data.xmat[e.plug].reshape(3,3)
@@ -115,4 +130,5 @@ class PickupProbe:
             'grasp_position_in_tool_m':self.reference.tolist(),
             'grasp_rotation_in_tool':self.reference_rotation.tolist(),
             'peak_unwanted_robot_force_n':self.peak_robot_force,'peak_unwanted_penetration_m':self.peak_penetration,
+            'peak_cable_robot_force_n':self.peak_cable_robot_force,
             'rest_tool_forward_axis_world':self.rest_axis.tolist(),'physical_end_to_end_insertion':False}

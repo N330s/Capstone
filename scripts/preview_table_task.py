@@ -39,6 +39,8 @@ def unexpected_contacts(env, data):
             continue
         if env.plug in bodies and bodies & set(env.fingers):
             continue
+        if bodies & env.cable_bodies:
+            continue
         contacts.append({"geoms":[env.model.geom(g).name for g in (c.geom1,c.geom2)],
                          "penetration_m":float(-c.dist)})
     return contacts
@@ -79,9 +81,7 @@ def main():
         m,d = env.model,env.data
         # A separate reset: put the free plug just above the table, release it,
         # open the fingers, then settle using physics. No attachment or plug force.
-        a = env.plug_qadr
-        d.qpos[a:a+3] = config["plug_mating_position_m"]
-        d.qpos[a+3:a+7] = config["plug_quaternion_wxyz"]
+        env.place_plug(config["plug_mating_position_m"], config["plug_quaternion_wxyz"])
         d.qvel[:] = 0
         if 'rest_arm_rad' in config:
             for side in ('left','right'):
@@ -96,7 +96,7 @@ def main():
         mujoco.mj_forward(m,d)
         table_contacts = [c for c in d.contact if {m.geom(c.geom1).name,m.geom(c.geom2).name}=={"housing","work_table"}]
         settled = {"plug_position_m":d.xpos[env.plug].tolist(),
-            "plug_speed_norm":float(np.linalg.norm(d.qvel[m.jnt_dofadr[m.joint("plug_free").id]:])),
+            "plug_speed_norm":float(np.linalg.norm(d.qvel[m.jnt_dofadr[m.joint("plug_free").id]:][:6])),
             "housing_table_contacts":len(table_contacts),
             "max_table_penetration_m":max([float(-c.dist) for c in table_contacts]+[0.]),
             "unexpected_robot_contacts":unexpected_contacts(env,d),
@@ -116,7 +116,7 @@ def main():
         topdown = np.array([[np.cos(angle),0.,np.sin(angle)],[0.,1.,0.],[-np.sin(angle),0.,np.cos(angle)]])
         targets = {"pregrasp":grasp+np.array([0,0,config["pregrasp_clearance_m"]]),
                    "grasp":grasp,
-                   "seated_same_topdown_grasp":d.site_xpos[m.site("socket_entry").id]+np.array([-.016,0,offset])}
+                   "seated_same_topdown_grasp":d.site_xpos[m.site("socket_entry").id]+np.array([env.connector.plug.grasp_offset_m[0],0,offset])}
         ik = {}
         q = d.qpos[env.qa["right"]].copy()
         for name,pos in targets.items():
