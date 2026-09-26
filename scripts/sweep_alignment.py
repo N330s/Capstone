@@ -7,6 +7,7 @@ import json
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from connector import catalog
 from connector.simulation import CONFIG_PATH, ROOT, VERSION, Pose, run_trial
 
 
@@ -28,8 +29,14 @@ def main():
         p.add_argument("--" + name, type=numbers, default=[-10, -5, -2, -1, 0, 1, 2, 5, 10])
     p.add_argument("--mode", choices=("axis", "grid"), default="axis")
     p.add_argument("--config", type=Path, default=CONFIG_PATH)
-    p.add_argument("--output", type=Path, default=ROOT / "results" / VERSION / "sweep")
+    p.add_argument("--leadin", action="store_true", help="use the 1 mm chamfered lead-in socket")
+    p.add_argument("--output", type=Path, default=None, help="default results/<scene_version>/sweep")
+    catalog.add_cli_arguments(p)
     args = p.parse_args()
+    spec = catalog.from_cli(args)
+    if args.output is None:
+        version = VERSION if spec is None else spec.name + ("_leadin" if args.leadin else "_straight")
+        args.output = ROOT / "results" / version / "sweep"
     keys = list(Pose.__dataclass_fields__)
     values = [getattr(args, key) for key in keys]
     if args.mode == "grid":
@@ -46,7 +53,7 @@ def main():
     rows = []
     for index, case in enumerate(cases):
         result = run_trial(Pose(**dict(zip(keys, case))), config=config,
-                           output=args.output / f"trial_{index:03d}")
+                           output=args.output / f"trial_{index:03d}", leadin=args.leadin, spec=spec)
         first = result["first_contact"] or {}
         row = {key: result[key] for key in keys}
         row.update({key: result[key] for key in (

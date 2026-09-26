@@ -1,14 +1,29 @@
-"""Save reproducibility and timestep evidence for the straight-slot baseline."""
+"""Save reproducibility and timestep evidence for the straight-slot baseline (or, with
+``--plug-type``, for a catalog connector in the holder benchmark)."""
 from __future__ import annotations
+import argparse
 import json
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from connector import catalog
 from connector.simulation import ConnectorSimulation, Pose, ROOT, VERSION, run_trial
 
 
 def main():
-    aligned = [run_trial() for _ in range(20)]
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--leadin", action="store_true", help="use the 1 mm chamfered lead-in socket")
+    parser.add_argument("--output", type=Path, default=None,
+                        help="report path (default results/<scene_version>/validation.json; refuses to overwrite)")
+    catalog.add_cli_arguments(parser)
+    args = parser.parse_args()
+    spec = catalog.from_cli(args)
+    leadin = args.leadin
+
+    def trial(pose=Pose(), **kw):
+        return run_trial(pose, leadin=leadin, spec=spec, **kw)
+
+    aligned = [trial() for _ in range(20)]
     checks = {
         "20_aligned_successes": all(r["success"] for r in aligned),
         "aligned_identical": all(r == aligned[0] for r in aligned[1:]),
@@ -16,8 +31,8 @@ def main():
     comparisons = []
     for pose in (Pose(), Pose(offset_y_mm=1), Pose(offset_z_mm=-1),
                  Pose(roll_deg=5), Pose(pitch_deg=5), Pose(yaw_deg=2)):
-        normal = run_trial(pose)
-        fine = run_trial(pose, timestep=0.00025)
+        normal = trial(pose)
+        fine = trial(pose, timestep=0.00025)
         comparison = {
             "pose": {k: getattr(pose, k) for k in Pose.__dataclass_fields__},
             "normal_outcome": normal["outcome"], "half_step_outcome": fine["outcome"],
@@ -33,10 +48,12 @@ def main():
         r["depth_difference_m"] < 0.0001 for r in comparisons)
     checks["timestep_peak_force_difference_below_0_1N"] = all(
         r["peak_force_difference_n"] < 0.1 for r in comparisons)
+    metadata = ConnectorSimulation(leadin=leadin, spec=spec).metadata()
     report = {"checks": checks, "aligned_reference": aligned[0],
-              "timestep_comparisons": comparisons,
-              "metadata": ConnectorSimulation().metadata()}
-    path = ROOT / "results" / VERSION / "validation.json"
+              "timestep_comparisons": comparisons, "metadata": metadata}
+    path = args.output or ROOT / "results" / metadata["scene_version"] / "validation.json"
+    if path.exists():
+        raise FileExistsError(f"{path} exists; committed validation evidence is never overwritten")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(checks, indent=2))

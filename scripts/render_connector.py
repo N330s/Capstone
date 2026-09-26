@@ -6,16 +6,22 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import mujoco
 from PIL import Image
+from connector import catalog
 from connector.simulation import ConnectorSimulation, ROOT, VERSION, Pose
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--output", type=Path, default=ROOT / "results" / VERSION / "preview")
+    p.add_argument("--output", type=Path, default=None, help="default results/<scene_version>/preview")
+    p.add_argument("--leadin", action="store_true", help="use the 1 mm chamfered lead-in socket")
+    catalog.add_cli_arguments(p)
     p.add_argument("--offset-y-mm", type=float, default=0)
     p.add_argument("--animate", action="store_true")
     args = p.parse_args()
-    sim = ConnectorSimulation()
+    spec = catalog.from_cli(args)
+    sim = ConnectorSimulation(leadin=args.leadin, spec=spec)
+    if args.output is None:
+        args.output = ROOT / "results" / sim.metadata()["scene_version"] / "preview"
     sim.reset(Pose(offset_y_mm=args.offset_y_mm))
     args.output.mkdir(parents=True, exist_ok=True)
     opt = mujoco.MjvOption()
