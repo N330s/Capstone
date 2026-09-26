@@ -4,10 +4,13 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+import time
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import numpy as np
 import mujoco
+import mujoco.viewer
 from envs.openarm_insert import OpenArmInsertEnv
+from envs import workspace as wsp
 from controllers.table_pickup import PickupProbe
 
 
@@ -15,25 +18,39 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--episode',type=Path,default=Path('results/table_insert_validation/nominal'))
     parser.add_argument('--output',type=Path)
+    parser.add_argument('--view',action='store_true',help='show the replay in the MuJoCo viewer at real-time pace')
     args=parser.parse_args()
     output=args.output or args.episode/'replay_report.json'
     if output.exists():raise FileExistsError(output)
     report=json.loads((args.episode/'report.json').read_text())
     rows=json.loads((args.episode/'command_trace.json').read_text())
-    if not report['passed'] or report['lower_fixture']:raise ValueError('Expected successful original-height rotated fixture')
+    if not report['passed'] or report['lower_fixture']:raise ValueError('Expected successful original-height fixture run')
     for source,digest in report['source_hashes'].items():
         if hashlib.sha256(Path(source).read_bytes()).hexdigest()!=digest:raise ValueError(f'Changed source: {source}')
-    env=OpenArmInsertEnv(images=False,timestep=report['timestep_s'])
-    env.model.body_quat[env.model.body('socket').id]=[np.sqrt(.5),np.sqrt(.5),0,0]
+    workspace=report.get('workspace')
+    ws=wsp.load_workspace(workspace['path']) if workspace else None
+    if workspace and ws['_sha256']!=workspace['sha256']:raise ValueError('Changed workspace spec')
+    if report.get('plug_type'):wsp.apply_connector(ws,plug=report['plug_type'])
+    env=OpenArmInsertEnv(images=False,timestep=report['timestep_s'],workspace=ws)
+    if report['socket_roll_deg']:
+        half=np.radians(report['socket_roll_deg'])/2
+        out=np.zeros(4);socket=env.model.body('socket').id
+        mujoco.mju_mulQuat(out,np.array([np.cos(half),np.sin(half),0,0]),env.model.body_quat[socket])
+        env.model.body_quat[socket]=out
     probe=PickupProbe(env)
     errors=[]
+    viewer=mujoco.viewer.launch_passive(env.model,env.data) if args.view else None
     try:
-        probe.reset((.381+report['offset_x_mm']/1000,-.22+report['offset_y_mm']/1000,.330))
+        probe.reset(env.spawn_position+[report['offset_x_mm']/1000,report['offset_y_mm']/1000,0])
         settle=[r for r in rows if r['phase']=='settle']
         if not settle:raise ValueError('Missing reset trace')
         np.testing.assert_array_equal(env.data.qpos,np.asarray(settle[-1]['qpos']))
         np.testing.assert_array_equal(env.data.qvel,np.asarray(settle[-1]['qvel']))
+        wall=time.perf_counter()
         for row in rows[len(settle):]:
+            if viewer:
+                if not viewer.is_running():raise ValueError('Viewer closed before the replay finished')
+                viewer.sync();wall+=env.dt;time.sleep(max(0.,wall-time.perf_counter()))
             env.target[:]=row['command']
             for _ in range(env.substeps):env._physics_step()
             errors.append([float(np.max(np.abs(env.data.qpos-row['qpos']))),
@@ -47,7 +64,9 @@ def main():
                 'commands_after_settle':len(errors),'expert_rerun':False,
                 'trace_sha256':hashlib.sha256((args.episode/'command_trace.json').read_bytes()).hexdigest()}
         output.write_text(json.dumps(result,indent=2));print(result)
-    finally:env.close()
+    finally:
+        if viewer:viewer.close()
+        env.close()
     raise SystemExit(0 if result['passed'] else 1)
 
 
