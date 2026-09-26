@@ -1,4 +1,5 @@
-"""Build a convex lead-in variant without changing the saved straight-slot asset."""
+"""Connector scene trees: the hand-written two-blade assets (optionally with the convex lead-in
+patch) or a generated catalog variant (``spec=``). The legacy path never changes the saved XML."""
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -6,7 +7,12 @@ ROOT = Path(__file__).resolve().parents[1]
 CONNECTOR = ROOT / "assets/connector"
 
 
-def connector_tree(leadin: bool = False) -> ET.Element:
+def connector_tree(leadin: bool = False, *, spec=None) -> ET.Element:
+    """Scene tree. ``spec`` (a ``ConnectorSpec``) selects the generated builder; ``None`` or the
+    legacy spec reproduces the hand-written two-blade assets byte for byte."""
+    if spec is not None and not spec.is_legacy:
+        from connector.builder import build_scene
+        return build_scene(spec, leadin)
     scene = ET.parse(CONNECTOR / "plug_socket.xml").getroot()
     world = scene.find("worldbody")
     for include in list(world.findall("include")):
@@ -54,6 +60,12 @@ def connector_tree(leadin: bool = False) -> ET.Element:
     return scene
 
 
-def connector_xml(leadin=False):
-    return ET.tostring(connector_tree(leadin), encoding="unicode")
+def connector_xml(leadin=False, *, spec=None):
+    return ET.tostring(connector_tree(leadin, spec=spec), encoding="unicode")
+
+
+def connector_spec_from_model(model):
+    """Spec embedded in a compiled model (legacy models return the catalog legacy spec)."""
+    from connector.spec import ConnectorSpec
+    return ConnectorSpec.from_model(model)
 
