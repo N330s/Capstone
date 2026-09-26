@@ -21,6 +21,13 @@ def rollout(env, options=None, probe=0.):
             "max_park_error_rad":maximum_park,"retries":expert.retries}
 
 def main():
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output",type=Path,default=Path("results/openarm_v1"),
+                        help="report directory; must not already contain validation.json")
+    args=parser.parse_args()
+    if (args.output/"validation.json").exists():
+        raise FileExistsError(f"{args.output/'validation.json'} exists; choose a new --output to keep earlier evidence")
     env=OpenArmInsertEnv(images=False)
     aligned=[]
     for i in range(20):
@@ -47,7 +54,7 @@ def main():
             "no_robot_collisions":all(r["peak_robot_contact_n"]<.01 for r in aligned+signed)}
     report={"checks":checks,"aligned":aligned,"signed":signed,"recovery":recovery,
             "half_timestep":half,"manifest":env.manifest()}
-    root=Path("results/openarm_v1")
+    root=args.output
     root.mkdir(parents=True,exist_ok=True)
     (root/"validation.json").write_text(json.dumps(report,indent=2))
     env.close()

@@ -22,7 +22,7 @@ def main():
             meta=validate_episode(path)
             env.reset(seed=meta["seed"],options=meta["reset_options"])
             current=env.manifest()
-            for key in ("scene_sha256","source_hashes","robot_config","contact_config","mujoco_version"):
+            for key in ("scene_sha256","source_hashes","robot_config","contact_config","mujoco_version","workspace"):
                 if current[key]!=meta[key]:
                     raise ValueError(f"Cannot replay changed {key}")
             with np.load(path/"episode.npz",allow_pickle=False) as a:

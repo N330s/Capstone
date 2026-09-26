@@ -26,9 +26,7 @@ def main():
     measurements={}
     try:
         m,d=env.model,env.data
-        a=env.plug_qadr
-        d.qpos[a:a+3]=config["plug_mating_position_m"]
-        d.qpos[a+3:a+7]=config["plug_quaternion_wxyz"]
+        env.place_plug(config["plug_mating_position_m"],config["plug_quaternion_wxyz"])
         d.qvel[:]=0
         d.qpos[env.fqa["right"]]=config["open_finger_travel_m"]
         env.target[7]=config["open_finger_travel_m"]

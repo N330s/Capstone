@@ -16,6 +16,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output',type=Path,default=Path('results/table_pickup_v3'))
     p.add_argument('--render',action='store_true')
+    p.add_argument('--workspace',type=Path,default=None,help='workspace spec (default configs/workspace_v1.json)')
     args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=False)
     cfg=json.loads(Path('configs/table_task_v3.json').read_text())
@@ -24,7 +25,7 @@ def main():
            ('y_plus',0,.002,.0005),('y_minus',0,-.002,.0005),('half_timestep',0,0,.00025)]
     results=[]
     for name,x,y,dt in cases:
-        env=OpenArmInsertEnv(images=False,timestep=dt)
+        env=OpenArmInsertEnv(images=False,timestep=dt,workspace=args.workspace)
         probe=PickupProbe(env)
         renderer=None; frames=[]
         try:
@@ -38,7 +39,7 @@ def main():
                     frame=Image.fromarray(renderer.render())
                     frames.append(frame.resize((480,360)))
                     frame.save(args.output/f'{phase}.png')
-            result=probe.run(position=(.381+x,-.22+y,.330),frame_callback=callback,
+            result=probe.run(position=env.spawn_position+[x,y,0],frame_callback=callback,
                              pitch=cfg['tool_pitch_deg'],height=cfg['grasp_height_offset_m'],
                              closed_travel=cfg['closed_finger_target_m'])
         except RuntimeError as error:
