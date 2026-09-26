@@ -173,3 +173,54 @@ was tuned for the rigid socket and times out against the 10 N retention: all 20
 aligned episodes end at 0.5 mm depth after its two 0.3 N-triggered withdrawals,
 peak wall force 6.4 N (`results/openarm_cable_v1`, preserved failed audit). Eight table pickup cases pass
 with the cable attached (`results/table_pickup_cable_v1`, worst drift 0.054 mm).
+
+# workspace_v2: Thai Type O connector, three-leaf retention, cable to the floor
+
+Geometry lives in `configs/workspace_v2.json` and `connector/catalog.py`, described in
+`docs/CONNECTOR_CATALOG.md` and the workspace_v2 section of `docs/WORKSPACE.md`.
+workspace_v1 is untouched and remains the scene the full task passes in. **The full
+task does not pass in workspace_v2**; the changes below are recorded with what each one
+measured, including the one that failed.
+
+1. **Catalog connector: `type_o` in `universal_th`** (Thai 3-round-pin plug, 45 g,
+   Ø4.8 mm pins, 21.4 mm earth, in a universal socket with keyhole line/neutral openings).
+   Forced two layout changes: the socket moves 6.4 mm further from the robot so the home
+   pose clears the longer earth pin (pre-insert distance 27.4 mm, was 22 mm) and 6 mm
+   lower because an earthed plug's grasp frame sits 6 mm above its mating frame. Finger
+   travel follows the 34 mm housing (contact 18.8 mm, grip 13.0 mm) instead of the 24 mm
+   one. The socket wall/lead-in geometry is generated, not hand-written.
+2. **Three retention leaves instead of two**, one per opening the plug uses. The earth
+   leaf presses −Z and the line/neutral leaves 30° above the inward horizontal, so the
+   three equal forces and their torques about X cancel and a seated plug is not pushed
+   against one hole wall. Normal force per leaf drops 12.5 → 8.33 N so the total stays at
+   the 10 N target. Calibrated robot-free per plug type: Type O −10.82 N insert /
+   +8.86 N withdraw on the flat, Type A −9.96/+9.96, Type B −10.45/+11.23, Type C
+   −9.38/+8.58 (`results/insertion_force_v2_type_*_ws2`; full table in
+   `docs/CONNECTOR_CATALOG.md`). Type B is the only one that also loads the rigid wall
+   (9.18 N) because its blades and its earth pin use different opening kinds.
+3. **Cable mass 70 → 35 g/m.** With the cable routed over the table edge and 0.75 m
+   hanging to the floor, the heavier cord dragged the 45 g plug across the table: ≈0.5 N
+   of pull against ≈0.2 N of table friction. At 35 g/m the edge friction leaves ≈0.1 N on
+   the plug and the spawn pose holds.
+4. **Cable route, three attempts, one change each.**
+   - 0.35 m / 14 segments on the table (the v1 cable with the v2 connector): full task
+     passes, seated 19.01 mm (`results/full_task_v2_type_o`).
+   - 1.0 m / 40 segments over the near edge to the floor: full task passes, seated
+     19.01 mm, 0.26 s hold, grasp drift 0.097 mm / 0.25°, peak wall 26.7 N, peak leaf
+     52.1 N (`results/full_task_v2_type_o_longcable`).
+   - 1.5 m / 60 segments to an appliance box standing on the floor: **full task aborts**
+     at wall 30.84 N, depth 14.44 mm, plug 153 µm low
+     (`results/full_task_v2_type_o_cable150`, preserved failed audit). This is the layout
+     in the committed spec.
+5. **`wall_force_abort_n` 20 → 30 N — and it was not enough.** The 1.5 m route still
+   aborts at 30.84 N. The contact dump shows all three pins bearing on the *upper* wall
+   of their openings while the plug sits low, i.e. the plug binds in Z rather than
+   meeting the retention axially. Raising the limit again would hide a misalignment, so
+   the limit stays at 30 N and the failure stays open. Why this cable route pulls the
+   plug low is not yet diagnosed.
+
+Pickup and transport are unaffected by any of the above: the failed insertion run still
+records a clean pickup against the committed spec, and eight pickup cases pass with the
+1.0 m cable (`results/table_pickup_v2_longcable`, worst drift 0.063 mm; that report
+embeds no workspace spec, so it names no hash). No v2 dataset may be collected until a cable layout passes end to
+end against a committed spec.
