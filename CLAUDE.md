@@ -43,6 +43,7 @@ python scripts/validate_openarm.py                    # 20 aligned + signed offs
 python scripts/validate_table_pickup.py               # 8 pickup cases
 python scripts/probe_table_insert.py --render --output results/full_task_new   # full task, exit 0/1 (identity socket; --socket-roll-deg 90 for the old variant)
 python scripts/calibrate_insertion_force.py --output results/insertion_force_new  # robot-free leaf calibration (mocap-driven plug)
+python scripts/calibrate_insertion_force.py --workspace configs/workspace_v2.json --plug-type type_o --output results/insertion_force_new_o  # catalog plug variant
 python scripts/replay_table_insert.py --episode results/full_task_new
 python scripts/collect_varied.py --record --output data/openarm_v1_varied_new  # omit --record = preflight
 python scripts/replay_pilot.py --dataset data/openarm_v1_varied_new
@@ -62,7 +63,14 @@ Layers, bottom to top (each imports only from below):
    blade depth, slot-corridor fit, face gap, orientation, contact force/penetration, hold time) and
    `ConnectorSimulation`/`run_trial` (the ideal spring-damper "holder" benchmark, config in
    `configs/holder.json`). `ConnectorMetrics.bind(model, data, config, fingers)` is reused by the
-   robot env so both scenes share one success definition.
+   robot env so both scenes share one success definition. `spec.py`/`catalog.py`/`slab.py`/
+   `builder.py` are the **parametric connector catalog** (`docs/CONNECTOR_CATALOG.md`): named plug
+   and socket variants (`legacy_two_blade`, `type_a/b/c/o`, `universal_th`) generated from a
+   `ConnectorSpec`, which is embedded in the model and read back with `ConnectorSpec.from_model` —
+   metrics, leaves, env and probes never copy a dimension. `legacy_two_blade` reproduces the
+   hand-written XML exactly, so a spec-less scene is unchanged. Select one with `--plug-type` /
+   `--socket` or a workspace `connector` section; `derived()` supplies every distance the
+   controllers used to hard-code (`preinsert_x_m`, `success_depth_m`, `housing_width_m`, …).
 2. **`envs/`** — `scene.py` builds the robot scene XML at runtime: parses the upstream v1 bimanual
    XML, injects solver options (2 kHz, elliptic cone, impratio 1000), the `robot_grasp` site, the
    lead-in connector bodies, and everything described by **`configs/workspace_v1.json`** through
@@ -71,7 +79,11 @@ Layers, bottom to top (each imports only from below):
    action-cam visual). `docs/WORKSPACE.md` tabulates every dimension; edit the JSON, never
    duplicate numbers in code. `openarm_insert.py` is `OpenArmInsertEnv`, a gym-like
    `reset(seed, options)/step(action)` env; `env.place_plug(pos, quat)` is the only sanctioned way
-   to position the plug (it also lays the cable consistently).
+   to position the plug (it also lays the cable consistently). `OpenArmInsertEnv(workspace=...)` and
+   the scripts' `--workspace` flag select a spec: **`configs/workspace_v2.json`** is the Type O /
+   `universal_th` variant with a 1.5 m cable to a floor appliance. It is **not a working scene** —
+   the full task aborts there (`results/full_task_v2_type_o_cable150`); see the workspace_v2 section
+   of `docs/WORKSPACE.md` before using it, and do not collect data in it.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),
    `table_pickup.py` (`PickupProbe`: downward-rest → raise → approach → descend → close → lift),
    `carry_path.py` (`plan_carry`: bidirectional RRT with a rigid carried-plug proxy on scratch

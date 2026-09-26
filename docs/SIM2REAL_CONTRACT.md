@@ -31,6 +31,7 @@ the robot geometry or silently treating raw torque as a position command.
 | Controller | Configured PD, bias feedforward, ideal timing | Gains, friction, payload compensation, rate, delay, torque/current mapping |
 | Gripper | Ideal symmetric slides, 2000 N/m position servos, flat 24x16 mm pad plates with mu=1 | Travel-to-aperture mapping, real servo force, finger compliance, pad friction, slip under insertion load |
 | Connector | Design dimensions, equal blades, spring leaves calibrated to 10 N in simulation, 0.35 m / 24.5 g cable with assumed bending stiffness | Actual slot/blade geometry, polarization, lead-in, measured insertion/withdrawal force, real cable stiffness, mass and routing |
+| Connector (catalog variants) | Nominal TIS 166-2549 / CEE 7/16 / NEMA 1-15/5-15 dimensions with chosen clearances, generated from `connector/catalog.py`; no plug or socket was measured | Per-manufacturer geometry and tolerances, real contact/retention design, measured mating force per type |
 | Workspace | 120x60x75 cm table, pedestal and appliance from configs/workspace_v1.json | Real table/mount dimensions, robot base pose, appliance and cable anchor location |
 | Cameras | Illustrative fixed/wrist mounts, ideal RGB | Intrinsics, distortion, exposure, crop, extrinsics, time offsets |
 | Fixture | Rigid mounted socket | Mount pose/compliance and reachable approach envelope |
