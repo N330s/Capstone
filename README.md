@@ -1,8 +1,22 @@
 # Two-blade connector simulation
 
-**Continuous table -> grasp -> insert now works** in a separately versioned,
-90-degree-rotated socket fixture. Six physical validation runs pass; nominal
-command replay is exact. See [full-task results and video](docs/FULL_TASK_DEMONSTRATOR.md).
+**workspace_v1 (2026-09-14):** the robot scene is now a 120 x 60 x 75 cm table with
+legs and a robot pedestal, the plug carries a physical 0.35 m cable fixed to an
+appliance box, the socket has spring-leaf retention calibrated to 10 N insertion /
+withdrawal, the right fingers have pad plates and a firmer servo, and the wrist
+camera has a visible action-camera body. Every dimension comes from
+[`configs/workspace_v1.json`](configs/workspace_v1.json) and is tabulated in
+[docs/WORKSPACE.md](docs/WORKSPACE.md); the physics changes and their measured
+effects are in [PHYSICS_CHANGELOG.md](PHYSICS_CHANGELOG.md). The full task
+(pickup -> carry -> insert through the retention) passes with the identity socket
+orientation (`results/full_task_cable_v1`, 5 N variant `results/full_task_cable_v1_5n`).
+Datasets and results recorded before workspace_v1 keep their evidence value but no
+longer replay strictly: the scene hash changed. Nothing here is a sim-to-real result.
+
+**Continuous table -> grasp -> insert first worked** (2026-09-13) in a separately
+versioned, 90-degree-rotated socket fixture with the earlier floating-slab scene.
+Six physical validation runs pass; nominal command replay is exact. See
+[full-task results and video](docs/FULL_TASK_DEMONSTRATOR.md).
 
 Final task development now targets **table -> grasp -> insert**. See the
 [layout, camera previews and physical pickup findings](docs/TABLE_TO_INSERT.md).
@@ -42,11 +56,22 @@ foundation for the robot and fine-tuning stages in [plan.md](plan.md).
 
 ## Run
 
-Tested with Python 3.11 and official MuJoCo 3.11.0. Install dependencies if needed:
+Tested with Python 3.11/3.12 and official MuJoCo 3.11.0. Install dependencies if needed
+(on this Windows machine: `py -3.12 -m venv .venv`, then install requirements with
+`.venv\Scripts\python.exe`, and fetch the robot assets once with
+`powershell -File scripts/fetch_openarm.ps1`):
 
 ```powershell
 python -m pip install -r requirements.txt
 python scripts/view_connector.py
+```
+
+Workspace-specific commands (robot scene):
+
+```powershell
+python scripts/calibrate_insertion_force.py --output results/insertion_force_new   # leaf calibration harness
+python scripts/probe_table_insert.py --render --output results/full_task_new       # full task, identity socket
+python scripts/probe_table_insert.py --workspace configs/workspace_v1_leaf5n.json --output results/full_task_new_5n
 ```
 
 Viewer controls: Space advances/pauses the holder target; R resets. Y/G changes
@@ -123,7 +148,8 @@ The 28 x 24 x 16 mm housing is rigidly connected to two 16 x 1.5 x 6 mm blades.
 Slot spacing is 13 mm; each slot is 2.3 x 6.8 mm. Both blades are equal, so a
 180-degree roll is an allowed mating pose with swapped slots. Proposed grasp
 faces lie at Y=+/-12 mm; actual finger dimensions and reach still need checking
-against the selected robot. The rear strain relief is visual only.
+against the selected robot. In the holder benchmark the rear strain relief is
+visual only; the robot scene attaches the physical cable there (docs/WORKSPACE.md).
 
 ## Holder and success contract
 
@@ -169,8 +195,10 @@ slots; update and test it if the final seating corridor changes.
 
 Then verify actual OpenArm finger clearance and controller compatibility.
 Compose the same connector bodies in a robot scene, replace the ideal holder with
-robot actuation, and retain the site/metric contract. Real grasp compliance,
-slip, cable load, calibrated resistance, and learned policies are not yet modeled.
+robot actuation, and retain the site/metric contract. The robot scene now models a
+physical cable and spring-leaf retention (design values calibrated in simulation,
+see docs/WORKSPACE.md); real grasp compliance, measured cable and retention loads,
+and learned policies are still not modeled or validated.
 The passive GUI has not been manually exercised in this run; offscreen rendering
 and headless physics have been executed.
 

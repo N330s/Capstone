@@ -109,3 +109,67 @@ data. Final physical tests and limits are in results/openarm_v1/validation.json.
   half-timestep trial passes. See results/table_pickup_v3/report.json.
 - Pickup rotates the plug during closure. Transport/insertion must use the
   measured acquired grasp, not the prior insertion-only grasp assumption.
+
+# workspace_v1: real table, physical cable, spring-leaf retention, pad plates
+
+Layout, cable, leaf and gripper numbers live in `configs/workspace_v1.json` and are
+described in `docs/WORKSPACE.md`. Every change below alters the robot-scene hash;
+datasets and results recorded before it no longer replay strictly. The holder
+benchmark (`connector/`, `assets/connector/*.xml`, `configs/holder.json`) is untouched:
+a nominal `scripts/test_insert.py` run is column-for-column identical to the
+pre-change code on the same machine (only new zero-valued diagnostic columns appear).
+
+Changes were introduced one at a time; measured effects:
+
+1. **Table 120x60x75 cm with legs, floor at z=-0.43, robot pedestal.** Table top stays
+   0.32 m above the robot base, so plug/socket/waypoint coordinates are unchanged.
+   Pickup rest height unchanged (plug z = 0.32800 m); no new robot contacts at rest.
+2. **Physical cable** (0.35 m, 14 capsules with ball joints, 24.5 g, connect equality
+   to an appliance box). Table pickup still passes (drift 0.04 mm, 0.27 deg). Held-plug
+   reset showed a 12 deg plug rotation from the hanging cable with the upstream
+   100 N/m finger servos, which motivated change 3.
+3. **Right finger servo gain 100 -> 2000 N/m** (`finger_servo_kp_n_m`, robot config, in
+   the manifest). Pinch ~11 N per pad (was ~0.5 N), pad penetration 0.19 mm; cable
+   loads now hold within 0.08 mm / 0.4 deg.
+4. **Finger pad plates** (24x16x1 mm boxes, 0.1 mm proud of the mesh face). The
+   upstream mesh gave one contact point per finger, so any moment about the pinch
+   line was carried by torsional friction only and the plug pitched 2.6 deg under
+   the first 11 N of insertion load. With 4 box-box contacts per pad the same load
+   pitches 0.1 deg.
+5. **impratio 100 -> 1000.** A sustained 10 N axial load on the pinch crept 0.30 mm/s
+   at 100 and 0.03 mm/s at 1000 (measured on the held plug). Grasp slip during
+   insertion dropped from 1.0 mm (abort) to 0.15 mm at 10.7 N.
+6. **Socket spring leaves** (one per slot on the outer wall, k=4000 N/m, 11.5 N
+   preload, 6.8 deg ramp, armature 0.2 kg, geom/limit solref 1 ms). Calibrated in
+   `scripts/calibrate_insertion_force.py`: -9.96 N insertion / +9.96 N withdrawal on
+   the flat, leaf penetration 0.014 mm, wall force 0 (`results/insertion_force_v1`).
+   Design notes: a 14 deg ramp needed ~17 N to start the wedge (1.7x the plateau) and
+   the wound-up arm then slammed the plug into the socket end; a static socket is
+   welded to the world so `<exclude>` pairs are required to stop the wall from
+   colliding with the embedded leaf; leaf inertia (armature) is what makes MuJoCo's
+   soft joint limit hold the preload (0.4 mm sag at 0.02 kg, 3 um at 0.2 kg).
+7. **Abort semantics with retention.** `contact_force_n` remains rigid-wall force only;
+   leaf load is reported separately (`leaf_normal_n`, `leaf_friction_n`, ...). The
+   rigid-socket 5-8 N wall abort would reject every successful seating with retention
+   (the housing face bottoms out under the leftover push force and the walls guide the
+   blades while the compliant arm droops), so with leaves enabled the wall abort is
+   `wall_force_abort_n` = 20 N; wall penetration stays limited to 0.2 mm, leaf force to
+   80 N and leaf penetration to 0.3 mm.
+8. **Scripted insertion controller** (not physics): lateral corrections run 2x the
+   axial advance with a +/-1 mm anti-wind-up bound, and the target advances only while
+   the measured axial force is below `push_force_cap_n` = 15 N. Without the bound the
+   loop integrated while friction held the plug and released the wind-up as a 20 N
+   slam into the top slot wall.
+
+Full task outcome with the default 10 N retention: pickup -> carry -> insert -> hold
+passes (`results/full_task_cable_v1`, seated 15.98 mm, 0.26 s hold, grasp drift
+0.19 mm / 0.34 deg, peak wall 17 N, final push 13.6 N); the 5 N variant also passes
+(`results/full_task_cable_v1_5n`). The socket is no longer rotated 90 deg for the
+demonstrator: with the firm grasp the plug stays flat and pinched on its 24 mm faces,
+so the identity socket orientation from the workspace spec is reachable.
+
+Not passing: the held-plug expert (`controllers/expert.py`, `validate_openarm.py`)
+was tuned for the rigid socket and times out against the 10 N retention: all 20
+aligned episodes end at 0.5 mm depth after its two 0.3 N-triggered withdrawals,
+peak wall force 6.4 N (`results/openarm_cable_v1`, preserved failed audit). Eight table pickup cases pass
+with the cable attached (`results/table_pickup_cable_v1`, worst drift 0.054 mm).

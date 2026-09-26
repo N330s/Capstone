@@ -1,0 +1,410 @@
+{
+  "config": {
+    "version": "table_task_pickup_v3",
+    "instruction": "Pick up the plug from the table and insert it into the socket.",
+    "rest_arm_rad": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "rest_description": "Both OpenArm v1 hands point downward, behind the table",
+    "plug_mating_position_m": [
+      0.381,
+      -0.22,
+      0.33
+    ],
+    "plug_quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "open_finger_travel_m": 0.035,
+    "closed_finger_target_m": 0.006,
+    "settle_s": 1.0,
+    "pregrasp_clearance_m": 0.07,
+    "grasp_height_offset_m": 0.003,
+    "tool_pitch_deg": 90,
+    "cameras": {
+      "task_rgb": {
+        "model_camera": "scene_rgb",
+        "position_m": [
+          0.12,
+          -0.65,
+          0.7
+        ],
+        "target_m": [
+          0.4,
+          -0.18,
+          0.4
+        ],
+        "fovy_deg": 45
+      },
+      "socket_rgb": {
+        "model_camera": "inspection",
+        "position_m": [
+          0.36,
+          -0.32,
+          0.66
+        ],
+        "target_m": [
+          0.435,
+          -0.155,
+          0.478
+        ],
+        "fovy_deg": 25
+      }
+    },
+    "status": "physical pickup validation; transport and insertion with this grasp remain separate gates"
+  },
+  "cases": [
+    {
+      "passed": true,
+      "height_gain_m": 0.06954254979980967,
+      "max_grasp_drift_m": 3.651504087678396e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.022153355821960045,
+      "grasp_position_in_tool_m": [
+        0.003057553126586904,
+        5.976442147140554e-06,
+        0.017763850816262052
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.0002358535479853915,
+          0.00023015184521833407,
+          -0.9999999457016159
+        ],
+        [
+          -0.00013852003948069375,
+          0.9999999639286816,
+          0.0002301191789687746
+        ],
+        [
+          0.9999999625926519,
+          0.00013846575753446002,
+          0.00023588542012048167
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "nominal_0",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06954254979980967,
+      "max_grasp_drift_m": 3.651504087678396e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.022153355821960045,
+      "grasp_position_in_tool_m": [
+        0.003057553126586904,
+        5.976442147140554e-06,
+        0.017763850816262052
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.0002358535479853915,
+          0.00023015184521833407,
+          -0.9999999457016159
+        ],
+        [
+          -0.00013852003948069375,
+          0.9999999639286816,
+          0.0002301191789687746
+        ],
+        [
+          0.9999999625926519,
+          0.00013846575753446002,
+          0.00023588542012048167
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "nominal_1",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06954254979980967,
+      "max_grasp_drift_m": 3.651504087678396e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.022153355821960045,
+      "grasp_position_in_tool_m": [
+        0.003057553126586904,
+        5.976442147140554e-06,
+        0.017763850816262052
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.0002358535479853915,
+          0.00023015184521833407,
+          -0.9999999457016159
+        ],
+        [
+          -0.00013852003948069375,
+          0.9999999639286816,
+          0.0002301191789687746
+        ],
+        [
+          0.9999999625926519,
+          0.00013846575753446002,
+          0.00023588542012048167
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "nominal_2",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06954179587867898,
+      "max_grasp_drift_m": 3.6165622644822444e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.025924942892204896,
+      "grasp_position_in_tool_m": [
+        0.003056258216454899,
+        4.0798599607755935e-06,
+        0.01736566099355596
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.0001917099506618086,
+          0.0002821527941396535,
+          -0.9999999418185467
+        ],
+        [
+          -0.00024478578960612383,
+          0.9999999302480977,
+          0.00028210586300064035
+        ],
+        [
+          0.9999999516636056,
+          0.0002447316928630535,
+          0.00019177900428422756
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "x_plus",
+      "offset_x_m": 0.002,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06953883947629497,
+      "max_grasp_drift_m": 5.382858935980741e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.07808575979780832,
+      "grasp_position_in_tool_m": [
+        0.003062675473850159,
+        8.589168849845834e-05,
+        0.018130185816406436
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.0002674815174487417,
+          0.0001739304504980721,
+          -0.9999999491009173
+        ],
+        [
+          0.0039627353473527865,
+          0.9999921330227555,
+          0.0001749890495619157
+        ],
+        [
+          0.9999921125599971,
+          -0.003962781951989704,
+          0.0002667901728335096
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "x_minus",
+      "offset_x_m": -0.002,
+      "offset_y_m": 0,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06953938349299849,
+      "max_grasp_drift_m": 4.364684685238912e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.03553877872718705,
+      "grasp_position_in_tool_m": [
+        0.0030602587180574388,
+        4.4110365153966834e-05,
+        0.017856450732830716
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00029341516936060984,
+          0.00013533072652204196,
+          -0.9999999477965649
+        ],
+        [
+          0.0019985960365313665,
+          0.999997993568229,
+          0.00013591688048004305
+        ],
+        [
+          0.9999979597586289,
+          -0.0019986358122722927,
+          0.00029314410918943946
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "y_plus",
+      "offset_x_m": 0,
+      "offset_y_m": 0.002,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06954199969074049,
+      "max_grasp_drift_m": 3.5620074983864266e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.026983816708017694,
+      "grasp_position_in_tool_m": [
+        0.003057742741853829,
+        5.3924622034850245e-06,
+        0.017729242873544087
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00021190739248016363,
+          0.00028613683926647,
+          -0.9999999366104834
+        ],
+        [
+          -0.00017119879608565728,
+          0.9999999444187204,
+          0.00028610056320792064
+        ],
+        [
+          0.9999999628931161,
+          0.00017113815840911147,
+          0.00021195636698448226
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        9.460982625299982e-13,
+        3.67328176642655e-06,
+        -0.9999999999932533
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "y_minus",
+      "offset_x_m": 0,
+      "offset_y_m": -0.002,
+      "timestep_s": 0.0005
+    },
+    {
+      "passed": true,
+      "height_gain_m": 0.06954900658008273,
+      "max_grasp_drift_m": 4.360519332742775e-05,
+      "final_finger_contact_bodies": 2,
+      "max_grasp_angle_drift_deg": 0.01794528874899597,
+      "grasp_position_in_tool_m": [
+        0.0030495478411870554,
+        8.327004598373489e-06,
+        0.017730493543179918
+      ],
+      "grasp_rotation_in_tool": [
+        [
+          0.00021671058481238944,
+          0.00017638035376767977,
+          -0.9999999609632455
+        ],
+        [
+          -1.6617553414978622e-05,
+          0.9999999843075476,
+          0.00017637675668529697
+        ],
+        [
+          0.9999999763801887,
+          1.6579330056194684e-05,
+          0.00021671351242157134
+        ]
+      ],
+      "peak_unwanted_robot_force_n": 0.0,
+      "peak_unwanted_penetration_m": 0.0,
+      "peak_cable_robot_force_n": 0.0,
+      "rest_tool_forward_axis_world": [
+        -9.76502452260796e-14,
+        3.6731962191594156e-06,
+        -0.9999999999932538
+      ],
+      "physical_end_to_end_insertion": false,
+      "case": "half_timestep",
+      "offset_x_m": 0,
+      "offset_y_m": 0,
+      "timestep_s": 0.00025
+    }
+  ],
+  "complete": true,
+  "passed": true,
+  "source_hashes": {
+    "C:\\Users\\worap\\OneDrive\\Desktop\\Project\\Capstone\\scripts\\validate_table_pickup.py": "18833e423c85308cf96d7b2910abc7f2c1cd7a4b3d1a7defa3de8b2034139299",
+    "controllers\\table_pickup.py": "571ea0bb68711571c363dcfae2f2db9169727ec6a1da2a5ac1db927e8ef608e4",
+    "envs\\openarm_insert.py": "73c3e01a99eb626418c0b423bd7d426e1cb5d54462989fd97ea20a1b5864d9fb",
+    "configs\\table_task_v3.json": "6ed8d938fa1545dafb0a88e9b34f40eb22d0b2827d2782969faaad2cea4c48c6"
+  }
+}

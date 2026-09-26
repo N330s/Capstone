@@ -29,8 +29,9 @@ the robot geometry or silently treating raw torque as a position command.
 | Quantity | Current simulation assumption | Real-world check |
 | --- | --- | --- |
 | Controller | Configured PD, bias feedforward, ideal timing | Gains, friction, payload compensation, rate, delay, torque/current mapping |
-| Gripper | Ideal symmetric slides, contact preload | Travel-to-aperture mapping, finger compliance, pad friction, slip under insertion load |
-| Connector | Design dimensions, equal blades, no cable/springs | Actual slot/blade geometry, polarization, lead-in, axial force and cable loads |
+| Gripper | Ideal symmetric slides, 2000 N/m position servos, flat 24x16 mm pad plates with mu=1 | Travel-to-aperture mapping, real servo force, finger compliance, pad friction, slip under insertion load |
+| Connector | Design dimensions, equal blades, spring leaves calibrated to 10 N in simulation, 0.35 m / 24.5 g cable with assumed bending stiffness | Actual slot/blade geometry, polarization, lead-in, measured insertion/withdrawal force, real cable stiffness, mass and routing |
+| Workspace | 120x60x75 cm table, pedestal and appliance from configs/workspace_v1.json | Real table/mount dimensions, robot base pose, appliance and cable anchor location |
 | Cameras | Illustrative fixed/wrist mounts, ideal RGB | Intrinsics, distortion, exposure, crop, extrinsics, time offsets |
 | Fixture | Rigid mounted socket | Mount pose/compliance and reachable approach envelope |
 | Observations | Synchronous, noiseless proprioception | Sensor resolution, noise, missing/stale data and timestamps |

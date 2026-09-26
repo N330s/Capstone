@@ -1,0 +1,451 @@
+{
+  "passed": true,
+  "hold_s": 0.25999999999999995,
+  "final_depth_m": 0.0159793224023716,
+  "pickup": {
+    "passed": true,
+    "height_gain_m": 0.06954254979980967,
+    "max_grasp_drift_m": 3.651504087678396e-05,
+    "final_finger_contact_bodies": 2,
+    "max_grasp_angle_drift_deg": 0.022153355821960045,
+    "grasp_position_in_tool_m": [
+      0.003057553126586904,
+      5.976442147140554e-06,
+      0.017763850816262052
+    ],
+    "grasp_rotation_in_tool": [
+      [
+        0.0002358535479853915,
+        0.00023015184521833407,
+        -0.9999999457016159
+      ],
+      [
+        -0.00013852003948069375,
+        0.9999999639286816,
+        0.0002301191789687746
+      ],
+      [
+        0.9999999625926519,
+        0.00013846575753446002,
+        0.00023588542012048167
+      ]
+    ],
+    "peak_unwanted_robot_force_n": 0.0,
+    "peak_unwanted_penetration_m": 0.0,
+    "peak_cable_robot_force_n": 0.0,
+    "rest_tool_forward_axis_world": [
+      9.460982625299982e-13,
+      3.67328176642655e-06,
+      -0.9999999999932533
+    ],
+    "physical_end_to_end_insertion": false
+  },
+  "planning": {
+    "collision_queries": 42,
+    "nodes": 2
+  },
+  "peak_socket_force_n": 17.388138209070434,
+  "peak_socket_penetration_m": 4.997555716856894e-05,
+  "peak_leaf_force_n": 72.23365309611957,
+  "peak_leaf_penetration_m": 5.47302121735756e-05,
+  "final_force_breakdown": {
+    "contact_force_n": 9.657429271837216,
+    "other_contact_force_n": 0.0,
+    "left_contact_force_n": 0.13945414688643398,
+    "right_contact_force_n": 0.43177309016125526,
+    "grasp_contact_force_n": 35.546528779709575,
+    "plug_weight_n": 0.2943,
+    "socket_wall_normal_n": 8.966697972773856,
+    "socket_wall_friction_n": 3.5866791891095424,
+    "leaf_normal_n": 24.974285079446073,
+    "leaf_friction_n": 9.989714031778428,
+    "leaf_contact_force_n": 26.898128218635467,
+    "socket_force_x_n": -13.584245531888843,
+    "socket_force_y_n": -0.6346138190150854,
+    "socket_force_z_n": 5.75245666480088,
+    "socket_force_total_n": 14.765677060342982,
+    "socket_lateral_force_n": 5.787356251320371,
+    "socket_torque_x_nm": 0.010156959650430945,
+    "socket_torque_y_nm": -0.06709292044217798,
+    "socket_torque_z_nm": -0.00673805913594195,
+    "socket_torque_nm": 0.0681910935806162,
+    "finger_force_x_n": 13.606619793867548,
+    "finger_force_y_n": 0.8151207428586758,
+    "finger_force_z_n": -5.22239688843475,
+    "cable_force_n": 0.29789086863102315,
+    "cable_tension_n": -0.19846011837943633,
+    "cable_torque_nm": 0.009734255511846765
+  },
+  "max_grasp_drift_m": 0.00018562141423693294,
+  "max_grasp_angle_deg": 0.3371742083864007,
+  "socket_roll_deg": 0.0,
+  "lower_fixture": false,
+  "timestep_s": 0.0005,
+  "physical_end_to_end_insertion": true,
+  "command_hz": 50,
+  "mujoco_version": "3.11.0",
+  "duration_including_settle_s": 42.580000000021286,
+  "socket_position_m": [
+    0.4391,
+    -0.155,
+    0.478
+  ],
+  "offset_x_mm": 0,
+  "offset_y_mm": 0,
+  "peak_unwanted_robot_force_n": 0.0,
+  "peak_cable_robot_force_n": 0.0,
+  "workspace": {
+    "path": "configs/workspace_v1.json",
+    "sha256": "9c5e26e3bf09b566d73fc08452b5b6cc62d447af98bef9d4edcf707fe0263fbb",
+    "spec": {
+      "version": "workspace_v1",
+      "status": "scene definition; every dimension is a design value chosen for the simulation, not a measurement of real hardware",
+      "frames": {
+        "description": "World origin is the OpenArm v1 base (openarm_body_link0). +X points across the table away from the robot, +Y along the table, +Z up. The table top is 0.32 m above the robot base so every plug/socket/waypoint coordinate from earlier task configs stays valid.",
+        "robot_base_world_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "table_top_z_m": 0.32,
+        "floor_z_m": -0.43
+      },
+      "floor": {
+        "half_size_m": [
+          3.0,
+          3.0
+        ],
+        "rgba": [
+          0.25,
+          0.28,
+          0.3,
+          1
+        ]
+      },
+      "table": {
+        "length_y_m": 1.2,
+        "width_x_m": 0.6,
+        "height_m": 0.75,
+        "top_thickness_m": 0.03,
+        "center_xy_m": [
+          0.55,
+          0.0
+        ],
+        "leg_size_m": 0.05,
+        "leg_inset_m": 0.03,
+        "rgba_top": [
+          0.45,
+          0.43,
+          0.4,
+          1
+        ],
+        "rgba_legs": [
+          0.3,
+          0.28,
+          0.26,
+          1
+        ]
+      },
+      "pedestal": {
+        "description": "Column under the robot base, floor to the underside of the upstream base meshes",
+        "center_xy_m": [
+          -0.052,
+          0.032
+        ],
+        "half_size_xy_m": [
+          0.1,
+          0.13
+        ],
+        "top_z_m": -0.06,
+        "rgba": [
+          0.35,
+          0.36,
+          0.38,
+          1
+        ]
+      },
+      "fixture": {
+        "center_m": [
+          0.4631,
+          -0.155,
+          0.399
+        ],
+        "half_size_m": [
+          0.006,
+          0.024,
+          0.079
+        ],
+        "rgba": [
+          0.3,
+          0.32,
+          0.35,
+          1
+        ]
+      },
+      "socket": {
+        "position_m": [
+          0.4391,
+          -0.155,
+          0.478
+        ],
+        "quaternion_wxyz": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "plug_spawn": {
+        "mating_position_m": [
+          0.381,
+          -0.22,
+          0.33
+        ],
+        "quaternion_wxyz": [
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "appliance": {
+        "description": "Box the cable is fixed to; the cable anchor is on its -X face",
+        "center_m": [
+          0.46,
+          -0.42,
+          0.35
+        ],
+        "half_size_m": [
+          0.06,
+          0.04,
+          0.03
+        ],
+        "anchor_local_m": [
+          -0.06,
+          0.0,
+          -0.015
+        ],
+        "rgba": [
+          0.85,
+          0.85,
+          0.85,
+          1
+        ]
+      },
+      "cable": {
+        "enabled": true,
+        "segments": 14,
+        "length_m": 0.35,
+        "radius_m": 0.003,
+        "mass_per_metre_kg_m": 0.07,
+        "bend_stiffness_nm_rad": 0.02,
+        "bend_damping_nms_rad": 0.002,
+        "joint_armature_kgm2": 1e-06,
+        "friction": [
+          0.6,
+          0.005,
+          0.0001
+        ],
+        "attach_local_m": [
+          -0.04,
+          0.0,
+          0.0
+        ],
+        "rest_bulge_world": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "anchor_solref": [
+          0.002,
+          1
+        ],
+        "contype": 2,
+        "conaffinity": 1,
+        "rgba": [
+          0.08,
+          0.08,
+          0.09,
+          1
+        ]
+      },
+      "socket_leaves": {
+        "enabled": true,
+        "description": "One spring leaf per slot on the outer wall pressing the blade toward the socket centre; insertion resistance = n_leaves * friction * normal force",
+        "insertion_force_target_n": 10.0,
+        "friction": [
+          0.4,
+          0.005,
+          0.0001
+        ],
+        "start_x_m": 0.004,
+        "length_m": 0.012,
+        "ramp_length_m": 0.008,
+        "protrusion_m": 0.00065,
+        "embed_m": 0.0003,
+        "half_height_m": 0.0025,
+        "stiffness_n_m": 4000,
+        "damping_ns_m": 10,
+        "armature_kg": 0.2,
+        "travel_m": 0.002,
+        "mass_kg": 0.0005,
+        "geom_solref": [
+          0.001,
+          1
+        ],
+        "geom_solimp": [
+          0.95,
+          0.99,
+          0.001
+        ],
+        "limit_solref": [
+          0.001,
+          1
+        ],
+        "limit_solimp": [
+          0.95,
+          0.99,
+          0.001
+        ],
+        "leaf_force_abort_n": 80.0,
+        "wall_force_abort_n": 20.0,
+        "push_force_cap_n": 15.0,
+        "push_force_note": "Scripted insertion stops advancing its position target while the measured axial socket force exceeds this cap (force-limited push); it bounds the wind-up of the compliant arm and the face impact at seating",
+        "wall_force_note": "With spring retention the socket walls guide the blades and the housing face bottoms out under the leftover push force, so the rigid-socket 5-8 N wall abort would reject every successful seating; the 0.2 mm penetration limit is unchanged",
+        "leaf_penetration_limit_m": 0.0003,
+        "rgba": [
+          0.78,
+          0.5,
+          0.25,
+          1
+        ]
+      },
+      "gripper_pads": {
+        "enabled": true,
+        "description": "Flat rubber pad plate on each right finger, 0.1 mm proud of the upstream mesh face so the pinch is a box-box contact patch (the mesh gave one contact point per finger, which cannot resist pitch about the pinch line)",
+        "face_offset_m": 0.0078,
+        "thickness_m": 0.001,
+        "center_local_xz_m": [
+          -0.001,
+          0.068
+        ],
+        "half_size_xz_m": [
+          0.008,
+          0.012
+        ],
+        "friction": [
+          1.0,
+          0.01,
+          0.01
+        ],
+        "condim": 4,
+        "solref": [
+          0.002,
+          1
+        ],
+        "priority": 2,
+        "rgba": [
+          0.15,
+          0.15,
+          0.16,
+          1
+        ]
+      },
+      "cameras": {
+        "scene_rgb": {
+          "position_m": [
+            0.85,
+            -0.9,
+            0.85
+          ],
+          "xyaxes": [
+            0.8,
+            0.6,
+            0,
+            -0.25,
+            0.333,
+            0.91
+          ],
+          "fovy_deg": 48
+        },
+        "inspection": {
+          "position_m": [
+            0.56,
+            -0.32,
+            0.59
+          ],
+          "xyaxes": [
+            0.75,
+            0.66,
+            0,
+            -0.35,
+            0.4,
+            0.847
+          ],
+          "fovy_deg": 45
+        },
+        "wrist_rgb": {
+          "parent_body": "openarm_right_hand",
+          "position_m": [
+            0.05,
+            -0.04,
+            0.01
+          ],
+          "target_local_m": [
+            0.0,
+            0.006,
+            0.123
+          ],
+          "fovy_deg": 55,
+          "visual_mount": {
+            "description": "Action-camera style housing behind the optical centre; visual only, no mass, no collision",
+            "housing_half_m": [
+              0.031,
+              0.0225,
+              0.016
+            ],
+            "housing_offset_z_m": 0.018,
+            "lens_radius_m": 0.009,
+            "lens_half_length_m": 0.004,
+            "lens_offset_z_m": 0.0045,
+            "bracket_radius_m": 0.005,
+            "bracket_hand_point_m": [
+              0.02,
+              -0.02,
+              0.0
+            ],
+            "rgba_housing": [
+              0.12,
+              0.12,
+              0.13,
+              1
+            ],
+            "rgba_lens": [
+              0.05,
+              0.05,
+              0.08,
+              1
+            ],
+            "rgba_bracket": [
+              0.5,
+              0.5,
+              0.52,
+              1
+            ]
+          }
+        }
+      }
+    }
+  },
+  "source_hashes": {
+    "C:\\Users\\worap\\OneDrive\\Desktop\\Project\\Capstone\\scripts\\probe_table_insert.py": "547b53aa7169fe5986e4f3be2c03de715df0aff3debe581175195b785abf92bf",
+    "controllers\\table_pickup.py": "571ea0bb68711571c363dcfae2f2db9169727ec6a1da2a5ac1db927e8ef608e4",
+    "controllers\\carry_path.py": "daab9f02571eab9f5f3356c96e3053eaf78b6b6c52721f279f7432282dfb8eae",
+    "scripts\\preview_table_task.py": "f8adc1ece952745b04cc934c4b2f4dc2c85a644af3b9d69d93ccd576d6eeb489",
+    "envs\\openarm_insert.py": "73c3e01a99eb626418c0b423bd7d426e1cb5d54462989fd97ea20a1b5864d9fb",
+    "envs\\scene.py": "7081e05d62a47af977c40cd2591d446240e23e4655da11c687136771d4b0ec60",
+    "envs\\workspace.py": "e94a5aac0d2e579d033ee776670f5e46f5769cef911f1fc61ad6193ae45ed581",
+    "configs\\workspace_v1.json": "9c5e26e3bf09b566d73fc08452b5b6cc62d447af98bef9d4edcf707fe0263fbb",
+    "configs\\openarm_v1.json": "73870626ba3838bb96d0c00e32776467eebdaac84e4a7fd98c8186c94558ad3c"
+  }
+}

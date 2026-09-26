@@ -1,5 +1,29 @@
 # Continuous table-to-insertion demonstrator
 
+**workspace_v1 update (2026-09-14).** The same probe now runs in the workspace_v1
+scene (real table, physical cable, spring-leaf retention, pad plates; see
+`docs/WORKSPACE.md` and `PHYSICS_CHANGELOG.md`). Two things changed in the
+demonstrator itself:
+
+- The socket is **no longer rotated**: `--socket-roll-deg` defaults to 0 (the
+  workspace orientation). With the firmer grasp the plug stays flat and is pinched
+  on its 24 mm faces, so the pre-insert tool pose for the identity socket is
+  reachable; the 90-degree variant below was a consequence of the old weak grasp
+  rolling the plug during closure.
+- The insertion loop is force-aware (privileged): lateral corrections run 2x the
+  axial advance with a +/-1 mm anti-wind-up bound, and the target advances only
+  while the measured axial socket force is below `push_force_cap_n` (15 N).
+
+Evidence: `results/full_task_cable_v1` (10 N retention, rendered; seated
+15.98 mm, 0.26 s hold, grasp drift 0.19 mm / 0.34 deg, peak rigid-wall force
+17 N, final push 13.6 N, exact command replay in `replay_report.json`) and
+`results/full_task_cable_v1_5n` (5 N variant). Both are single nominal cases in
+the new scene; the +/-2 mm placement and half-timestep cases below were run in
+the earlier scene and have not yet been repeated with the cable and leaves.
+
+The sections below describe the earlier floating-slab validation (2026-09-13),
+preserved as recorded.
+
 Validated 2026-09-13: **downward rest -> table pickup -> lift -> transport ->
 insert -> hold**, using the active right arm with the left parked. The plug is
 free throughout. There is no reset, plug pose overwrite, weld or external holder

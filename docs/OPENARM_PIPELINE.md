@@ -3,6 +3,20 @@
 This milestone provides a working bimanual scene, one-arm insertion, and replayable
 pilot demonstrations. It does not yet train a VLA or implement RLT.
 
+**workspace_v1 status (2026-09-14).** The scene now has a physical cable and 10 N
+spring-leaf retention (`docs/WORKSPACE.md`). The held-plug expert in
+`controllers/expert.py` was tuned for the rigid socket (0.3 N interval-peak
+withdraw threshold, bounded target lead) and **does not seat the plug against the
+retention**: `results/openarm_cable_v1/validation.json` records the failed audit
+(aligned episodes time out; slip and collision checks still pass). Until the expert
+is adapted (the table demonstrator's force-limited, anti-wind-up insertion loop in
+`scripts/probe_table_insert.py` is the reference), held-plug collection with
+`collect_varied.py` is blocked in the new scene, and the pilot episodes/results
+below (recorded in the earlier floating-slab scene) no longer replay strictly.
+To reproduce the old held-plug numbers, disable `cable` and `socket_leaves` in a
+copy of the workspace spec; the table/pedestal alone leave the held-plug reset
+unchanged (table top still at z = 0.32).
+
 ![Scene](../results/openarm_v1/preview/scene_rgb_start.png)
 ![Wrist view](../results/openarm_v1/preview/wrist_rgb_start.png)
 

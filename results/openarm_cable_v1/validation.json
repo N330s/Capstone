@@ -1,0 +1,855 @@
+{
+  "checks": {
+    "20_aligned": false,
+    "repeatable": true,
+    "signed_expert_correction": false,
+    "recovery": false,
+    "half_timestep_success": false,
+    "half_timestep_depth": true,
+    "half_timestep_force": false,
+    "parked_arm": true,
+    "bounded_slip": true,
+    "no_robot_collisions": true
+  },
+  "aligned": [
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    },
+    {
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004980818691099342,
+      "peak_force_n": 6.426256553879395,
+      "peak_penetration_m": 1.2446969195924196e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 6.62577207246845e-05,
+      "max_park_error_rad": 1.0830881384153335e-10,
+      "retries": 2
+    }
+  ],
+  "signed": [
+    {
+      "options": {
+        "offset_y_m": -0.001
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004990582997426718,
+      "peak_force_n": 8.825243406229648,
+      "peak_penetration_m": 2.3693527738278403e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.0001206022719265121,
+      "max_park_error_rad": 1.083100913948486e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_y_m": -0.0005
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004984671045521472,
+      "peak_force_n": 6.054243113709644,
+      "peak_penetration_m": 1.6074275549231472e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 7.286768234825118e-05,
+      "max_park_error_rad": 1.0830180407025404e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_y_m": 0.0005
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004984167211174451,
+      "peak_force_n": 4.475948493948436,
+      "peak_penetration_m": 3.1022654037823373e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 4.291269302774682e-05,
+      "max_park_error_rad": 1.0830836094143793e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_y_m": 0.001
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004996232665097633,
+      "peak_force_n": 8.820219739009428,
+      "peak_penetration_m": 2.8479073436683475e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.00013904335185912088,
+      "max_park_error_rad": 1.0829915601652004e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_z_m": -0.001
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004995186024622233,
+      "peak_force_n": 6.244173918601793,
+      "peak_penetration_m": 1.9097040744914424e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.0001470890125926194,
+      "max_park_error_rad": 1.0828953850280563e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_z_m": -0.0005
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0004995344485754782,
+      "peak_force_n": 8.525689727779488,
+      "peak_penetration_m": 2.023503702141497e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.00011096296398016948,
+      "max_park_error_rad": 1.0831120179413145e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_z_m": 0.0005
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0003580359299062974,
+      "peak_force_n": 8.456587983180897,
+      "peak_penetration_m": 3.160841529173484e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.00014652595172978574,
+      "max_park_error_rad": 1.0830872302303838e-10,
+      "retries": 2
+    },
+    {
+      "options": {
+        "offset_z_m": 0.001
+      },
+      "outcome": "timeout",
+      "duration_s": 8.000499999998286,
+      "depth_m": 0.0002196496575516682,
+      "peak_force_n": 4.266762522328037,
+      "peak_penetration_m": 2.7395887739365896e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 4.697655417868152e-05,
+      "max_park_error_rad": 1.0830234724894385e-10,
+      "retries": 2
+    }
+  ],
+  "recovery": {
+    "outcome": "timeout",
+    "duration_s": 8.000499999998286,
+    "depth_m": 0.011797935091347134,
+    "peak_force_n": 12.17964370128102,
+    "peak_penetration_m": 1.1773736094181767e-05,
+    "peak_robot_contact_n": 0.0,
+    "max_slip_m": 8.23142516801459e-05,
+    "max_park_error_rad": 1.0830881384148505e-10,
+    "retries": 2
+  },
+  "half_timestep": {
+    "outcome": "timeout",
+    "duration_s": 8.00000000000403,
+    "depth_m": 0.0004939519866736242,
+    "peak_force_n": 4.576089401250959,
+    "peak_penetration_m": 2.721303102706362e-06,
+    "peak_robot_contact_n": 0.0,
+    "max_slip_m": 1.7713085681565424e-05,
+    "max_park_error_rad": 4.261180363063142e-12,
+    "retries": 2
+  },
+  "manifest": {
+    "schema": "openarm_v1_joint_targets_v2",
+    "robot": {
+      "repository": "https://github.com/enactic/openarm_mujoco",
+      "commit": "161039cd74ea8675fb8197836fe5674659825c75",
+      "variant": "v1/openarm_bimanual.xml",
+      "robot_xml_sha256": "bcd6ab2318594908acf0a61e1947a1e4200a4eb2f0f67ae31b292d56f7df9386",
+      "license": "Apache-2.0",
+      "active_arm": "right",
+      "parked_arm": "left"
+    },
+    "scene_sha256": "a51e33daeae4292060cfb7e658427b36d1a49d5cc6556d0c0a80f7c06989d945",
+    "source_hashes": {
+      "envs/scene.py": "7081e05d62a47af977c40cd2591d446240e23e4655da11c687136771d4b0ec60",
+      "envs/workspace.py": "e94a5aac0d2e579d033ee776670f5e46f5769cef911f1fc61ad6193ae45ed581",
+      "envs/openarm_insert.py": "73c3e01a99eb626418c0b423bd7d426e1cb5d54462989fd97ea20a1b5864d9fb",
+      "connector/geometry.py": "ae26b18c84f5eba194d3d672cc6e508eabc314607c7ffa414d0b168ab73e7cc4",
+      "connector/simulation.py": "c15ded91c7df0e125673142da9036a051b5216bd0518ed9fb01d72926190e224",
+      "controllers/expert.py": "e900650dd4e39bd28ac882de38fb2b861db32ad8aefdf0003a52ced1b3bd72b8"
+    },
+    "workspace": {
+      "path": "configs/workspace_v1.json",
+      "sha256": "9c5e26e3bf09b566d73fc08452b5b6cc62d447af98bef9d4edcf707fe0263fbb",
+      "spec": {
+        "version": "workspace_v1",
+        "status": "scene definition; every dimension is a design value chosen for the simulation, not a measurement of real hardware",
+        "frames": {
+          "description": "World origin is the OpenArm v1 base (openarm_body_link0). +X points across the table away from the robot, +Y along the table, +Z up. The table top is 0.32 m above the robot base so every plug/socket/waypoint coordinate from earlier task configs stays valid.",
+          "robot_base_world_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "table_top_z_m": 0.32,
+          "floor_z_m": -0.43
+        },
+        "floor": {
+          "half_size_m": [
+            3.0,
+            3.0
+          ],
+          "rgba": [
+            0.25,
+            0.28,
+            0.3,
+            1
+          ]
+        },
+        "table": {
+          "length_y_m": 1.2,
+          "width_x_m": 0.6,
+          "height_m": 0.75,
+          "top_thickness_m": 0.03,
+          "center_xy_m": [
+            0.55,
+            0.0
+          ],
+          "leg_size_m": 0.05,
+          "leg_inset_m": 0.03,
+          "rgba_top": [
+            0.45,
+            0.43,
+            0.4,
+            1
+          ],
+          "rgba_legs": [
+            0.3,
+            0.28,
+            0.26,
+            1
+          ]
+        },
+        "pedestal": {
+          "description": "Column under the robot base, floor to the underside of the upstream base meshes",
+          "center_xy_m": [
+            -0.052,
+            0.032
+          ],
+          "half_size_xy_m": [
+            0.1,
+            0.13
+          ],
+          "top_z_m": -0.06,
+          "rgba": [
+            0.35,
+            0.36,
+            0.38,
+            1
+          ]
+        },
+        "fixture": {
+          "center_m": [
+            0.4631,
+            -0.155,
+            0.399
+          ],
+          "half_size_m": [
+            0.006,
+            0.024,
+            0.079
+          ],
+          "rgba": [
+            0.3,
+            0.32,
+            0.35,
+            1
+          ]
+        },
+        "socket": {
+          "position_m": [
+            0.4391,
+            -0.155,
+            0.478
+          ],
+          "quaternion_wxyz": [
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "plug_spawn": {
+          "mating_position_m": [
+            0.381,
+            -0.22,
+            0.33
+          ],
+          "quaternion_wxyz": [
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "appliance": {
+          "description": "Box the cable is fixed to; the cable anchor is on its -X face",
+          "center_m": [
+            0.46,
+            -0.42,
+            0.35
+          ],
+          "half_size_m": [
+            0.06,
+            0.04,
+            0.03
+          ],
+          "anchor_local_m": [
+            -0.06,
+            0.0,
+            -0.015
+          ],
+          "rgba": [
+            0.85,
+            0.85,
+            0.85,
+            1
+          ]
+        },
+        "cable": {
+          "enabled": true,
+          "segments": 14,
+          "length_m": 0.35,
+          "radius_m": 0.003,
+          "mass_per_metre_kg_m": 0.07,
+          "bend_stiffness_nm_rad": 0.02,
+          "bend_damping_nms_rad": 0.002,
+          "joint_armature_kgm2": 1e-06,
+          "friction": [
+            0.6,
+            0.005,
+            0.0001
+          ],
+          "attach_local_m": [
+            -0.04,
+            0.0,
+            0.0
+          ],
+          "rest_bulge_world": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "anchor_solref": [
+            0.002,
+            1
+          ],
+          "contype": 2,
+          "conaffinity": 1,
+          "rgba": [
+            0.08,
+            0.08,
+            0.09,
+            1
+          ]
+        },
+        "socket_leaves": {
+          "enabled": true,
+          "description": "One spring leaf per slot on the outer wall pressing the blade toward the socket centre; insertion resistance = n_leaves * friction * normal force",
+          "insertion_force_target_n": 10.0,
+          "friction": [
+            0.4,
+            0.005,
+            0.0001
+          ],
+          "start_x_m": 0.004,
+          "length_m": 0.012,
+          "ramp_length_m": 0.008,
+          "protrusion_m": 0.00065,
+          "embed_m": 0.0003,
+          "half_height_m": 0.0025,
+          "stiffness_n_m": 4000,
+          "damping_ns_m": 10,
+          "armature_kg": 0.2,
+          "travel_m": 0.002,
+          "mass_kg": 0.0005,
+          "geom_solref": [
+            0.001,
+            1
+          ],
+          "geom_solimp": [
+            0.95,
+            0.99,
+            0.001
+          ],
+          "limit_solref": [
+            0.001,
+            1
+          ],
+          "limit_solimp": [
+            0.95,
+            0.99,
+            0.001
+          ],
+          "leaf_force_abort_n": 80.0,
+          "wall_force_abort_n": 20.0,
+          "push_force_cap_n": 15.0,
+          "push_force_note": "Scripted insertion stops advancing its position target while the measured axial socket force exceeds this cap (force-limited push); it bounds the wind-up of the compliant arm and the face impact at seating",
+          "wall_force_note": "With spring retention the socket walls guide the blades and the housing face bottoms out under the leftover push force, so the rigid-socket 5-8 N wall abort would reject every successful seating; the 0.2 mm penetration limit is unchanged",
+          "leaf_penetration_limit_m": 0.0003,
+          "rgba": [
+            0.78,
+            0.5,
+            0.25,
+            1
+          ]
+        },
+        "gripper_pads": {
+          "enabled": true,
+          "description": "Flat rubber pad plate on each right finger, 0.1 mm proud of the upstream mesh face so the pinch is a box-box contact patch (the mesh gave one contact point per finger, which cannot resist pitch about the pinch line)",
+          "face_offset_m": 0.0078,
+          "thickness_m": 0.001,
+          "center_local_xz_m": [
+            -0.001,
+            0.068
+          ],
+          "half_size_xz_m": [
+            0.008,
+            0.012
+          ],
+          "friction": [
+            1.0,
+            0.01,
+            0.01
+          ],
+          "condim": 4,
+          "solref": [
+            0.002,
+            1
+          ],
+          "priority": 2,
+          "rgba": [
+            0.15,
+            0.15,
+            0.16,
+            1
+          ]
+        },
+        "cameras": {
+          "scene_rgb": {
+            "position_m": [
+              0.85,
+              -0.9,
+              0.85
+            ],
+            "xyaxes": [
+              0.8,
+              0.6,
+              0,
+              -0.25,
+              0.333,
+              0.91
+            ],
+            "fovy_deg": 48
+          },
+          "inspection": {
+            "position_m": [
+              0.56,
+              -0.32,
+              0.59
+            ],
+            "xyaxes": [
+              0.75,
+              0.66,
+              0,
+              -0.35,
+              0.4,
+              0.847
+            ],
+            "fovy_deg": 45
+          },
+          "wrist_rgb": {
+            "parent_body": "openarm_right_hand",
+            "position_m": [
+              0.05,
+              -0.04,
+              0.01
+            ],
+            "target_local_m": [
+              0.0,
+              0.006,
+              0.123
+            ],
+            "fovy_deg": 55,
+            "visual_mount": {
+              "description": "Action-camera style housing behind the optical centre; visual only, no mass, no collision",
+              "housing_half_m": [
+                0.031,
+                0.0225,
+                0.016
+              ],
+              "housing_offset_z_m": 0.018,
+              "lens_radius_m": 0.009,
+              "lens_half_length_m": 0.004,
+              "lens_offset_z_m": 0.0045,
+              "bracket_radius_m": 0.005,
+              "bracket_hand_point_m": [
+                0.02,
+                -0.02,
+                0.0
+              ],
+              "rgba_housing": [
+                0.12,
+                0.12,
+                0.13,
+                1
+              ],
+              "rgba_lens": [
+                0.05,
+                0.05,
+                0.08,
+                1
+              ],
+              "rgba_bracket": [
+                0.5,
+                0.5,
+                0.52,
+                1
+              ]
+            }
+          }
+        }
+      }
+    },
+    "robot_config": {
+      "schema_version": "openarm_v1_joint_targets_v2",
+      "active_arm": "right",
+      "command_hz": 50,
+      "kp_nm_rad": [
+        200,
+        200,
+        150,
+        150,
+        40,
+        40,
+        40
+      ],
+      "kd_nms_rad": [
+        12,
+        12,
+        8,
+        8,
+        3,
+        3,
+        3
+      ],
+      "joint_target_rate_rad_s": 0.5,
+      "finger_target_rate_m_s": 0.02,
+      "home_arm_rad": [
+        0,
+        0,
+        0,
+        1.5707963267948966,
+        0,
+        0,
+        0
+      ],
+      "initial_finger_travel_m": 0.0138,
+      "finger_servo_kp_n_m": 2000,
+      "grip_target_travel_m": 0.008,
+      "settle_s": 1.0,
+      "episode_limit_s": 8.0,
+      "robot_contact_abort_n": 5.0,
+      "grasp_slip_limit_m": 0.001,
+      "grasp_angle_limit_deg": 5.0,
+      "image_width": 320,
+      "image_height": 240,
+      "instruction": "Insert the plug into the socket."
+    },
+    "contact_config": {
+      "speed_m_s": 0.01,
+      "translation_stiffness_n_m": 300.0,
+      "translation_damping_ns_m": 6.0,
+      "rotation_stiffness_nm_rad": 0.12,
+      "rotation_damping_nms_rad": 0.002,
+      "force_limit_n": 2.0,
+      "torque_limit_nm": 0.03,
+      "target_overtravel_m": 0.001,
+      "duration_s": 3.5,
+      "hold_s": 0.25,
+      "contact_abort_n": 20.0,
+      "penetration_limit_m": 0.0002,
+      "success_angle_deg": 3.0,
+      "success_depth_m": 0.015,
+      "success_face_gap_m": 0.001,
+      "fit_tolerance_m": 5e-05,
+      "jam_window_s": 0.4,
+      "jam_progress_m": 0.0001,
+      "jam_contact_n": 0.1,
+      "trace_interval_s": 0.01,
+      "leaf_penetration_limit_m": 0.0003,
+      "leaf_force_abort_n": 80.0
+    },
+    "mujoco_version": "3.11.0",
+    "physics_timestep_s": 0.0005,
+    "command_interval_s": 0.02,
+    "seed": 0,
+    "reset_options": {},
+    "action_names": [
+      "openarm_right_joint1",
+      "openarm_right_joint2",
+      "openarm_right_joint3",
+      "openarm_right_joint4",
+      "openarm_right_joint5",
+      "openarm_right_joint6",
+      "openarm_right_joint7",
+      "right_finger_travel"
+    ],
+    "state_order": "left joint1..7, left mean finger travel, right joint1..7, right mean finger travel",
+    "grasp": "physical_finger_contact; no weld or plug force",
+    "controller": "joint PD plus model bias feedforward through capped upstream torque actuators",
+    "camera_calibration": {
+      "scene_rgb": {
+        "position_body_m": [
+          0.85,
+          -0.9,
+          0.85
+        ],
+        "quaternion_wxyz": [
+          0.7982735464286259,
+          0.5126005706905372,
+          0.17086685689684575,
+          0.26609118214287525
+        ],
+        "fovy_deg": 48.0,
+        "parent_body": "world"
+      },
+      "wrist_rgb": {
+        "position_body_m": [
+          0.05,
+          -0.04,
+          0.01
+        ],
+        "quaternion_wxyz": [
+          0.26737459171763606,
+          0.6546073843945143,
+          0.7071062928496392,
+          0.0008310309502109939
+        ],
+        "fovy_deg": 55.0,
+        "parent_body": "openarm_right_hand"
+      }
+    }
+  }
+}
