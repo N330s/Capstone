@@ -175,7 +175,10 @@ def main():
         forward=derived['probe_preplug_x_m'];hold=0.
         # Accumulated lateral (socket y/z) correction. Without a bound the loop integrates while
         # friction holds the plug and releases the wind-up as a slam into a slot wall.
-        lateral_bias=np.zeros(2);lateral_cap=.001
+        # The bound only counts from first socket contact: free-space alignment of the ~1 mm
+        # carry error is real motion, and counting it saturated the bound before contact and
+        # left the plug ~150 um low (the workspace_v2 1.5 m cable abort).
+        lateral_bias=np.zeros(2);lateral_cap=.001;engaged=False
         for step in range(500):
             info=env.metrics.diagnostics()
             valid=bool(info['valid_pose'])
@@ -189,10 +192,13 @@ def main():
             # retention load the compliant arm droops faster than a uniform 0.1 mm/step loop
             # can re-centre the elements inside the sub-millimetre opening clearance.
             local=np.clip(basis.T@(desired-d.xpos[env.plug]),-.0005,.0005)*np.array([1.,2.,2.])
-            for axis in (1,2):
-                proposed=lateral_bias[axis-1]+.2*local[axis]
-                if abs(proposed)>lateral_cap and np.sign(proposed)==np.sign(local[axis]):local[axis]=0.
-            lateral_bias+=.2*local[1:]
+            if not engaged and max(abs(info['socket_force_x_n']),info['contact_force_n'],info['leaf_contact_force_n'])>.1:
+                engaged=True;lateral_bias[:]=0.
+            if engaged:
+                for axis in (1,2):
+                    proposed=lateral_bias[axis-1]+.2*local[axis]
+                    if abs(proposed)>lateral_cap and np.sign(proposed)==np.sign(local[axis]):local[axis]=0.
+                lateral_bias+=.2*local[1:]
             error=np.r_[basis@local,
                         np.clip(rotation_vector(basis@d.xmat[env.plug].reshape(3,3).T),-.005,.005)]
             mujoco.mj_jacSite(m,d,jp,jr,env.grasp_site)
@@ -213,6 +219,7 @@ def main():
                                     'grasp_rotvec_deg':np.degrees(rotation_vector(
                                         (d.site_xmat[env.grasp_site].reshape(3,3).T@d.xmat[env.plug].reshape(3,3))@probe.reference_rotation.T)).tolist(),
                                     'plug_offset_yz_m':[info['offset_y_m'],info['offset_z_m']],
+                                    'lateral_bias_m':lateral_bias.tolist(),'engaged':engaged,
                                     'orientation_error_deg':info['orientation_error_deg'],
                                     'finger_travel_m':d.qpos[env.fqa['right']].tolist()})
             if callback and step%5==0:callback('insert')

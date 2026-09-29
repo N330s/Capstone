@@ -19,10 +19,12 @@ with nominal Thai Type O, Europlug and NEMA 1-15/5-15 plugs and a universal Thai
 all of them. Each is calibrated to the same 10 N retention
 (`results/insertion_force_v2_type_*_ws2`). [`configs/workspace_v2.json`](configs/workspace_v2.json)
 puts the Type O plug on the table with a 1.5 m cable running over the edge to an appliance on the
-floor. **The full task aborts in that scene** (`results/full_task_v2_type_o_cable150`: wall 30.84 N
-at 14.44 mm depth, plug 153 um low); it passes with a 1.0 m cable
-(`results/full_task_v2_type_o_longcable`), whose spec differs in five cable fields. Details and the
-open failure are in [docs/WORKSPACE.md](docs/WORKSPACE.md). workspace_v1 remains the working scene.
+floor. The full task first aborted in that scene (`results/full_task_v2_type_o_cable150`: wall
+30.84 N at 14.44 mm depth, plug 153 um low). The cause was the insertion loop's lateral
+anti-wind-up bound, which saturated during free-space approach. With that fixed, one run passes
+against the committed spec (`results/full_task_v2_type_o_cable150_fix`, seated 19.01 mm, peak wall
+22.9 N). Details are in [docs/WORKSPACE.md](docs/WORKSPACE.md). workspace_v1 remains the scene
+validated for data collection.
 
 **Continuous table -> grasp -> insert first worked** (2026-09-13) in a separately
 versioned, 90-degree-rotated socket fixture with the earlier floating-slab scene.

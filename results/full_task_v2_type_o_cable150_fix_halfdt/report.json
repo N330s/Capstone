@@ -1,0 +1,776 @@
+{
+  "passed": true,
+  "hold_s": 0.25999999999999995,
+  "final_depth_m": 0.019009957208085015,
+  "pickup": {
+    "passed": true,
+    "height_gain_m": 0.06932670389889672,
+    "max_grasp_drift_m": 3.9835952967354626e-05,
+    "final_finger_contact_bodies": 2,
+    "max_grasp_angle_drift_deg": 0.00757855384031226,
+    "grasp_position_in_tool_m": [
+      0.009006472698168216,
+      2.871361287046736e-06,
+      0.016006842332629532
+    ],
+    "grasp_rotation_in_tool": [
+      [
+        2.0165039322335804e-05,
+        -0.00013275718486178485,
+        -0.999999990984452
+      ],
+      [
+        -0.00013039732113198448,
+        0.9999999826856866,
+        -0.00013275981322719599
+      ],
+      [
+        0.9999999912949564,
+        0.00013039999706323515,
+        2.0147727791964873e-05
+      ]
+    ],
+    "peak_unwanted_robot_force_n": 0.0,
+    "peak_unwanted_penetration_m": 0.0,
+    "peak_cable_robot_force_n": 0.0,
+    "rest_tool_forward_axis_world": [
+      -9.76502452260796e-14,
+      3.6731962191594156e-06,
+      -0.9999999999932538
+    ],
+    "physical_end_to_end_insertion": false
+  },
+  "planning": {
+    "collision_queries": 40,
+    "nodes": 2
+  },
+  "peak_socket_force_n": 26.643587702450084,
+  "peak_socket_penetration_m": 2.3171329575864577e-05,
+  "peak_leaf_force_n": 47.97858049277219,
+  "peak_leaf_penetration_m": 9.691227660377135e-06,
+  "final_force_breakdown": {
+    "contact_force_n": 16.7932381709369,
+    "other_contact_force_n": 0.0,
+    "left_contact_force_n": 0.0,
+    "right_contact_force_n": 1.935280638618455,
+    "earth_contact_force_n": 1.010264295721619,
+    "grasp_contact_force_n": 45.17869119823135,
+    "plug_weight_n": 0.44145,
+    "socket_wall_normal_n": 15.59213020619952,
+    "socket_wall_friction_n": 6.236852082479809,
+    "leaf_normal_n": 24.94176337475207,
+    "leaf_friction_n": 9.976705349900827,
+    "leaf_contact_force_n": 26.863101270718236,
+    "socket_force_x_n": -12.921247818699534,
+    "socket_force_y_n": -0.0653532731062906,
+    "socket_force_z_n": 4.794681300245708,
+    "socket_force_total_n": 13.782303327582044,
+    "socket_lateral_force_n": 4.795126674159044,
+    "socket_torque_x_nm": -0.013507798878374947,
+    "socket_torque_y_nm": -0.24714346656272856,
+    "socket_torque_z_nm": -0.11858381329195881,
+    "socket_torque_nm": 0.2744530460207052,
+    "finger_force_x_n": 13.256452241970337,
+    "finger_force_y_n": 0.11622476185372488,
+    "finger_force_z_n": -3.9655156865496655,
+    "cable_force_n": 0.5151589873257229,
+    "cable_tension_n": -0.33240141228020603,
+    "cable_torque_nm": 0.011650343185037017
+  },
+  "max_grasp_drift_m": 5.099002815068185e-05,
+  "max_grasp_angle_deg": 0.09774590650141293,
+  "socket_roll_deg": 0.0,
+  "lower_fixture": false,
+  "timestep_s": 0.00025,
+  "plug_type": null,
+  "connector": {
+    "plug": "type_o",
+    "socket": "universal_th",
+    "spec": {
+      "plug": {
+        "name": "type_o",
+        "pins": [
+          {
+            "name": "left",
+            "kind": "round",
+            "pos_yz": [
+              -0.0095,
+              0.0
+            ],
+            "length_m": 0.019,
+            "width_m": 0.0,
+            "thickness_m": 0.0,
+            "diameter_m": 0.0048,
+            "sleeve_m": 0.01,
+            "opening": "left",
+            "rgba": [
+              0.72,
+              0.7,
+              0.59,
+              1.0
+            ]
+          },
+          {
+            "name": "right",
+            "kind": "round",
+            "pos_yz": [
+              0.0095,
+              0.0
+            ],
+            "length_m": 0.019,
+            "width_m": 0.0,
+            "thickness_m": 0.0,
+            "diameter_m": 0.0048,
+            "sleeve_m": 0.01,
+            "opening": "right",
+            "rgba": [
+              0.72,
+              0.7,
+              0.59,
+              1.0
+            ]
+          },
+          {
+            "name": "earth",
+            "kind": "round",
+            "pos_yz": [
+              0.0,
+              0.01189
+            ],
+            "length_m": 0.0214,
+            "width_m": 0.0,
+            "thickness_m": 0.0,
+            "diameter_m": 0.0048,
+            "sleeve_m": 0.0,
+            "opening": "earth",
+            "rgba": [
+              0.72,
+              0.7,
+              0.59,
+              1.0
+            ]
+          }
+        ],
+        "housing_size_m": [
+          0.03,
+          0.034,
+          0.02
+        ],
+        "housing_center_z_m": 0.006,
+        "grasp_offset_m": [
+          -0.016,
+          0.0,
+          0.006
+        ],
+        "mass_kg": 0.045,
+        "com_m": [
+          -0.014099999999999998,
+          0.0,
+          0.0048000000000000004
+        ],
+        "diaginertia": [
+          5.835e-06,
+          4.875e-06,
+          7.71e-06
+        ],
+        "symmetry_rolls_deg": [
+          0.0
+        ],
+        "edge_radius_m": 0.003,
+        "boot": {
+          "length_m": 0.012,
+          "radius_m": 0.0045,
+          "rgba": [
+            0.025,
+            0.028,
+            0.03,
+            1.0
+          ]
+        },
+        "rgba_housing": [
+          0.045,
+          0.05,
+          0.055,
+          1.0
+        ],
+        "rgba_sleeve": [
+          0.05,
+          0.05,
+          0.06,
+          1.0
+        ]
+      },
+      "socket": {
+        "name": "universal_th",
+        "openings": [
+          {
+            "name": "left",
+            "parts": [
+              {
+                "kind": "slot",
+                "center_yz": [
+                  -0.00635,
+                  0.0
+                ],
+                "radius_m": 0.0,
+                "half_yz": [
+                  0.00095,
+                  0.00345
+                ]
+              },
+              {
+                "kind": "hole",
+                "center_yz": [
+                  -0.0095,
+                  0.0
+                ],
+                "radius_m": 0.00255,
+                "half_yz": [
+                  0.0,
+                  0.0
+                ]
+              }
+            ],
+            "leaf_axis_yz": [
+              0.8660254037844387,
+              0.5
+            ]
+          },
+          {
+            "name": "right",
+            "parts": [
+              {
+                "kind": "slot",
+                "center_yz": [
+                  0.00635,
+                  0.0
+                ],
+                "radius_m": 0.0,
+                "half_yz": [
+                  0.00095,
+                  0.00345
+                ]
+              },
+              {
+                "kind": "hole",
+                "center_yz": [
+                  0.0095,
+                  0.0
+                ],
+                "radius_m": 0.00255,
+                "half_yz": [
+                  0.0,
+                  0.0
+                ]
+              }
+            ],
+            "leaf_axis_yz": [
+              -0.8660254037844387,
+              0.5
+            ]
+          },
+          {
+            "name": "earth",
+            "parts": [
+              {
+                "kind": "hole",
+                "center_yz": [
+                  0.0,
+                  0.01189
+                ],
+                "radius_m": 0.00255,
+                "half_yz": [
+                  0.0,
+                  0.0
+                ]
+              }
+            ],
+            "leaf_axis_yz": [
+              0.0,
+              -1.0
+            ]
+          }
+        ],
+        "face_y_m": [
+          -0.02,
+          0.02
+        ],
+        "face_z_m": [
+          -0.014,
+          0.026
+        ],
+        "depth_m": 0.023,
+        "leadin_m": 0.001,
+        "leadin_dilation_m": 0.0003,
+        "polygon_sides": 16,
+        "rgba": [
+          0.82,
+          0.81,
+          0.76,
+          1.0
+        ],
+        "bezel": {
+          "proud_m": 0.002,
+          "rgba": [
+            0.9,
+            0.89,
+            0.85,
+            1.0
+          ],
+          "width_m": 0.006
+        }
+      }
+    },
+    "derived": {
+      "preinsert_x_m": -0.0274,
+      "retreat_x_m": -0.023399999999999997,
+      "probe_preplug_x_m": -0.030399999999999996,
+      "success_depth_m": 0.018,
+      "flat_window_top_m": 0.0185,
+      "plot_depth_range_mm": [
+        -27.400000000000002,
+        23.4
+      ],
+      "table_rest_z_offset_m": 0.004,
+      "spawn_height_above_table_m": 0.006,
+      "cable_attach_local_m": [
+        -0.041999999999999996,
+        0.0,
+        0.006
+      ],
+      "housing_width_m": 0.034,
+      "housing_depth_m": 0.03,
+      "housing_height_m": 0.02,
+      "max_pin_length_m": 0.0214,
+      "min_pin_length_m": 0.019
+    },
+    "finger_contact_travel_m": 0.0188,
+    "grip_travel_m": 0.013000000000000001,
+    "leaf_geoms": [
+      "socket_leaf_left",
+      "socket_leaf_right",
+      "socket_leaf_earth"
+    ]
+  },
+  "physical_end_to_end_insertion": true,
+  "command_hz": 50,
+  "mujoco_version": "3.11.0",
+  "duration_including_settle_s": 43.34000000011593,
+  "socket_position_m": [
+    0.4455,
+    -0.155,
+    0.472
+  ],
+  "offset_x_mm": 0,
+  "offset_y_mm": 0,
+  "peak_unwanted_robot_force_n": 0.0,
+  "peak_cable_robot_force_n": 0.0,
+  "workspace": {
+    "path": "configs/workspace_v2.json",
+    "sha256": "7263b3949cfc5e566d1e8b4ec74ceda61c291d45bd4cb0a4d46697bc1d6673f7",
+    "spec": {
+      "version": "workspace_v2",
+      "status": "scene definition; every dimension is a design value chosen for the simulation, not a measurement of real hardware. Connector dimensions follow the nominal TIS 166-2549 / CEE 7/16 / NEMA values in connector/catalog.py",
+      "connector": {
+        "plug": "type_o",
+        "socket": "universal_th",
+        "leadin_m": 0.001,
+        "description": "Catalog connector: Thai 3-round-pin plug (Type O) in a universal Thai socket with keyhole line/neutral openings and a round earth hole (connector/catalog.py); plug-dependent numbers below (socket x, plug_spawn z, cable attach) are checked against the spec by envs/workspace.validate"
+      },
+      "frames": {
+        "description": "World origin is the OpenArm v1 base (openarm_body_link0). +X points across the table away from the robot, +Y along the table, +Z up. The table top is 0.32 m above the robot base so every plug/socket/waypoint coordinate from earlier task configs stays valid.",
+        "robot_base_world_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "table_top_z_m": 0.32,
+        "floor_z_m": -0.43
+      },
+      "floor": {
+        "half_size_m": [
+          3.0,
+          3.0
+        ],
+        "rgba": [
+          0.25,
+          0.28,
+          0.3,
+          1
+        ]
+      },
+      "table": {
+        "length_y_m": 1.2,
+        "width_x_m": 0.6,
+        "height_m": 0.75,
+        "top_thickness_m": 0.03,
+        "center_xy_m": [
+          0.55,
+          0.0
+        ],
+        "leg_size_m": 0.05,
+        "leg_inset_m": 0.03,
+        "rgba_top": [
+          0.45,
+          0.43,
+          0.4,
+          1
+        ],
+        "rgba_legs": [
+          0.3,
+          0.28,
+          0.26,
+          1
+        ]
+      },
+      "pedestal": {
+        "description": "Column under the robot base, floor to the underside of the upstream base meshes",
+        "center_xy_m": [
+          -0.052,
+          0.032
+        ],
+        "half_size_xy_m": [
+          0.1,
+          0.13
+        ],
+        "top_z_m": -0.06,
+        "rgba": [
+          0.35,
+          0.36,
+          0.38,
+          1
+        ]
+      },
+      "fixture": {
+        "center_m": [
+          0.4745,
+          -0.155,
+          0.415
+        ],
+        "half_size_m": [
+          0.006,
+          0.026,
+          0.095
+        ],
+        "rgba": [
+          0.3,
+          0.32,
+          0.35,
+          1
+        ]
+      },
+      "socket": {
+        "position_m": [
+          0.4455,
+          -0.155,
+          0.472
+        ],
+        "quaternion_wxyz": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "note": "x = fixture front face (0.4685) - socket depth 0.023; 6.4 mm further from the robot than v1 so the home pose leaves the 21.4 mm earth pin clear of the entry (pre-insert distance 27.4 mm); z lowered 6 mm because the Type O grasp frame sits 6 mm above its mating frame"
+      },
+      "plug_spawn": {
+        "mating_position_m": [
+          0.381,
+          -0.22,
+          0.326
+        ],
+        "quaternion_wxyz": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "note": "z = table top 0.32 + housing bottom offset (half height 0.010 - centre 0.006) + 2 mm settle drop"
+      },
+      "appliance": {
+        "description": "Box the cable is fixed to, standing on the floor under the table; the cable anchor is on its -X face",
+        "center_m": [
+          0.36,
+          -0.22,
+          -0.4
+        ],
+        "half_size_m": [
+          0.06,
+          0.04,
+          0.03
+        ],
+        "anchor_local_m": [
+          -0.06,
+          0.0,
+          -0.015
+        ],
+        "rgba": [
+          0.85,
+          0.85,
+          0.85,
+          1
+        ]
+      },
+      "cable": {
+        "enabled": true,
+        "segments": 60,
+        "length_m": 1.5,
+        "radius_m": 0.003,
+        "mass_per_metre_kg_m": 0.035,
+        "mass_note": "Light 2-core cord: with 0.75 m hanging to the floor a 0.07 kg/m cable pulled the 45 g plug across the table (0.5 N vs ~0.2 N table friction); at 0.035 kg/m the edge friction leaves ~0.1 N on the plug",
+        "bend_stiffness_nm_rad": 0.02,
+        "bend_damping_nms_rad": 0.002,
+        "joint_armature_kgm2": 1e-06,
+        "friction": [
+          0.6,
+          0.005,
+          0.0001
+        ],
+        "attach_local_m": [
+          -0.042,
+          0.0,
+          0.006
+        ],
+        "rest_bulge_world": [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        "rest_waypoints_world": [
+          [
+            0.235,
+            null,
+            0.33
+          ],
+          [
+            0.22,
+            null,
+            -0.42
+          ]
+        ],
+        "rest_segments": [
+          null,
+          31,
+          null
+        ],
+        "rest_bulges_world": [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "layout_note": "1.5 m cable laid in three arcs: along the table to just past the robot-side edge (x = 0.25, at the plug's own y so a randomised spawn keeps the route), straight down to the floor (31 segments = 0.775 m over the 0.75 m drop), then the rest of the length (~0.55 m) coils on the floor under the table before the appliance box",
+        "anchor_solref": [
+          0.002,
+          1
+        ],
+        "contype": 2,
+        "conaffinity": 1,
+        "rgba": [
+          0.08,
+          0.08,
+          0.09,
+          1
+        ]
+      },
+      "socket_leaves": {
+        "enabled": true,
+        "description": "One spring leaf per socket opening the plug uses: round pins are pressed from the outer wall toward the socket centre (line/neutral along -/+Y, earth along -Z), blades in a keyhole outward from the inner web; insertion resistance = n_leaves * friction * normal force",
+        "insertion_force_target_n": 10.0,
+        "friction": [
+          0.4,
+          0.005,
+          0.0001
+        ],
+        "start_x_m": 0.004,
+        "length_m": 0.012,
+        "ramp_length_m": 0.008,
+        "protrusion_m": 0.00065,
+        "embed_m": 0.0003,
+        "half_height_m": 0.0025,
+        "stiffness_n_m": 4000,
+        "damping_ns_m": 10,
+        "armature_kg": 0.2,
+        "travel_m": 0.002,
+        "mass_kg": 0.0005,
+        "geom_solref": [
+          0.001,
+          1
+        ],
+        "geom_solimp": [
+          0.95,
+          0.99,
+          0.001
+        ],
+        "limit_solref": [
+          0.001,
+          1
+        ],
+        "limit_solimp": [
+          0.95,
+          0.99,
+          0.001
+        ],
+        "leaf_force_abort_n": 80.0,
+        "wall_force_abort_n": 30.0,
+        "push_force_cap_n": 15.0,
+        "push_force_note": "Scripted insertion stops advancing its position target while the measured axial socket force exceeds this cap (force-limited push); it bounds the wind-up of the compliant arm and the face impact at seating",
+        "wall_force_note": "With spring retention the socket walls guide the pins and the housing face bottoms out on the socket face plate under the leftover push force, so the rigid-socket 5-8 N wall abort would reject every successful seating; the 0.2 mm penetration limit is unchanged",
+        "leaf_penetration_limit_m": 0.0003,
+        "rgba": [
+          0.78,
+          0.5,
+          0.25,
+          1
+        ],
+        "openings": [
+          "left",
+          "right",
+          "earth"
+        ],
+        "per_opening": {}
+      },
+      "gripper_pads": {
+        "enabled": true,
+        "description": "Flat rubber pad plate on each right finger, 0.1 mm proud of the upstream mesh face so the pinch is a box-box contact patch (the mesh gave one contact point per finger, which cannot resist pitch about the pinch line)",
+        "face_offset_m": 0.0078,
+        "thickness_m": 0.001,
+        "center_local_xz_m": [
+          -0.001,
+          0.068
+        ],
+        "half_size_xz_m": [
+          0.008,
+          0.012
+        ],
+        "friction": [
+          1.0,
+          0.01,
+          0.01
+        ],
+        "condim": 4,
+        "solref": [
+          0.002,
+          1
+        ],
+        "priority": 2,
+        "rgba": [
+          0.15,
+          0.15,
+          0.16,
+          1
+        ]
+      },
+      "cameras": {
+        "scene_rgb": {
+          "position_m": [
+            0.85,
+            -0.9,
+            0.85
+          ],
+          "xyaxes": [
+            0.8,
+            0.6,
+            0,
+            -0.25,
+            0.333,
+            0.91
+          ],
+          "fovy_deg": 48
+        },
+        "inspection": {
+          "position_m": [
+            0.56,
+            -0.32,
+            0.59
+          ],
+          "xyaxes": [
+            0.75,
+            0.66,
+            0,
+            -0.35,
+            0.4,
+            0.847
+          ],
+          "fovy_deg": 45
+        },
+        "wrist_rgb": {
+          "parent_body": "openarm_right_hand",
+          "position_m": [
+            0.05,
+            -0.04,
+            0.01
+          ],
+          "target_local_m": [
+            0.0,
+            0.006,
+            0.123
+          ],
+          "fovy_deg": 55,
+          "visual_mount": {
+            "description": "Action-camera style housing behind the optical centre; visual only, no mass, no collision",
+            "housing_half_m": [
+              0.031,
+              0.0225,
+              0.016
+            ],
+            "housing_offset_z_m": 0.018,
+            "lens_radius_m": 0.009,
+            "lens_half_length_m": 0.004,
+            "lens_offset_z_m": 0.0045,
+            "bracket_radius_m": 0.005,
+            "bracket_hand_point_m": [
+              0.02,
+              -0.02,
+              0.0
+            ],
+            "rgba_housing": [
+              0.12,
+              0.12,
+              0.13,
+              1
+            ],
+            "rgba_lens": [
+              0.05,
+              0.05,
+              0.08,
+              1
+            ],
+            "rgba_bracket": [
+              0.5,
+              0.5,
+              0.52,
+              1
+            ]
+          }
+        }
+      }
+    }
+  },
+  "source_hashes": {
+    "C:\\Users\\worap\\OneDrive\\Desktop\\Project\\Capstone\\scripts\\probe_table_insert.py": "2e9b19135caf305ab6ed3d95f8134fce90af245eb0ca14dc831db76f01000e9e",
+    "controllers\\table_pickup.py": "4713a83e52a6eecccc239dd6b45397052cb3c5ceb19faf0052b163094f4eab39",
+    "controllers\\carry_path.py": "daab9f02571eab9f5f3356c96e3053eaf78b6b6c52721f279f7432282dfb8eae",
+    "scripts\\preview_table_task.py": "8d179ba074d562c58f641b9cb223d8310972209faeb9c21e5f90448cb5cf8003",
+    "envs\\openarm_insert.py": "fd790e4e2a01fbfd96d83bb248c5f2962b24353104b9668663c81478d5f3ab75",
+    "envs\\scene.py": "ae56909839ebf45c897a58676e796aab9134922c3d6730162fa8c63dd56f9c67",
+    "envs\\workspace.py": "c225e2d3fca7d5ad2831eae9b876693d6e5d2d1258d9de071ce84d794e950d36",
+    "configs\\workspace_v2.json": "7263b3949cfc5e566d1e8b4ec74ceda61c291d45bd4cb0a4d46697bc1d6673f7",
+    "configs\\openarm_v1.json": "e7b3db5777906334d67a34741c7d94ee0b1f24a10a3599b169a96af5ae9b4414",
+    "connector\\spec.py": "1c88e9e7a3afa233046e2f53ccfaa62ab5c88be3bbacc1bee1b2b44af8536515",
+    "connector\\catalog.py": "0c7389ec9a62b54eee644ea4ac9aa092df100bc651b3e5a040796c5492e69310",
+    "connector\\slab.py": "d9d2ae4b8bb5c50a03c643b34050f1cb855bd66e0a6c933517624b07614b5f64",
+    "connector\\builder.py": "fd81c2b8196576ba22dec29bbc3b75a8a9a856a36d9dd090f5fdc178771d1209"
+  }
+}

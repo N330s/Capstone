@@ -13,6 +13,16 @@ is adapted (the table demonstrator's force-limited, anti-wind-up insertion loop 
 `scripts/probe_table_insert.py` is the reference), held-plug collection with
 `collect_varied.py` is blocked in the new scene, and the pilot episodes/results
 below (recorded in the earlier floating-slab scene) no longer replay strictly.
+
+**Update (2026-09-28).** The expert now disables the jam retry once the leaves carry the
+plug and pauses its advance at `push_force_cap_n` (see `PHYSICS_CHANGELOG.md`).
+`results/openarm_cable_v2/validation.json` passes 9 of 10 checks: 20/20 aligned, 8/8
+signed offsets, recovery, and half-timestep success/depth. `half_timestep_force` still
+fails (peak wall 10.17 N vs 8.50 N at half timestep, 0.2 N tolerance) because the peak
+is a seating impact transient. The ten-reset `collect_varied.py` preflight passes 10/10, so
+held-plug collection in workspace_v1 is unblocked. The pilot data below still predates it
+and does not replay strictly.
+
 To reproduce the old held-plug numbers, disable `cable` and `socket_leaves` in a
 copy of the workspace spec; the table/pedestal alone leave the held-plug reset
 unchanged (table top still at z = 0.32).

@@ -81,9 +81,10 @@ Layers, bottom to top (each imports only from below):
    `reset(seed, options)/step(action)` env; `env.place_plug(pos, quat)` is the only sanctioned way
    to position the plug (it also lays the cable consistently). `OpenArmInsertEnv(workspace=...)` and
    the scripts' `--workspace` flag select a spec: **`configs/workspace_v2.json`** is the Type O /
-   `universal_th` variant with a 1.5 m cable to a floor appliance. It is **not a working scene** —
-   the full task aborts there (`results/full_task_v2_type_o_cable150`); see the workspace_v2 section
-   of `docs/WORKSPACE.md` before using it, and do not collect data in it.
+   `universal_th` variant with a 1.5 m cable to a floor appliance. The full task passes there in one
+   run (`results/full_task_v2_type_o_cable150_fix`; `..._cable150` is the preserved pre-fix abort),
+   but the held-plug expert is not validated in v2. See the workspace_v2 section of
+   `docs/WORKSPACE.md` before using it, and do not collect data in it yet.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),
    `table_pickup.py` (`PickupProbe`: downward-rest → raise → approach → descend → close → lift),
    `carry_path.py` (`plan_carry`: bidirectional RRT with a rigid carried-plug proxy on scratch

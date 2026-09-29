@@ -224,3 +224,55 @@ records a clean pickup against the committed spec, and eight pickup cases pass w
 1.0 m cable (`results/table_pickup_v2_longcable`, worst drift 0.063 mm; that report
 embeds no workspace spec, so it names no hash). No v2 dataset may be collected until a cable layout passes end to
 end against a committed spec.
+
+# Insertion anti-wind-up counted from contact (controller, not physics)
+
+This diagnoses workspace_v2 item 5. I rebuilt `lateral_bias` in `scripts/probe_table_insert.py` from
+the saved traces. In both v2 runs (1.5 m abort and 1.0 m pass) the approach starts about 1.0–1.3 mm
+low, and the ±1 mm z bound saturated within **5 steps of free-space approach**. The upward
+correction was zeroed from then on, and the plug crossed the mouth 150–380 µm low with zero socket
+force. In v1 the bias peaked around 0.7 mm and the offset converged to about 0. The 1.0 m pass
+shows the same low-plug signature, so it was marginal. The cable only changed how hard the
+binding hit.
+
+One change: the bound (and bias accumulation) starts at first socket contact (axial, wall or leaf
+force > 0.1 N), with the bias reset to 0 there; the bias is now logged as `lateral_bias_m`. The
+file is not in `env.manifest()`.
+
+- `results/full_task_v2_type_o_cable150_fix` (committed workspace_v2, sha256 `7263b394…`):
+  **passes**. Offset about 0 µm before contact, seated 19.01 mm, 0.26 s hold, peak wall 22.9 N
+  (was 30.84 N abort), peak leaf 50.1 N, grasp drift 0.061 mm / 0.17°. Under the leaf load the
+  bias still saturates in contact and the plug droops about 140 µm, within the opening clearance.
+- `results/full_task_cable_v1_fix` (workspace_v1 regression): passes, 15.99 mm, peak wall 18.4 N,
+  peak leaf 72.2 N (previously 15.98 mm / 17.4 N / 72.2 N).
+- `results/full_task_v2_type_o_cable150_fix_halfdt` (0.25 ms): passes, seated 19.01 mm, peak wall 26.6 N, peak leaf 48.0 N,
+  grasp drift 0.051 mm. The peak wall is within the 30 N limit at both steps but differs by 3.7 N,
+  so its exact value is step-sensitive.
+
+# Held-plug expert with spring-leaf retention (controller, not physics)
+
+`controllers/expert.py` is in `env.manifest()`, so this change alters every manifest source hash;
+datasets recorded before it do not replay strictly (none recorded since workspace_v1 did either).
+
+Diagnosis of `results/openarm_cable_v1` (one aligned workspace_v1 episode, traced per command): the
+approach is clean (offset < 5 um, no wall contact) until the leaves engage at 9.9 mm. Under the
+~13 N leaf load the compliant arm droops ~0.37 mm in Z, the blades graze a slot wall, and the
+rigid-socket jam guard (`interval_peak_contact_force_n` > 0.3 N) withdraws. The leaves hold the
+plug at 12.5 mm, so the withdrawal cannot extract it; the re-align pulls it back out and the second
+retry repeats this until the 8 s limit.
+
+One change: once leaf force exceeds 0.1 N during an attempt (`engaged`), the jam retry is disabled
+and the 8 mm/s target advance pauses while the axial socket load is at or above
+`push_force_cap_n` (15 N, the probe's cap). Before engagement the expert is unchanged, so the
+mouth-jam retry still handles the deliberate 1 mm probe fault.
+
+`results/openarm_cable_v2`: 20/20 aligned (3.46 s, 16.0 mm, peak wall 10.17 N, no retries,
+repeatable), 8/8 signed +/-0.5/1 mm offsets, recovery succeeds after one retry, half timestep
+succeeds at the same depth; parked arm, grasp slip (max 0.12 mm) and robot contact pass. The fixed
+ten-reset collection preflight passes 10/10 (`scripts/collect_varied.py` without `--record`).
+
+Not passing: `half_timestep_force`. The peak wall force is 10.17 N at 0.5 ms and 8.50 N at
+0.25 ms (tolerance 0.2 N). The peak is the housing reaching the socket face under the retention
+push (axial -24 N vs -12 N at that instant), an impact transient whose size depends on the step.
+The rigid-socket peaks were 1.69/1.67 N. A slower 4 mm/s push after engagement was tried and made
+it worse (12.74 vs 6.94 N), so it was reverted. The tolerance was not loosened; this check stays open.

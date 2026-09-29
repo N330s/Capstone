@@ -17,6 +17,11 @@ class InsertionExpert:
         self.last_depth = -1.
         self.stall_time = 0.
         self.probe_offset_y_m = probe_offset_y_m
+        # Spring-leaf retention: once the leaves carry the plug a withdrawal cannot pull it out
+        # (they hold it), so jam retries are for the mouth only and the push is force-capped.
+        leaves = env.workspace.get("socket_leaves", {}) if env.leaf_geoms else {}
+        self.push_cap = leaves.get("push_force_cap_n", np.inf)
+        self.engaged = False
         self.jacp = np.zeros((3, env.model.nv))
         self.jacr = np.zeros((3, env.model.nv))
 
@@ -29,14 +34,18 @@ class InsertionExpert:
         # Closed-loop privileged pose feedback compensates calibrated grasp offset.
         if self.phase == "align":
             self.forward = self.preinsert
+            self.engaged = False
             if self.phase_time > .5 and abs(info["offset_y_m"]) < .0001 and abs(info["offset_z_m"]) < .0001 and info["orientation_error_deg"] < .2:
                 self.phase,self.phase_time = "insert",0.
         elif self.phase == "insert":
-            self.forward = min(.00015,self.forward+.008*e.dt)
+            self.engaged = self.engaged or info.get("leaf_contact_force_n",0.) > .1
+            if not (self.engaged and abs(info["socket_force_x_n"]) >= self.push_cap):
+                self.forward = min(.00015,self.forward+.008*e.dt)
             depth = info["insertion_depth_m"]
             self.stall_time = self.stall_time+e.dt if abs(depth-self.last_depth) < 1e-5 and info["contact_force_n"]>.8 else 0.
             self.last_depth = depth
-            if (self.stall_time > .4 or info.get("interval_peak_contact_force_n",0) > .3) and not info["valid_pose"] and self.retries < 2:
+            if ((self.stall_time > .4 or info.get("interval_peak_contact_force_n",0) > .3) and not info["valid_pose"]
+                    and self.retries < 2 and not self.engaged):
                 self.phase,self.phase_time = "withdraw",0.
                 self.retries += 1
                 self.forward = min(self.forward, self.retreat)

@@ -189,8 +189,17 @@ heavier cord pulled the 45 g plug across the table (≈0.5 N against ≈0.2 N of
 
 ### Full-task status
 
-**The full task does not pass with the committed spec.** `results/full_task_v2_type_o_cable150`
-aborts during insertion:
+**Update (2026-09-28): the full task passes with the committed spec** after a fix to the
+insertion controller, not the scene: `results/full_task_v2_type_o_cable150_fix` (same workspace
+sha256 `7263b394…`) seated 19.01 mm, 0.26 s hold, grasp drift 0.061 mm / 0.17°, peak wall 22.9 N,
+peak leaf 50.1 N, final axial −12.9 N, cable 0.52 N. The low plug was caused by the probe's ±1 mm lateral
+anti-wind-up bound. It counted the free-space alignment of the ~1 mm carry error, so the z bound
+saturated within 5 steps and the upward correction was zeroed while nothing touched the plug.
+The bound now counts from first socket contact (`PHYSICS_CHANGELOG.md`). One run passes. No
+multi-reset v2 audit exists yet, and the held-plug expert has not been validated in v2.
+
+The preserved failure before the fix, `results/full_task_v2_type_o_cable150`, aborted during
+insertion:
 
 ```
 wall 30.84 N, wall penetration 0.002 mm, leaf 16.1 N, depth 14.44 mm,
@@ -202,7 +211,9 @@ openings (contact normals ≈ (0, 0, −1) spread across `socket_w01`, `socket_w
 the matching lead-in hulls) while the plug sits 153 µm low. The load is a binding load, not a
 seating load — the plug jams in Z rather than meeting the retention head-on. Raising
 `wall_force_abort_n` from 20 to 30 N did not help and should not be raised further; the alignment
-is the problem. **Why the plug ends up low with this cable route is not yet diagnosed.**
+is the problem. The plug was low because of the controller bound described above. The same
+signature (plug 150 µm low before any contact) is in the passing 1.0 m run's trace, so that
+pass was marginal rather than evidence that the shorter cable fixes the problem.
 
 Pickup and transport are unaffected: that same failed run records a clean pickup against the
 committed spec, and `results/table_pickup_v2_longcable` passes all eight pickup cases (worst grasp
@@ -217,7 +228,9 @@ axial 13.8 N. That run's report embeds its own spec, which differs from the comm
 [[0.235, −0.22, 0.33], [0.22, −0.22, −0.42]], no `rest_segments`, third `rest_bulges_world` +Y), so
 it can be reproduced by restoring those five values.
 
-**No v2 dataset may be collected until a cable layout passes end to end with a committed spec.**
+**No v2 dataset may be collected yet.** The committed layout now passes one end-to-end run. The
+held-plug expert used by `collect_varied.py` still has to pass `validate_openarm.py` against this
+spec before collection.
 
 ### What is not validated (workspace_v2)
 
@@ -225,5 +238,6 @@ it can be reproduced by restoring those five values.
 - The cable length, mass and routing are simulation choices; no real appliance cord was measured.
 - Only `type_o` has been run through the robot task at all. The other catalog plugs have leaf
   calibration only.
-- The one full-task run against the committed spec is the preserved failure above. Do not cite
-  workspace_v2 as a working end-to-end scene.
+- Against the committed spec there is one passing full-task run
+  (`full_task_v2_type_o_cable150_fix`) and the preserved failure before the fix. Cite it as a
+  single demonstration, not as a validated scene.
