@@ -14,7 +14,9 @@ def main():
     p.add_argument("--dataset",type=Path,default=Path("data/openarm_v1_pilot"))
     args=p.parse_args()
     manifest=json.loads((args.dataset/"manifest.json").read_text())
-    env=OpenArmInsertEnv(images=False)
+    # Rebuild the scene the dataset was recorded in; the per-episode hash check below still applies.
+    recorded=manifest.get("robot_manifest",{}).get("workspace")
+    env=OpenArmInsertEnv(images=False,workspace=recorded["path"] if recorded else None)
     rows=[]
     try:
         for episode in manifest["episodes"]:

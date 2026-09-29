@@ -83,8 +83,11 @@ Layers, bottom to top (each imports only from below):
    the scripts' `--workspace` flag select a spec: **`configs/workspace_v2.json`** is the Type O /
    `universal_th` variant with a 1.5 m cable to a floor appliance. The full task passes there in one
    run (`results/full_task_v2_type_o_cable150_fix`; `..._cable150` is the preserved pre-fix abort),
-   but the held-plug expert is not validated in v2. See the workspace_v2 section of
-   `docs/WORKSPACE.md` before using it, and do not collect data in it yet.
+   and the held-plug expert passes `validate_openarm.py --workspace` there 9/10
+   (`results/openarm_v2_type_o_cable150`, same open half-timestep force check as v1). See the
+   workspace_v2 section of `docs/WORKSPACE.md` before using it; keep v1 and v2 datasets separate.
+   `collect_varied.py`/`validate_openarm.py` take `--workspace`; `replay_pilot.py` rebuilds the
+   scene from the dataset manifest.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),
    `table_pickup.py` (`PickupProbe`: downward-rest → raise → approach → descend → close → lift),
    `carry_path.py` (`plan_carry`: bidirectional RRT with a rigid carried-plug proxy on scratch

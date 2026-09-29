@@ -195,8 +195,17 @@ sha256 `7263b394…`) seated 19.01 mm, 0.26 s hold, grasp drift 0.061 mm / 0.17�
 peak leaf 50.1 N, final axial −12.9 N, cable 0.52 N. The low plug was caused by the probe's ±1 mm lateral
 anti-wind-up bound. It counted the free-space alignment of the ~1 mm carry error, so the z bound
 saturated within 5 steps and the upward correction was zeroed while nothing touched the plug.
-The bound now counts from first socket contact (`PHYSICS_CHANGELOG.md`). One run passes. No
-multi-reset v2 audit exists yet, and the held-plug expert has not been validated in v2.
+The bound now counts from first socket contact (`PHYSICS_CHANGELOG.md`). One full-task run passes;
+no multi-reset audit of the table-to-socket task exists yet in v2.
+
+The held-plug expert (the one `collect_varied.py` uses) is validated against the same spec in
+`results/openarm_v2_type_o_cable150`. It passes 9 of 10 checks:
+- 20/20 aligned (4.38 s, seated 19.01 mm, peak wall 13.0 N, no retries, repeatable)
+- 8/8 signed ±0.5/1 mm offsets and recovery after one retry
+- half-timestep success and depth; parked arm, grasp slip (max 0.052 mm) and robot contact
+`half_timestep_force` fails as in workspace_v1 (13.03 N vs 10.15 N, 0.2 N tolerance; seating
+impact transient). The held-plug reset lays the 1.5 m cable without disturbing the grasp: slip
+0.009 mm, cable load 0.33 N after settling.
 
 The preserved failure before the fix, `results/full_task_v2_type_o_cable150`, aborted during
 insertion:
@@ -228,9 +237,11 @@ axial 13.8 N. That run's report embeds its own spec, which differs from the comm
 [[0.235, −0.22, 0.33], [0.22, −0.22, −0.42]], no `rest_segments`, third `rest_bulges_world` +Y), so
 it can be reproduced by restoring those five values.
 
-**No v2 dataset may be collected yet.** The committed layout now passes one end-to-end run. The
-held-plug expert used by `collect_varied.py` still has to pass `validate_openarm.py` against this
-spec before collection.
+**Held-plug collection in v2** meets the same bar as workspace_v1: `validate_openarm.py` passes
+9/10 against the committed spec (above), and the ten-reset preflight
+`collect_varied.py --workspace configs/workspace_v2.json` passes 10/10 with no retries. Keep v1 and
+v2 datasets separate (different scene, plug and manifest hashes). The table-to-socket task in v2
+has one passing run only and is not a collector.
 
 ### What is not validated (workspace_v2)
 
@@ -238,6 +249,6 @@ spec before collection.
 - The cable length, mass and routing are simulation choices; no real appliance cord was measured.
 - Only `type_o` has been run through the robot task at all. The other catalog plugs have leaf
   calibration only.
-- Against the committed spec there is one passing full-task run
-  (`full_task_v2_type_o_cable150_fix`) and the preserved failure before the fix. Cite it as a
-  single demonstration, not as a validated scene.
+- For the table-to-socket task there is one passing full-task run against the committed spec
+  (`full_task_v2_type_o_cable150_fix`), plus the preserved failure from before the fix. Cite it
+  as a single demonstration; only the held-plug task has a multi-episode audit in v2.

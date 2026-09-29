@@ -25,10 +25,11 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output",type=Path,default=Path("results/openarm_v1"),
                         help="report directory; must not already contain validation.json")
+    parser.add_argument("--workspace",type=Path,default=None,help="workspace spec (default configs/workspace_v1.json)")
     args=parser.parse_args()
     if (args.output/"validation.json").exists():
         raise FileExistsError(f"{args.output/'validation.json'} exists; choose a new --output to keep earlier evidence")
-    env=OpenArmInsertEnv(images=False)
+    env=OpenArmInsertEnv(images=False,workspace=args.workspace)
     aligned=[]
     for i in range(20):
         aligned.append(rollout(env))
@@ -40,7 +41,7 @@ def main():
             signed.append({"options":{field:value},**result})
             print(field,value,result["outcome"],flush=True)
     recovery=rollout(env,probe=.001)
-    fine=OpenArmInsertEnv(images=False,timestep=.00025)
+    fine=OpenArmInsertEnv(images=False,timestep=.00025,workspace=args.workspace)
     half=rollout(fine)
     checks={"20_aligned":all(r["outcome"]=="success" for r in aligned),
             "repeatable":all(r==aligned[0] for r in aligned),

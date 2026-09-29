@@ -43,13 +43,14 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--output", type=Path, default=Path("data/openarm_v1_varied10"))
     p.add_argument("--record", action="store_true", help="Record images after all ten preflights succeed")
+    p.add_argument("--workspace", type=Path, default=None, help="workspace spec (default configs/workspace_v1.json)")
     args = p.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     bank, heldout = collection_bank(), evaluation_bank()
     write_json(args.output/"collection_bank.json", bank)
     write_json(args.output/"evaluation_bank.json", {"status":"reserved; not executed or used for tuning", "resets":heldout})
     preflight = []
-    env = OpenArmInsertEnv(images=False)
+    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
     try:
         for row in bank:
             try:
@@ -66,7 +67,7 @@ def main():
     if not args.record:
         return
     records = []
-    env = OpenArmInsertEnv(images=True)
+    env = OpenArmInsertEnv(images=True, workspace=args.workspace)
     try:
         for row in bank:
             result,payload = rollout(env,row,record=True)
