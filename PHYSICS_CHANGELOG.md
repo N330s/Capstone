@@ -276,3 +276,18 @@ Not passing: `half_timestep_force`. The peak wall force is 10.17 N at 0.5 ms and
 push (axial -24 N vs -12 N at that instant), an impact transient whose size depends on the step.
 The rigid-socket peaks were 1.69/1.67 N. A slower 4 mm/s push after engagement was tried and made
 it worse (12.74 vs 6.94 N), so it was reverted. The tolerance was not loosened; this check stays open.
+
+# workspace_v2_cable30: 30 cable segments for data collection
+
+`configs/workspace_v2_cable30.json` is `workspace_v2.json` with one change: `cable.segments`
+60 -> 30 (`rest_segments` [null, 31, null] -> [null, 16, null], so 0.80 m still covers the 0.75 m
+drop to the floor). Same length, mass per metre, per-joint bend stiffness/damping, route and
+connector. `workspace_v2.json` is kept unchanged because existing results cite its hash.
+
+Why: physics wall time. Same scene, 3 s of simulated held-plug stepping, measured on this
+machine: 60 segments (nv 207) 70.9 s wall per simulated second, 30 segments (nv 117) 18.7 s,
+14 segments (nv 69) 11.8 s. A ~37 s tabletop episode drops from ~44 min to ~12 min.
+
+Effect on physics: segments are twice as long with the same per-joint stiffness, so the cable is
+effectively stiffer in bending. This is the scene chosen for automated v2 data collection.
+Validation of the task in this scene is in progress (`collect_random.py`, not yet recorded here).

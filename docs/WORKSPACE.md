@@ -243,6 +243,13 @@ it can be reproduced by restoring those five values.
 v2 datasets separate (different scene, plug and manifest hashes). The table-to-socket task in v2
 has one passing run only and is not a collector.
 
+### workspace_v2_cable30 (data-collection variant)
+
+[`configs/workspace_v2_cable30.json`](../configs/workspace_v2_cable30.json) is workspace_v2 with the cable cut
+from 60 to 30 segments (16 of them over the 0.75 m drop) and nothing else changed. It is the v2 scene used
+for automated data collection: physics is ~3.8x faster (see `PHYSICS_CHANGELOG.md`), the cable is
+effectively stiffer. Results recorded against `workspace_v2.json` do not transfer to it automatically.
+
 ### What is not validated (workspace_v2)
 
 - Everything in the workspace_v1 list above still applies.
