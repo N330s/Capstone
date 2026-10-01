@@ -1,0 +1,148 @@
+{
+  "video": "train_00006.frames.npz",
+  "camera": "scene_rgb",
+  "fps": 25,
+  "stride": 2,
+  "frames": [
+    {
+      "frame": 0,
+      "sim_time_s": 1.04,
+      "phase": "survey"
+    },
+    {
+      "frame": 1,
+      "sim_time_s": 1.08,
+      "phase": "survey"
+    },
+    {
+      "frame": 2,
+      "sim_time_s": 1.12,
+      "phase": "survey"
+    },
+    {
+      "frame": 3,
+      "sim_time_s": 1.16,
+      "phase": "survey"
+    },
+    {
+      "frame": 4,
+      "sim_time_s": 1.2,
+      "phase": "survey"
+    },
+    {
+      "frame": 5,
+      "sim_time_s": 1.24,
+      "phase": "survey"
+    },
+    {
+      "frame": 6,
+      "sim_time_s": 1.28,
+      "phase": "survey"
+    },
+    {
+      "frame": 7,
+      "sim_time_s": 1.32,
+      "phase": "survey"
+    },
+    {
+      "frame": 8,
+      "sim_time_s": 1.36,
+      "phase": "survey"
+    },
+    {
+      "frame": 9,
+      "sim_time_s": 1.4,
+      "phase": "survey"
+    },
+    {
+      "frame": 10,
+      "sim_time_s": 1.44,
+      "phase": "survey"
+    },
+    {
+      "frame": 11,
+      "sim_time_s": 1.48,
+      "phase": "survey"
+    },
+    {
+      "frame": 12,
+      "sim_time_s": 1.52,
+      "phase": "survey"
+    },
+    {
+      "frame": 13,
+      "sim_time_s": 1.56,
+      "phase": "survey"
+    },
+    {
+      "frame": 14,
+      "sim_time_s": 1.6,
+      "phase": "survey"
+    },
+    {
+      "frame": 15,
+      "sim_time_s": 1.64,
+      "phase": "survey"
+    },
+    {
+      "frame": 16,
+      "sim_time_s": 1.68,
+      "phase": "survey"
+    },
+    {
+      "frame": 17,
+      "sim_time_s": 1.72,
+      "phase": "survey"
+    },
+    {
+      "frame": 18,
+      "sim_time_s": 1.76,
+      "phase": "survey"
+    },
+    {
+      "frame": 19,
+      "sim_time_s": 1.8,
+      "phase": "survey"
+    },
+    {
+      "frame": 20,
+      "sim_time_s": 1.84,
+      "phase": "survey"
+    },
+    {
+      "frame": 21,
+      "sim_time_s": 1.88,
+      "phase": "survey"
+    }
+  ],
+  "episode": {
+    "outcome": "expert_ik_infeasible",
+    "expert": {
+      "phase": "survey",
+      "failure": "ik_infeasible",
+      "failure_detail": "ik_infeasible:descend_contact,descend_ik,grasp_ik",
+      "place": null,
+      "retries": 0,
+      "regrasps": 0,
+      "detector_mode": "privileged",
+      "detection_error": {
+        "plug_pos_m": 0.0,
+        "socket_pos_m": 0.0
+      },
+      "pick_plans": [
+        {
+          "attempt": 0,
+          "result": "ik_infeasible:descend_contact,descend_ik,grasp_ik"
+        }
+      ],
+      "pick_report": null,
+      "pick_failures": [],
+      "phase_log": [
+        {
+          "phase": "survey",
+          "duration_s": 0.9
+        }
+      ]
+    }
+  }
+}

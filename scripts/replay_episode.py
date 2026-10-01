@@ -57,6 +57,8 @@ def main():
     p.add_argument("--video", type=Path, default=None, help="write a video instead of opening a window")
     p.add_argument("--camera", default="scene_rgb")
     p.add_argument("--loop", action="store_true")
+    p.add_argument("--workspace", type=Path, default=None,
+                   help="workspace spec the episode was recorded in (default configs/workspace_v1.json)")
     args = p.parse_args()
 
     payload = np.load(args.npz)
@@ -74,7 +76,7 @@ def main():
         print(f"no sidecar {summary_path.name}; socket and other static bodies "
               f"will render at their XML default pose, not the recorded one")
 
-    env = OpenArmInsertEnv(images=False)
+    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
     try:
         seed, options = resolve_reset_call(summary)
         if seed is not None and options is not None:

@@ -60,7 +60,7 @@ config["grip_open_travel_m"].
 import numpy as np
 import mujoco
 from connector.simulation import rotation_vector
-from controllers.place_insert import PlaceInsert, PLACE_PHASES
+from controllers.place_insert import PlaceInsert, PLACE_PHASES, LEGACY_PLUG, plug_geometry
 
 # ---- table pick (tabletop mode only) --------------------------------------
 PLUG_HALF_HEIGHT_M = 0.008            # housing half-height: plug centre above the table
@@ -128,17 +128,17 @@ def grasp_rotation_in_plug(flip, tilt_deg):
     return TOP_DOWN_IN_PLUG @ rot_x(180. * flip) @ rot_y(tilt_deg)
 
 
-def flat_plug_pose(pos, mat, table_z):
+def flat_plug_pose(pos, mat, table_z, rest_z=PLUG_HALF_HEIGHT_M):
     """A plug resting on the known table plane: keep x, y and yaw, snap z and tilt."""
     yaw = float(np.arctan2(mat[1, 0], mat[0, 0]))
-    return np.array([pos[0], pos[1], table_z + PLUG_HALF_HEIGHT_M]), yaw_mat(yaw)
+    return np.array([pos[0], pos[1], table_z + rest_z]), yaw_mat(yaw)
 
 
-def upright_insert_frame(basis):
+def upright_insert_frame(basis, symmetric=True):
     """Equal blades make a half-turn about the mating axis equivalent (see
     ConnectorMetrics). Use the equivalent frame whose z points up, so a
     top-down grasp can reach it."""
-    return basis @ HALF_TURN if basis[2, 2] < 0 else basis
+    return basis @ HALF_TURN if (symmetric and basis[2, 2] < 0) else basis
 
 
 def smoothstep(x):
@@ -182,8 +182,9 @@ class GraspPlanner:
     the state passed to ``set_state``.
     """
 
-    def __init__(self, model, table_z, *, seed=7):
+    def __init__(self, model, table_z, *, seed=7, geom=None):
         m = self.m = model
+        self.geom = geom if geom is not None else LEGACY_PLUG
         self.d = mujoco.MjData(m)
         self.table_z = float(table_z)
         joints = [m.joint(f"openarm_right_joint{i}").id for i in range(1, 8)]
@@ -196,6 +197,8 @@ class GraspPlanner:
         self.plug = m.body("plug").id
         self.plug_qadr = int(m.jnt_qposadr[m.joint("plug_free").id])
         self.right_bodies = {i for i in range(m.nbody) if m.body(i).name.startswith("openarm_right")}
+        self.cable_bodies = {int(m.geom_bodyid[g]) for g in range(m.ngeom)
+                             if (m.geom(g).name or "").startswith("cable_seg")}
         self.fingers = {m.body(f"openarm_right_{s}_finger").id for s in ("right", "left")}
         hand = m.body("openarm_right_hand").id
         self.distal_geoms = [g for g in range(m.ngeom)
@@ -324,6 +327,8 @@ class GraspPlanner:
                 continue
             if ignore_plug and self.plug in (b1, b2):
                 continue
+            if b1 in self.cable_bodies or b2 in self.cable_bodies:
+                continue   # the planner ignores the cable (stale scratch pose, as in plan_carry)
             bad.append((self.m.geom(c.geom1).name, self.m.geom(c.geom2).name, float(c.dist)))
         return bad
 
@@ -347,16 +352,16 @@ class GraspPlanner:
         return True
 
     # ------------------------------------------------------------ planning
-    def insert_feasible(self, flip, tilt, insert, seed=None):
+    def insert_feasible(self, flip, tilt, insert, seed=None, lift_end=None):
         """Can the hand reach the standoff and seated poses holding the plug
         with this grasp? ``insert`` = (socket entry position, upright basis)."""
         entry, basis = insert
         G = grasp_rotation_in_plug(flip, tilt)
-        plug_in_tool = -G.T @ (GRASP_POINT_IN_PLUG_M + np.array([0., 0., GRASP_HEIGHT_OFFSET_M]))
+        plug_in_tool = -G.T @ (np.asarray(self.geom.grasp_point_m) + np.array([0., 0., GRASP_HEIGHT_OFFSET_M]))
         rot, q = basis @ G, seed
         saved = self.d.qpos[self.plug_qadr:self.plug_qadr + 7].copy()
         try:
-            for forward in (-STANDOFF_M, 0.0):
+            for forward in (-self.geom.pick_standoff_m, 0.0):
                 plug = entry + basis @ np.array([forward, 0., 0.])
                 q = self.solve(plug - rot @ plug_in_tool, rot, ([q] if q is not None else []) + self.seeds,
                                good=MIN_JOINT_MARGIN_RAD)
@@ -364,11 +369,28 @@ class GraspPlanner:
                     return False
                 # The hand holding the plug there must not hit the socket or table.
                 self.place_plug(plug, basis)
-                if self.contacts(q, HELD_TRAVEL_M, ignore_plug=True):
+                if self.contacts(q, self.geom.held_travel_m, ignore_plug=True):
                     return False
-            return True
         finally:
             self.d.qpos[self.plug_qadr:self.plug_qadr + 7] = saved
+        # The pick is only insert-consistent if the planner that will actually run the insertion
+        # (place_insert.plan_insertion, straight insertion line included) accepts this grasp.
+        # Its own two-pose check above passed grasps (e.g. tilt -15) that plan_insertion then
+        # refused at runtime with plan_insert_line_infeasible.
+        from controllers.place_insert import ArmKinematics, plan_insertion, nominal_grasp, REFERENCE_POSTURE
+        if getattr(self, "_insert_kin", None) is None:
+            self._insert_kin = ArmKinematics(self.m)
+        # Same seeds, in the same order, as PlaceInsert.start() at runtime: the posture the arm is
+        # in when the insertion is planned (end of this grasp's lift), then REFERENCE_POSTURE.
+        # The seated IK is strongly seed-dependent at the raised socket (REFERENCE alone: 0/20).
+        for q_seed in ([lift_end] if lift_end is not None else []) + [REFERENCE_POSTURE]:
+            plan = plan_insertion(self._insert_kin, self.d.qpos.copy(), q_seed, entry, basis,
+                                  *nominal_grasp(flip, tilt, self.geom.grasp_point_m), table_z=self.table_z,
+                                  finger_travel=self.geom.held_travel_m, standoff=self.geom.place_standoff_m,
+                                  symmetric=self.geom.half_turn_symmetric)
+            if plan.failure is None:
+                return True
+        return False
 
     @staticmethod
     def _flip_order(plug_mat, tilt):
@@ -393,7 +415,8 @@ class GraspPlanner:
                 entry = {"flip": flip, "tilt_deg": tilt, "result": why}
                 if plan is not None:
                     plan["insert_consistent"] = (insert is not None and
-                                                 self.insert_feasible(flip, tilt, insert, plan["q_grasp"]))
+                                                 self.insert_feasible(flip, tilt, insert, plan["q_grasp"],
+                                                                      lift_end=plan["lift"][-1]))
                     entry["insert_consistent"] = plan["insert_consistent"]
                     plans.append(plan)
                 log.append(entry)
@@ -409,18 +432,18 @@ class GraspPlanner:
     def _candidate(self, plug_pos, plug_mat, flip, tilt, q_now):
         R = plug_mat @ grasp_rotation_in_plug(flip, tilt)
         approach = R[:, 0]
-        grasp = plug_pos + plug_mat @ GRASP_POINT_IN_PLUG_M + np.array([0., 0., GRASP_HEIGHT_OFFSET_M])
+        grasp = plug_pos + plug_mat @ np.asarray(self.geom.grasp_point_m) + np.array([0., 0., GRASP_HEIGHT_OFFSET_M])
         qg = self.solve(grasp, R, ([q_now] if q_now is not None else []) + self.seeds)
         if qg is None:
             return None, "grasp_ik"
-        clearance = self.distal_clearance(qg, PRESHAPE_TRAVEL_M, self.finger_geoms)
+        clearance = self.distal_clearance(qg, self.geom.preshape_travel_m, self.finger_geoms)
         if clearance < MIN_FINGER_TABLE_CLEARANCE_M:
             raise_by = MIN_FINGER_TABLE_CLEARANCE_M - clearance + 1e-4
             if raise_by > 0.004:
                 return None, "finger_table_clearance"
             grasp = grasp + np.array([0., 0., raise_by])
             qg, ok = self.ik(grasp, R, qg)
-            clearance = self.distal_clearance(qg, PRESHAPE_TRAVEL_M, self.finger_geoms)
+            clearance = self.distal_clearance(qg, self.geom.preshape_travel_m, self.finger_geoms)
             if not ok or clearance < MIN_FINGER_TABLE_CLEARANCE_M:
                 return None, "finger_table_clearance"
         pregrasp = grasp - approach * PREGRASP_CLEARANCE_M
@@ -437,10 +460,10 @@ class GraspPlanner:
         if margin < MIN_JOINT_MARGIN_RAD:
             return None, f"joint_margin_{margin:.3f}"
         for q in up + [qg]:
-            if self.contacts(q, PRESHAPE_TRAVEL_M):
+            if self.contacts(q, self.geom.preshape_travel_m):
                 return None, "descend_contact"
         for q in lift:
-            if self.contacts(q, HELD_TRAVEL_M, ignore_plug=True):
+            if self.contacts(q, self.geom.held_travel_m, ignore_plug=True):
                 return None, "lift_contact"
         score = min(margin, GOOD_JOINT_MARGIN_RAD) + 0.1 * margin - 0.002 * abs(tilt)
         return {"flip": flip, "tilt_deg": tilt, "grasp_pos": grasp, "grasp_rot": R,
@@ -484,13 +507,17 @@ class PickFeasibility:
     """Deterministic scene-sampler check: can the expert plan this pick from the
     reset posture? Uses a private model (the live env is never touched)."""
 
-    def __init__(self, table_z, *, require_insert=False):
+    def __init__(self, table_z, *, require_insert=False, workspace=None):
         from envs.scene import build_model
+        from envs.workspace import load_workspace
+        from envs.openarm_insert import socket_mount_home
         import json
         from pathlib import Path
         config = json.loads((Path(__file__).resolve().parents[1] / "configs/openarm_v1.json").read_text())
-        self.model = build_model()
-        self.planner = GraspPlanner(self.model, table_z)
+        self.model = build_model(load_workspace(workspace))
+        self.mount_home = socket_mount_home(self.model)
+        self.geom = plug_geometry(self.model, workspace)
+        self.planner = GraspPlanner(self.model, table_z, geom=self.geom)
         self.table_z = float(table_z)
         self.require_insert = require_insert
         m = self.model
@@ -507,7 +534,7 @@ class PickFeasibility:
                 self.qpos0[adr] = self.open_travel if side == "right" else .025
 
     def __call__(self, options):
-        from envs.openarm_insert import OpenArmInsertEnv
+        from envs.openarm_insert import OpenArmInsertEnv, carry_fixture
         m = self.model
         yaw_tilt = OpenArmInsertEnv._yaw_tilt_matrix
         basis = yaw_tilt(float(options.get("socket_yaw_deg", 0.)), float(options.get("socket_tilt_deg", 0.)))
@@ -515,10 +542,11 @@ class PickFeasibility:
         quat = np.zeros(4)
         mujoco.mju_mat2Quat(quat, basis.ravel())
         m.body_quat[self.socket], m.body_pos[self.socket] = quat, entry   # site sits at the body origin
+        carry_fixture(m, self.mount_home)   # the pedestal travels with the socket, as in the env
         plug_pos, plug_mat = flat_plug_pose(np.asarray(options["plug_pos_m"], dtype=float),
                                             yaw_tilt(float(options.get("plug_yaw_deg", 0.)), 0.),
-                                            self.table_z)
-        insert = (entry, upright_insert_frame(basis)) if self.require_insert else None
+                                            self.table_z, self.geom.rest_z_m)
+        insert = (entry, upright_insert_frame(basis, self.geom.half_turn_symmetric)) if self.require_insert else None
         plan, reason, _ = plan_table_pick(self.planner, self.qpos0, plug_pos, plug_mat, self.home,
                                           insert=insert, require_insert=self.require_insert,
                                           travel=self.open_travel)
@@ -583,7 +611,8 @@ class PickInsertExpert:
         self.probe_offset_y_m = probe_offset_y_m
         self.table_z = float(getattr(env, "reset_options", {}).get("table_height_m", 0.0))
         self.grip = env.config["grip_open_travel_m"]
-        self.planner = GraspPlanner(env.model, self.table_z)
+        self.geom = plug_geometry(env.model, getattr(env, "workspace", None))
+        self.planner = GraspPlanner(env.model, self.table_z, geom=self.geom)
         self.plan, self.path, self.arrive_next = None, None, None
         self.one_sided_s = 0.0        # time spent with exactly one pad on the plug during close
         self.one_sided_snapshot = None          # (travel, tool_mat, side) at first one-sided touch
@@ -634,7 +663,7 @@ class PickInsertExpert:
         if self.one_sided_snapshot is None:
             return
         travel, tool_mat, side = self.one_sided_snapshot
-        correction = self.grasp_correction_m + tool_mat[:, 1] * (side * (travel - HELD_TRAVEL_M))
+        correction = self.grasp_correction_m + tool_mat[:, 1] * (side * (travel - self.geom.held_travel_m))
         norm = float(np.linalg.norm(correction))
         if norm > MAX_GRASP_CORRECTION_M:
             correction *= MAX_GRASP_CORRECTION_M / norm
@@ -651,8 +680,9 @@ class PickInsertExpert:
         """Plan grasp + transit from the latched detection. Sets self.plan."""
         e = self.env
         plug_pos, plug_mat = flat_plug_pose(self.detection["plug_pos"] + self.grasp_correction_m,
-                                            self.detection["plug_mat"], self.table_z)
-        insert = (self.detection["socket_pos"], upright_insert_frame(self.detection["socket_mat"]))
+                                            self.detection["plug_mat"], self.table_z, self.geom.rest_z_m)
+        insert = (self.detection["socket_pos"], upright_insert_frame(self.detection["socket_mat"],
+                                                                     self.geom.half_turn_symmetric))
         plan, reason, log = plan_table_pick(self.planner, e.data.qpos, plug_pos, plug_mat, self._q_now(),
                                             insert=insert, require_insert=True)
         summary = {"attempt": self.regrasps, "result": reason, "candidates": log}
@@ -675,7 +705,7 @@ class PickInsertExpert:
         if plan is None:
             self._fail("ik_infeasible" if reason.startswith("ik_infeasible") else reason, reason)
             return
-        self.grip = PRESHAPE_TRAVEL_M
+        self.grip = self.geom.preshape_travel_m
         self._start_path("transit_pick", plan["transit"], speed=TRANSIT_SPEED_RAD_S,
                          min_duration=2.0, hold=0.3)
 
@@ -755,15 +785,15 @@ class PickInsertExpert:
                 self._update_grasp_correction()
                 self._regrasp_or_fail("grasp_one_sided_contact")
                 return np.r_[self.plan["q_grasp"], self.grip]
-            self.grip = max(CLOSE_TRAVEL_M, self.grip - FINGER_CLOSE_RATE_M_S * e.dt)
-            closed_for = self.phase_time - (PRESHAPE_TRAVEL_M - CLOSE_TRAVEL_M) / FINGER_CLOSE_RATE_M_S
-            if (self.grip <= CLOSE_TRAVEL_M and closed_for > 0.2 and info["grasp_established"]
-                    and abs(info["grip_travel_m"] - HELD_TRAVEL_M) > HELD_TRAVEL_TOLERANCE_M):
+            self.grip = max(self.geom.close_travel_m, self.grip - FINGER_CLOSE_RATE_M_S * e.dt)
+            closed_for = self.phase_time - (self.geom.preshape_travel_m - self.geom.close_travel_m) / FINGER_CLOSE_RATE_M_S
+            if (self.grip <= self.geom.close_travel_m and closed_for > 0.2 and info["grasp_established"]
+                    and abs(info["grip_travel_m"] - self.geom.held_travel_m) > HELD_TRAVEL_TOLERANCE_M):
                 # Pads stopped wider (or narrower) than the housing width: they
                 # pinch an edge or corner, not both side faces. That grasp squirts
                 # out later, so re-grasp instead of lifting.
                 self._regrasp_or_fail("grasp_misaligned")
-            elif self.grip <= CLOSE_TRAVEL_M and closed_for > 0.2 and info["grasp_established"]:
+            elif self.grip <= self.geom.close_travel_m and closed_for > 0.2 and info["grasp_established"]:
                 self.lift_drift = self.lift_angle = 0.
                 self._start_path("lift", self.plan["lift"], speed=LIFT_SPEED_RAD_S,
                                  min_duration=2.5, hold=0.5)
@@ -774,7 +804,7 @@ class PickInsertExpert:
 
         if self.phase == "regrasp":
             # Open in place, then retreat straight up and re-plan from there.
-            self.grip = PRESHAPE_TRAVEL_M
+            self.grip = self.geom.preshape_travel_m
             if self.regrasps >= self.max_regrasps:
                 self._fail("regrasp_budget_exhausted")
             elif self.phase_time > 0.6:
@@ -804,7 +834,7 @@ class PickInsertExpert:
             self._start_path("descend", self.plan["descend"], speed=DESCEND_SPEED_RAD_S,
                              min_duration=2.5, hold=0.3)
         elif phase == "close":
-            self.grip = min(self.grip, PRESHAPE_TRAVEL_M)
+            self.grip = min(self.grip, self.geom.preshape_travel_m)
             self.one_sided_s = 0.0
             self.one_sided_snapshot = None
             self._goto("close")

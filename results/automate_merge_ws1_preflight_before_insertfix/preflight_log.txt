@@ -1,0 +1,15 @@
+train_00000 expert_insert_stalled (0/10 accepted, 1 attempted) | depth=4.02mm force=0.00N axial=17.63N lateral=0.36mm
+train_00001 expert_plan_insert_line_infeasible (0/10 accepted, 2 attempted) | plan_insert_line_infeasible
+train_00002 success (1/10 accepted, 3 attempted)
+train_00003 success (2/10 accepted, 4 attempted)
+train_00004 success (3/10 accepted, 5 attempted)
+train_00005 expert_plan_insert_line_infeasible (3/10 accepted, 6 attempted) | plan_insert_line_infeasible
+train_00006 expert_plan_insert_line_infeasible (3/10 accepted, 7 attempted) | plan_insert_line_infeasible
+train_00007 expert_plan_insert_line_infeasible (3/10 accepted, 8 attempted) | plan_insert_line_infeasible
+train_00008 expert_plan_insert_line_infeasible (3/10 accepted, 9 attempted) | plan_insert_line_infeasible
+train_00009 expert_plan_insert_line_infeasible (3/10 accepted, 10 attempted) | plan_insert_line_infeasible
+train_00010 expert_plan_seated_unreachable (3/10 accepted, 11 attempted) | plan_seated_unreachable
+train_00011 success (4/10 accepted, 12 attempted)
+train_00012 success (5/10 accepted, 13 attempted)
+train_00013 expert_plan_insert_line_infeasible (5/10 accepted, 14 attempted) | plan_insert_line_infeasible
+train_00014 expert_plan_insert_line_infeasible (5/10 accepted, 15 attempted) | plan_insert_line_infeasible

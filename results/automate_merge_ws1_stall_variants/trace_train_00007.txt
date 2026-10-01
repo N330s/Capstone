@@ -1,0 +1,42 @@
+ 1184 align  t= 0.00 fwd=   0.00 depth= -9.25 off_y=  139 off_z= -461 plug_local_yz=  139/ -461um ori=0.09 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1190 align  t= 0.12 fwd=   0.00 depth= -9.15 off_y=  108 off_z= -300 plug_local_yz=  108/ -300um ori=0.06 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.024 cable=0.12
+ 1200 align  t= 0.32 fwd=   0.00 depth= -8.93 off_y=    4 off_z=   75 plug_local_yz=    4/   75um ori=0.02 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.022 cable=0.12
+ 1210 align  t= 0.52 fwd=   0.00 depth= -8.94 off_y=   -8 off_z=   76 plug_local_yz=   -8/   76um ori=0.02 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.025 cable=0.12
+ 1220 align  t= 0.72 fwd=   0.00 depth= -8.98 off_y=   10 off_z=    8 plug_local_yz=   10/    8um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.026 cable=0.12
+ 1230 align  t= 0.92 fwd=   0.00 depth= -9.01 off_y=    3 off_z=  -25 plug_local_yz=    3/  -25um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1234 insert t= 0.00 fwd= -25.00 depth= -9.02 off_y=    3 off_z=  -24 plug_local_yz=    3/  -24um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1240 insert t= 0.12 fwd= -24.40 depth= -9.00 off_y=  -87 off_z=  -53 plug_local_yz=  -87/  -53um ori=0.03 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1250 insert t= 0.32 fwd= -23.40 depth= -7.84 off_y=  117 off_z=   18 plug_local_yz=  117/   18um ori=0.02 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.025 cable=0.12
+ 1260 insert t= 0.52 fwd= -22.40 depth= -6.79 off_y=   -2 off_z=    0 plug_local_yz=   -2/    0um ori=0.01 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.022 cable=0.12
+ 1270 insert t= 0.72 fwd= -21.40 depth= -5.81 off_y=   -7 off_z=   -3 plug_local_yz=   -7/   -3um ori=0.01 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.026 cable=0.12
+ 1280 insert t= 0.92 fwd= -20.40 depth= -4.80 off_y=   -5 off_z=    0 plug_local_yz=   -5/    0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1290 insert t= 1.12 fwd= -19.40 depth= -3.80 off_y=   -3 off_z=    0 plug_local_yz=   -3/    0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1300 insert t= 1.32 fwd= -18.40 depth= -2.80 off_y=    8 off_z=   -0 plug_local_yz=    8/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.024 cable=0.12
+ 1310 insert t= 1.52 fwd= -17.40 depth= -1.80 off_y=   -6 off_z=   -0 plug_local_yz=   -6/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.022 cable=0.12
+ 1320 insert t= 1.72 fwd= -16.40 depth= -0.80 off_y=   10 off_z=   -1 plug_local_yz=   10/   -1um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.024 cable=0.12
+ 1330 insert t= 1.92 fwd= -15.40 depth=  0.20 off_y=   -3 off_z=    0 plug_local_yz=   -3/    0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.022 cable=0.12
+ 1340 insert t= 2.12 fwd= -14.40 depth=  1.20 off_y=    7 off_z=   -0 plug_local_yz=    7/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.024 cable=0.12
+ 1350 insert t= 2.32 fwd= -13.40 depth=  2.20 off_y=   -4 off_z=   -0 plug_local_yz=   -4/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1360 insert t= 2.52 fwd= -12.40 depth=  3.20 off_y=    3 off_z=   -1 plug_local_yz=    3/   -1um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.022 cable=0.12
+ 1370 insert t= 2.72 fwd= -11.40 depth=  4.20 off_y=    1 off_z=   -0 plug_local_yz=    1/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.024 cable=0.12
+ 1380 insert t= 2.92 fwd= -10.40 depth=  5.20 off_y=   -9 off_z=    0 plug_local_yz=   -9/    0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1390 insert t= 3.12 fwd=  -9.40 depth=  6.20 off_y=    6 off_z=   -1 plug_local_yz=    6/   -1um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1400 insert t= 3.32 fwd=  -8.40 depth=  7.20 off_y=   -2 off_z=   -0 plug_local_yz=   -2/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1410 insert t= 3.52 fwd=  -7.40 depth=  8.20 off_y=   -8 off_z=   -0 plug_local_yz=   -8/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.021 cable=0.12
+ 1420 insert t= 3.72 fwd=  -6.40 depth=  9.20 off_y=   11 off_z=   -0 plug_local_yz=   11/   -0um ori=0.00 axial=  0.00 wall= 0.00 leaf= 0.00 nleaf=0 stall=0.00 eng=False slip=0.024 cable=0.13
+ 1430 insert t= 3.92 fwd=  -5.40 depth=  9.89 off_y=   -2 off_z=   -2 plug_local_yz=   -2/   -2um ori=0.06 axial= -1.23 wall= 0.00 leaf= 3.75 nleaf=4 stall=0.00 eng=True slip=0.024 cable=0.13
+ 1440 insert t= 4.12 fwd=  -4.40 depth=  9.90 off_y=   -3 off_z=   18 plug_local_yz=   -3/   18um ori=0.16 axial= -2.72 wall= 0.00 leaf= 7.71 nleaf=4 stall=0.00 eng=True slip=0.037 cable=0.13
+ 1450 insert t= 4.32 fwd=  -3.40 depth=  9.91 off_y=    1 off_z=    5 plug_local_yz=    1/    5um ori=0.16 axial= -4.60 wall= 0.00 leaf=11.80 nleaf=4 stall=0.00 eng=True slip=0.060 cable=0.13
+ 1460 insert t= 4.52 fwd=  -2.40 depth=  9.93 off_y=    3 off_z=  -14 plug_local_yz=    3/  -14um ori=0.14 axial= -6.12 wall= 0.00 leaf=15.56 nleaf=4 stall=0.00 eng=True slip=0.068 cable=0.13
+ 1470 insert t= 4.72 fwd=  -1.40 depth=  9.94 off_y=    2 off_z=  -27 plug_local_yz=    2/  -27um ori=0.14 axial= -7.48 wall= 0.00 leaf=19.27 nleaf=4 stall=0.00 eng=True slip=0.081 cable=0.13
+ 1480 insert t= 4.92 fwd=  -0.40 depth=  9.96 off_y=    1 off_z=  -39 plug_local_yz=    1/  -39um ori=0.15 axial= -8.92 wall= 0.00 leaf=22.96 nleaf=4 stall=0.00 eng=True slip=0.090 cable=0.13
+ 1490 insert t= 5.12 fwd=   0.03 depth=  9.97 off_y=    0 off_z=  -50 plug_local_yz=    0/  -50um ori=0.15 axial=-10.39 wall= 0.00 leaf=26.48 nleaf=4 stall=0.00 eng=True slip=0.102 cable=0.13
+ 1500 insert t= 5.32 fwd=   0.03 depth=  9.99 off_y=    1 off_z=  -63 plug_local_yz=    1/  -63um ori=0.15 axial=-11.88 wall= 0.00 leaf=30.34 nleaf=4 stall=0.00 eng=True slip=0.117 cable=0.13
+ 1510 insert t= 5.52 fwd=   0.03 depth= 10.05 off_y=    9 off_z= -118 plug_local_yz=    9/ -118um ori=0.15 axial=-12.48 wall= 0.00 leaf=31.57 nleaf=4 stall=0.00 eng=True slip=0.124 cable=0.12
+ 1520 insert t= 5.72 fwd=   0.03 depth= 10.34 off_y=   47 off_z= -352 plug_local_yz=   47/ -352um ori=0.13 axial=-13.35 wall= 0.00 leaf=33.06 nleaf=4 stall=0.00 eng=True slip=0.125 cable=0.13
+ 1530 insert t= 5.92 fwd=   0.03 depth= 10.37 off_y=   50 off_z= -361 plug_local_yz=   50/ -361um ori=0.17 axial=-14.42 wall= 2.11 leaf=33.60 nleaf=4 stall=0.16 eng=True slip=0.133 cable=0.13
+ 1540 insert t= 6.12 fwd=   0.03 depth= 10.37 off_y=   51 off_z= -359 plug_local_yz=   51/ -359um ori=0.19 axial=-15.08 wall= 3.18 leaf=33.24 nleaf=4 stall=0.36 eng=True slip=0.138 cable=0.13
+ 1550 insert t= 6.32 fwd=   0.03 depth= 10.38 off_y=   51 off_z= -362 plug_local_yz=   51/ -362um ori=0.18 axial=-15.76 wall= 3.31 leaf=33.61 nleaf=4 stall=0.56 eng=True slip=0.141 cable=0.13
+ 1560 insert t= 6.52 fwd=   0.03 depth= 10.38 off_y=   50 off_z= -363 plug_local_yz=   50/ -363um ori=0.17 axial=-16.55 wall= 3.41 leaf=33.94 nleaf=4 stall=0.76 eng=True slip=0.145 cable=0.13
+ 1570 insert t= 6.72 fwd=   0.03 depth= 10.38 off_y=   50 off_z= -365 plug_local_yz=   50/ -365um ori=0.17 axial=-17.31 wall= 3.92 leaf=34.41 nleaf=4 stall=0.96 eng=True slip=0.150 cable=0.13
+outcome None failure insert_stalled depth=10.38mm force=3.92N axial=17.39N lateral=0.37mm

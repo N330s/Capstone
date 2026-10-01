@@ -1,0 +1,1078 @@
+{
+  "checks": {
+    "20_aligned": true,
+    "repeatable": true,
+    "signed_expert_correction": true,
+    "recovery": true,
+    "half_timestep_success": true,
+    "half_timestep_depth": true,
+    "half_timestep_force": false,
+    "parked_arm": true,
+    "bounded_slip": true,
+    "no_robot_collisions": true
+  },
+  "aligned": [
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    },
+    {
+      "outcome": "success",
+      "duration_s": 3.4590000000003225,
+      "depth_m": 0.015997844515419635,
+      "peak_force_n": 10.16700459974257,
+      "peak_penetration_m": 7.767210051690121e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 9.077829434780013e-05,
+      "max_park_error_rad": 1.0272550740049256e-10,
+      "retries": 0
+    }
+  ],
+  "signed": [
+    {
+      "options": {
+        "offset_y_m": -0.001
+      },
+      "outcome": "success",
+      "duration_s": 3.4765000000003283,
+      "depth_m": 0.015997801825724745,
+      "peak_force_n": 11.96585278043641,
+      "peak_penetration_m": 8.661505212559373e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.00010356916525537333,
+      "max_park_error_rad": 1.0284766945274917e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_y_m": -0.0005
+      },
+      "outcome": "success",
+      "duration_s": 3.496500000000335,
+      "depth_m": 0.015998750072227397,
+      "peak_force_n": 9.74420413546943,
+      "peak_penetration_m": 8.02396848031961e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 3.645866184040165e-05,
+      "max_park_error_rad": 1.0290189354312416e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_y_m": 0.0005
+      },
+      "outcome": "success",
+      "duration_s": 3.4350000000003145,
+      "depth_m": 0.01599834764284158,
+      "peak_force_n": 10.390986385892486,
+      "peak_penetration_m": 8.641977961409976e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 7.52329674370217e-05,
+      "max_park_error_rad": 1.0264679005761376e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_y_m": 0.001
+      },
+      "outcome": "success",
+      "duration_s": 3.4770000000003285,
+      "depth_m": 0.015998230342423203,
+      "peak_force_n": 11.637996497960717,
+      "peak_penetration_m": 8.840082523164927e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.00010028501268605131,
+      "max_park_error_rad": 1.0284922901993174e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_z_m": -0.001
+      },
+      "outcome": "success",
+      "duration_s": 3.4955000000003347,
+      "depth_m": 0.01599905085924369,
+      "peak_force_n": 9.242408830840725,
+      "peak_penetration_m": 8.243881252090192e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 4.180688540166023e-05,
+      "max_park_error_rad": 1.0289331434892826e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_z_m": -0.0005
+      },
+      "outcome": "success",
+      "duration_s": 3.496500000000335,
+      "depth_m": 0.015997378216794034,
+      "peak_force_n": 11.208237355849286,
+      "peak_penetration_m": 8.637372956976643e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.0001233846644187456,
+      "max_park_error_rad": 1.0289462534731089e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_z_m": 0.0005
+      },
+      "outcome": "success",
+      "duration_s": 3.499000000000336,
+      "depth_m": 0.015997248740052372,
+      "peak_force_n": 12.173244501274562,
+      "peak_penetration_m": 8.818993294690271e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 0.0001028084421668556,
+      "max_park_error_rad": 1.0295190757828105e-10,
+      "retries": 0
+    },
+    {
+      "options": {
+        "offset_z_m": 0.001
+      },
+      "outcome": "success",
+      "duration_s": 3.4980000000003355,
+      "depth_m": 0.016000015488469188,
+      "peak_force_n": 11.558099048467234,
+      "peak_penetration_m": 8.781662831580663e-06,
+      "peak_robot_contact_n": 0.0,
+      "max_slip_m": 5.495863659105051e-05,
+      "max_park_error_rad": 1.0290988076017957e-10,
+      "retries": 0
+    }
+  ],
+  "recovery": {
+    "outcome": "success",
+    "duration_s": 5.275499999999796,
+    "depth_m": 0.01599956198924607,
+    "peak_force_n": 12.17964370128102,
+    "peak_penetration_m": 1.1773736094181767e-05,
+    "peak_robot_contact_n": 0.0,
+    "max_slip_m": 4.014744824614277e-05,
+    "max_park_error_rad": 1.0696021644447276e-10,
+    "retries": 1
+  },
+  "half_timestep": {
+    "outcome": "success",
+    "duration_s": 3.434749999999456,
+    "depth_m": 0.01599993091215346,
+    "peak_force_n": 8.496244301623383,
+    "peak_penetration_m": 7.635544284068096e-06,
+    "peak_robot_contact_n": 0.0,
+    "max_slip_m": 1.0950503639431477e-05,
+    "max_park_error_rad": 4.261180363063417e-12,
+    "retries": 0
+  },
+  "manifest": {
+    "schema": "openarm_v1_joint_targets_v3",
+    "robot": {
+      "repository": "https://github.com/enactic/openarm_mujoco",
+      "commit": "161039cd74ea8675fb8197836fe5674659825c75",
+      "variant": "v1/openarm_bimanual.xml",
+      "robot_xml_sha256": "bcd6ab2318594908acf0a61e1947a1e4200a4eb2f0f67ae31b292d56f7df9386",
+      "license": "Apache-2.0",
+      "active_arm": "right",
+      "parked_arm": "left"
+    },
+    "scene_sha256": "a51e33daeae4292060cfb7e658427b36d1a49d5cc6556d0c0a80f7c06989d945",
+    "connector": {
+      "plug": "legacy_two_blade",
+      "socket": "legacy_two_blade",
+      "spec": {
+        "plug": {
+          "name": "legacy_two_blade",
+          "pins": [
+            {
+              "name": "left",
+              "kind": "blade",
+              "pos_yz": [
+                -0.0065,
+                0.0
+              ],
+              "length_m": 0.016,
+              "width_m": 0.006,
+              "thickness_m": 0.0015,
+              "diameter_m": 0.0,
+              "sleeve_m": 0.0,
+              "opening": "left",
+              "rgba": [
+                0.72,
+                0.7,
+                0.59,
+                1.0
+              ]
+            },
+            {
+              "name": "right",
+              "kind": "blade",
+              "pos_yz": [
+                0.0065,
+                0.0
+              ],
+              "length_m": 0.016,
+              "width_m": 0.006,
+              "thickness_m": 0.0015,
+              "diameter_m": 0.0,
+              "sleeve_m": 0.0,
+              "opening": "right",
+              "rgba": [
+                0.72,
+                0.7,
+                0.59,
+                1.0
+              ]
+            }
+          ],
+          "housing_size_m": [
+            0.028,
+            0.024,
+            0.016
+          ],
+          "housing_center_z_m": 0.0,
+          "grasp_offset_m": [
+            -0.016,
+            0.0,
+            0.0
+          ],
+          "mass_kg": 0.03,
+          "com_m": [
+            -0.012,
+            0.0,
+            0.0
+          ],
+          "diaginertia": [
+            2.5e-06,
+            6e-06,
+            6.5e-06
+          ],
+          "symmetry_rolls_deg": [
+            0.0,
+            180.0
+          ],
+          "edge_radius_m": 0.0,
+          "boot": {
+            "radius_m": 0.004,
+            "length_m": 0.012,
+            "rgba": [
+              0.025,
+              0.028,
+              0.03,
+              1.0
+            ]
+          },
+          "rgba_housing": [
+            0.045,
+            0.05,
+            0.055,
+            1.0
+          ],
+          "rgba_sleeve": [
+            0.05,
+            0.05,
+            0.06,
+            1.0
+          ]
+        },
+        "socket": {
+          "name": "legacy_two_blade",
+          "openings": [
+            {
+              "name": "left",
+              "parts": [
+                {
+                  "kind": "slot",
+                  "center_yz": [
+                    -0.0065,
+                    0.0
+                  ],
+                  "radius_m": 0.0,
+                  "half_yz": [
+                    0.00115,
+                    0.0034
+                  ]
+                }
+              ],
+              "leaf_axis_yz": [
+                1.0,
+                0.0
+              ]
+            },
+            {
+              "name": "right",
+              "parts": [
+                {
+                  "kind": "slot",
+                  "center_yz": [
+                    0.0065,
+                    0.0
+                  ],
+                  "radius_m": 0.0,
+                  "half_yz": [
+                    0.00115,
+                    0.0034
+                  ]
+                }
+              ],
+              "leaf_axis_yz": [
+                -1.0,
+                0.0
+              ]
+            }
+          ],
+          "face_y_m": [
+            -0.02,
+            0.02
+          ],
+          "face_z_m": [
+            -0.015,
+            0.015
+          ],
+          "depth_m": 0.018,
+          "leadin_m": 0.001,
+          "leadin_dilation_m": 0.0003,
+          "polygon_sides": 16,
+          "rgba": [
+            0.82,
+            0.81,
+            0.76,
+            1.0
+          ],
+          "bezel": {}
+        }
+      },
+      "derived": {
+        "preinsert_x_m": -0.022,
+        "retreat_x_m": -0.018000000000000002,
+        "probe_preplug_x_m": -0.025,
+        "success_depth_m": 0.015,
+        "flat_window_top_m": 0.0155,
+        "plot_depth_range_mm": [
+          -22.0,
+          18.0
+        ],
+        "table_rest_z_offset_m": 0.008,
+        "spawn_height_above_table_m": 0.01,
+        "cable_attach_local_m": [
+          -0.04,
+          0.0,
+          0.0
+        ],
+        "housing_width_m": 0.024,
+        "housing_depth_m": 0.028,
+        "housing_height_m": 0.016,
+        "max_pin_length_m": 0.016,
+        "min_pin_length_m": 0.016
+      },
+      "finger_contact_travel_m": 0.0138,
+      "grip_travel_m": 0.008,
+      "leaf_geoms": [
+        "socket_leaf_left",
+        "socket_leaf_right"
+      ]
+    },
+    "source_hashes": {
+      "envs/scene.py": "ae56909839ebf45c897a58676e796aab9134922c3d6730162fa8c63dd56f9c67",
+      "envs/workspace.py": "c225e2d3fca7d5ad2831eae9b876693d6e5d2d1258d9de071ce84d794e950d36",
+      "envs/openarm_insert.py": "aa9fa6e09d7349f747a1c856bcbc5d8998da507e1ccf9c4818ddc8f3366a8e47",
+      "connector/geometry.py": "ba9733456f5168253b2babe17fab38e8748e19f9e95ee4269ff8062b9d79a13b",
+      "connector/simulation.py": "3e913c25edf29144ec3bf7fab7d414b774936d7d67f4c75fdebbf59001873a85",
+      "connector/spec.py": "1c88e9e7a3afa233046e2f53ccfaa62ab5c88be3bbacc1bee1b2b44af8536515",
+      "connector/catalog.py": "0c7389ec9a62b54eee644ea4ac9aa092df100bc651b3e5a040796c5492e69310",
+      "connector/slab.py": "d9d2ae4b8bb5c50a03c643b34050f1cb855bd66e0a6c933517624b07614b5f64",
+      "connector/builder.py": "fd81c2b8196576ba22dec29bbc3b75a8a9a856a36d9dd090f5fdc178771d1209",
+      "controllers/expert.py": "f6f9172bc5d08a3f43a1a2aec61a38abe9e58006f41d127034eaa4d0cd7d7e8b"
+    },
+    "workspace": {
+      "path": "configs/workspace_v1.json",
+      "sha256": "9c5e26e3bf09b566d73fc08452b5b6cc62d447af98bef9d4edcf707fe0263fbb",
+      "spec": {
+        "version": "workspace_v1",
+        "status": "scene definition; every dimension is a design value chosen for the simulation, not a measurement of real hardware",
+        "frames": {
+          "description": "World origin is the OpenArm v1 base (openarm_body_link0). +X points across the table away from the robot, +Y along the table, +Z up. The table top is 0.32 m above the robot base so every plug/socket/waypoint coordinate from earlier task configs stays valid.",
+          "robot_base_world_m": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "table_top_z_m": 0.32,
+          "floor_z_m": -0.43
+        },
+        "floor": {
+          "half_size_m": [
+            3.0,
+            3.0
+          ],
+          "rgba": [
+            0.25,
+            0.28,
+            0.3,
+            1
+          ]
+        },
+        "table": {
+          "length_y_m": 1.2,
+          "width_x_m": 0.6,
+          "height_m": 0.75,
+          "top_thickness_m": 0.03,
+          "center_xy_m": [
+            0.55,
+            0.0
+          ],
+          "leg_size_m": 0.05,
+          "leg_inset_m": 0.03,
+          "rgba_top": [
+            0.45,
+            0.43,
+            0.4,
+            1
+          ],
+          "rgba_legs": [
+            0.3,
+            0.28,
+            0.26,
+            1
+          ]
+        },
+        "pedestal": {
+          "description": "Column under the robot base, floor to the underside of the upstream base meshes",
+          "center_xy_m": [
+            -0.052,
+            0.032
+          ],
+          "half_size_xy_m": [
+            0.1,
+            0.13
+          ],
+          "top_z_m": -0.06,
+          "rgba": [
+            0.35,
+            0.36,
+            0.38,
+            1
+          ]
+        },
+        "fixture": {
+          "center_m": [
+            0.4631,
+            -0.155,
+            0.399
+          ],
+          "half_size_m": [
+            0.006,
+            0.024,
+            0.079
+          ],
+          "rgba": [
+            0.3,
+            0.32,
+            0.35,
+            1
+          ]
+        },
+        "socket": {
+          "position_m": [
+            0.4391,
+            -0.155,
+            0.478
+          ],
+          "quaternion_wxyz": [
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "plug_spawn": {
+          "mating_position_m": [
+            0.381,
+            -0.22,
+            0.33
+          ],
+          "quaternion_wxyz": [
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "appliance": {
+          "description": "Box the cable is fixed to; the cable anchor is on its -X face",
+          "center_m": [
+            0.46,
+            -0.42,
+            0.35
+          ],
+          "half_size_m": [
+            0.06,
+            0.04,
+            0.03
+          ],
+          "anchor_local_m": [
+            -0.06,
+            0.0,
+            -0.015
+          ],
+          "rgba": [
+            0.85,
+            0.85,
+            0.85,
+            1
+          ]
+        },
+        "cable": {
+          "enabled": true,
+          "segments": 14,
+          "length_m": 0.35,
+          "radius_m": 0.003,
+          "mass_per_metre_kg_m": 0.07,
+          "bend_stiffness_nm_rad": 0.02,
+          "bend_damping_nms_rad": 0.002,
+          "joint_armature_kgm2": 1e-06,
+          "friction": [
+            0.6,
+            0.005,
+            0.0001
+          ],
+          "attach_local_m": [
+            -0.04,
+            0.0,
+            0.0
+          ],
+          "rest_bulge_world": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "anchor_solref": [
+            0.002,
+            1
+          ],
+          "contype": 2,
+          "conaffinity": 1,
+          "rgba": [
+            0.08,
+            0.08,
+            0.09,
+            1
+          ]
+        },
+        "socket_leaves": {
+          "enabled": true,
+          "description": "One spring leaf per slot on the outer wall pressing the blade toward the socket centre; insertion resistance = n_leaves * friction * normal force",
+          "insertion_force_target_n": 10.0,
+          "friction": [
+            0.4,
+            0.005,
+            0.0001
+          ],
+          "start_x_m": 0.004,
+          "length_m": 0.012,
+          "ramp_length_m": 0.008,
+          "protrusion_m": 0.00065,
+          "embed_m": 0.0003,
+          "half_height_m": 0.0025,
+          "stiffness_n_m": 4000,
+          "damping_ns_m": 10,
+          "armature_kg": 0.2,
+          "travel_m": 0.002,
+          "mass_kg": 0.0005,
+          "geom_solref": [
+            0.001,
+            1
+          ],
+          "geom_solimp": [
+            0.95,
+            0.99,
+            0.001
+          ],
+          "limit_solref": [
+            0.001,
+            1
+          ],
+          "limit_solimp": [
+            0.95,
+            0.99,
+            0.001
+          ],
+          "leaf_force_abort_n": 80.0,
+          "wall_force_abort_n": 20.0,
+          "push_force_cap_n": 15.0,
+          "push_force_note": "Scripted insertion stops advancing its position target while the measured axial socket force exceeds this cap (force-limited push); it bounds the wind-up of the compliant arm and the face impact at seating",
+          "wall_force_note": "With spring retention the socket walls guide the blades and the housing face bottoms out under the leftover push force, so the rigid-socket 5-8 N wall abort would reject every successful seating; the 0.2 mm penetration limit is unchanged",
+          "leaf_penetration_limit_m": 0.0003,
+          "rgba": [
+            0.78,
+            0.5,
+            0.25,
+            1
+          ]
+        },
+        "gripper_pads": {
+          "enabled": true,
+          "description": "Flat rubber pad plate on each right finger, 0.1 mm proud of the upstream mesh face so the pinch is a box-box contact patch (the mesh gave one contact point per finger, which cannot resist pitch about the pinch line)",
+          "face_offset_m": 0.0078,
+          "thickness_m": 0.001,
+          "center_local_xz_m": [
+            -0.001,
+            0.068
+          ],
+          "half_size_xz_m": [
+            0.008,
+            0.012
+          ],
+          "friction": [
+            1.0,
+            0.01,
+            0.01
+          ],
+          "condim": 4,
+          "solref": [
+            0.002,
+            1
+          ],
+          "priority": 2,
+          "rgba": [
+            0.15,
+            0.15,
+            0.16,
+            1
+          ]
+        },
+        "cameras": {
+          "scene_rgb": {
+            "position_m": [
+              0.85,
+              -0.9,
+              0.85
+            ],
+            "xyaxes": [
+              0.8,
+              0.6,
+              0,
+              -0.25,
+              0.333,
+              0.91
+            ],
+            "fovy_deg": 48
+          },
+          "inspection": {
+            "position_m": [
+              0.56,
+              -0.32,
+              0.59
+            ],
+            "xyaxes": [
+              0.75,
+              0.66,
+              0,
+              -0.35,
+              0.4,
+              0.847
+            ],
+            "fovy_deg": 45
+          },
+          "wrist_rgb": {
+            "parent_body": "openarm_right_hand",
+            "position_m": [
+              0.05,
+              -0.04,
+              0.01
+            ],
+            "target_local_m": [
+              0.0,
+              0.006,
+              0.123
+            ],
+            "fovy_deg": 55,
+            "visual_mount": {
+              "description": "Action-camera style housing behind the optical centre; visual only, no mass, no collision",
+              "housing_half_m": [
+                0.031,
+                0.0225,
+                0.016
+              ],
+              "housing_offset_z_m": 0.018,
+              "lens_radius_m": 0.009,
+              "lens_half_length_m": 0.004,
+              "lens_offset_z_m": 0.0045,
+              "bracket_radius_m": 0.005,
+              "bracket_hand_point_m": [
+                0.02,
+                -0.02,
+                0.0
+              ],
+              "rgba_housing": [
+                0.12,
+                0.12,
+                0.13,
+                1
+              ],
+              "rgba_lens": [
+                0.05,
+                0.05,
+                0.08,
+                1
+              ],
+              "rgba_bracket": [
+                0.5,
+                0.5,
+                0.52,
+                1
+              ]
+            }
+          }
+        }
+      }
+    },
+    "robot_config": {
+      "schema_version": "openarm_v1_joint_targets_v3",
+      "active_arm": "right",
+      "command_hz": 50,
+      "kp_nm_rad": [
+        200,
+        200,
+        150,
+        150,
+        40,
+        40,
+        40
+      ],
+      "kd_nms_rad": [
+        12,
+        12,
+        8,
+        8,
+        3,
+        3,
+        3
+      ],
+      "joint_target_rate_rad_s": 0.5,
+      "finger_target_rate_m_s": 0.02,
+      "home_arm_rad": [
+        0,
+        0,
+        0,
+        1.5707963267948966,
+        0,
+        0,
+        0
+      ],
+      "finger_base_gap_m": 0.012,
+      "grip_squeeze_m": 0.0058,
+      "pickup_squeeze_m": 0.0078,
+      "finger_travel_note": "pad faces touch a housing of width W at travel (W - finger_base_gap_m)/2 + gripper_pads.face_offset_m; the insertion grip squeezes grip_squeeze_m further and the table pickup pickup_squeeze_m. For the legacy 24 mm housing this reproduces the former initial_finger_travel_m 0.0138 and grip_target_travel_m 0.008",
+      "finger_servo_kp_n_m": 2000,
+      "settle_s": 1.0,
+      "episode_limit_s": 8.0,
+      "tabletop_episode_limit_s": 240.0,
+      "robot_contact_abort_n": 5.0,
+      "grasp_slip_limit_m": 0.001,
+      "grip_open_travel_m": 0.044,
+      "grasp_angle_limit_deg": 5.0,
+      "image_width": 320,
+      "image_height": 240,
+      "instruction": "Insert the plug into the socket."
+    },
+    "contact_config": {
+      "speed_m_s": 0.01,
+      "translation_stiffness_n_m": 300.0,
+      "translation_damping_ns_m": 6.0,
+      "rotation_stiffness_nm_rad": 0.12,
+      "rotation_damping_nms_rad": 0.002,
+      "force_limit_n": 2.0,
+      "torque_limit_nm": 0.03,
+      "target_overtravel_m": 0.001,
+      "duration_s": 3.5,
+      "hold_s": 0.25,
+      "contact_abort_n": 20.0,
+      "penetration_limit_m": 0.0002,
+      "success_angle_deg": 3.0,
+      "success_depth_m": 0.015,
+      "success_face_gap_m": 0.001,
+      "fit_tolerance_m": 5e-05,
+      "jam_window_s": 0.4,
+      "jam_progress_m": 0.0001,
+      "jam_contact_n": 0.1,
+      "trace_interval_s": 0.01,
+      "leaf_penetration_limit_m": 0.0003,
+      "leaf_force_abort_n": 80.0
+    },
+    "mujoco_version": "3.11.0",
+    "physics_timestep_s": 0.0005,
+    "command_interval_s": 0.02,
+    "seed": 0,
+    "reset_options": {},
+    "reset_mode": "grasped",
+    "socket_placement": "model_body_pos_with_fixture",
+    "socket_pose": {
+      "pos_m": [
+        0.4391,
+        -0.155,
+        0.478
+      ],
+      "mat": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    "action_names": [
+      "openarm_right_joint1",
+      "openarm_right_joint2",
+      "openarm_right_joint3",
+      "openarm_right_joint4",
+      "openarm_right_joint5",
+      "openarm_right_joint6",
+      "openarm_right_joint7",
+      "right_finger_travel"
+    ],
+    "state_order": "left joint1..7, left mean finger travel, right joint1..7, right mean finger travel",
+    "grasp": "physical_finger_contact; no weld or plug force",
+    "controller": "joint PD plus model bias feedforward through capped upstream torque actuators",
+    "camera_calibration": {
+      "scene_rgb": {
+        "position_body_m": [
+          0.85,
+          -0.9,
+          0.85
+        ],
+        "quaternion_wxyz": [
+          0.7982735464286259,
+          0.5126005706905372,
+          0.17086685689684575,
+          0.26609118214287525
+        ],
+        "fovy_deg": 48.0,
+        "parent_body": "world"
+      },
+      "wrist_rgb": {
+        "position_body_m": [
+          0.05,
+          -0.04,
+          0.01
+        ],
+        "quaternion_wxyz": [
+          0.26737459171763606,
+          0.6546073843945143,
+          0.7071062928496392,
+          0.0008310309502109939
+        ],
+        "fovy_deg": 55.0,
+        "parent_body": "openarm_right_hand"
+      }
+    }
+  }
+}

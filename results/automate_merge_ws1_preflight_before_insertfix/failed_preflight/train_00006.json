@@ -1,0 +1,288 @@
+{
+  "id": "train_00006",
+  "seed": 1000006,
+  "split": "train",
+  "options": {
+    "plug_pos_m": [
+      0.3093521015728879,
+      -0.205608545330754,
+      0.328
+    ],
+    "plug_yaw_deg": 54.44640409027636,
+    "socket_pos_m": [
+      0.4331319219424078,
+      -0.26303593390787006,
+      0.478
+    ],
+    "socket_yaw_deg": -4.801905041402659,
+    "socket_tilt_deg": 0.0,
+    "table_height_m": 0.32,
+    "visual": {
+      "light_azimuth_deg": 59.52969825001897,
+      "light_elevation_deg": 75.04204243433165,
+      "camera_offset_m": [
+        -0.0014979303825240625,
+        -0.0017395137155388428,
+        -0.00028798999805097324
+      ],
+      "camera_rotation_deg": [
+        -0.06044325945022422,
+        -0.6403905733117717,
+        -0.17085548295468578
+      ],
+      "table_hue_shift": -0.027666009166227905
+    }
+  },
+  "outcome": "expert_plan_insert_line_infeasible",
+  "steps": 834,
+  "expert": {
+    "phase": "transit_place",
+    "failure": "plan_insert_line_infeasible",
+    "failure_detail": "",
+    "place": {
+      "phase": "transit_place",
+      "failure": "plan_insert_line_infeasible",
+      "failure_detail": "",
+      "retries": 0,
+      "stats": {
+        "handoff_reference": "env_latched_grasp"
+      },
+      "phase_log": [
+        {
+          "phase": "transit_place",
+          "duration_s": 0.0
+        }
+      ]
+    },
+    "retries": 0,
+    "regrasps": 0,
+    "detector_mode": "privileged",
+    "detection_error": {
+      "plug_pos_m": 0.0,
+      "socket_pos_m": 0.0
+    },
+    "pick_plans": [
+      {
+        "attempt": 0,
+        "result": "ok",
+        "flip": 0,
+        "tilt_deg": -15.0,
+        "joint_margin_rad": 0.293,
+        "finger_clearance_m": 0.0016,
+        "insert_consistent": true,
+        "transit_waypoints": 1
+      }
+    ],
+    "pick_report": {
+      "plug_rise_m": 0.0995,
+      "finger_contacts": 2,
+      "grasp_established": true,
+      "max_drift_m": 2.3e-05,
+      "max_angle_deg": 0.008,
+      "peak_support_contact_n": 0.0,
+      "drops": 0,
+      "attempt": 0,
+      "firm": true
+    },
+    "pick_failures": [],
+    "phase_log": [
+      {
+        "phase": "survey",
+        "duration_s": 0.9
+      },
+      {
+        "phase": "transit_pick",
+        "duration_s": 6.18
+      },
+      {
+        "phase": "arrive",
+        "duration_s": 0.02
+      },
+      {
+        "phase": "descend",
+        "duration_s": 2.9
+      },
+      {
+        "phase": "arrive",
+        "duration_s": 0.02
+      },
+      {
+        "phase": "close",
+        "duration_s": 2.6
+      },
+      {
+        "phase": "lift",
+        "duration_s": 4.06
+      },
+      {
+        "phase": "transit_place",
+        "duration_s": 0.0
+      }
+    ]
+  },
+  "initial": {
+    "time_s": 0.9999999999999453,
+    "left_depth_m": -0.10571499539460272,
+    "right_depth_m": -0.11358913611636812,
+    "insertion_depth_m": -0.11358913611636812,
+    "face_gap_m": 0.12238311719744738,
+    "offset_y_m": 0.040177247570830334,
+    "offset_z_m": -0.15000048697900692,
+    "orientation_error_deg": 37.27945583944797,
+    "blades_fit": true,
+    "contact_force_n": 0.0,
+    "other_contact_force_n": 0.3768452818131108,
+    "left_contact_force_n": 0.0,
+    "right_contact_force_n": 0.0,
+    "contact_count": 0,
+    "max_penetration_m": 1.937601989835183e-06,
+    "grasp_contact_force_n": 0.0,
+    "grasp_penetration_m": 0.0,
+    "plug_weight_n": 0.2943,
+    "socket_wall_normal_n": 0.0,
+    "socket_wall_friction_n": 0.0,
+    "leaf_normal_n": 0.0,
+    "leaf_friction_n": 0.0,
+    "leaf_contact_force_n": 0.0,
+    "leaf_contact_count": 0,
+    "leaf_penetration_m": 0.0,
+    "socket_force_x_n": 0.0,
+    "socket_force_y_n": 0.0,
+    "socket_force_z_n": 0.0,
+    "socket_force_total_n": 0.0,
+    "socket_lateral_force_n": 0.0,
+    "socket_torque_x_nm": 0.0,
+    "socket_torque_y_nm": 0.0,
+    "socket_torque_z_nm": 0.0,
+    "socket_torque_nm": 0.0,
+    "finger_force_x_n": 0.0,
+    "finger_force_y_n": 0.0,
+    "finger_force_z_n": 0.0,
+    "cable_force_n": 0.05837590084170809,
+    "cable_tension_n": -0.011000697154094442,
+    "cable_torque_nm": 0.0027606492245858534,
+    "speed_m_s": 4.546705543054422e-07,
+    "angular_speed_rad_s": 6.212613839527687e-05,
+    "valid_pose": false,
+    "relative_qw": 0.9475470212291894,
+    "relative_qx": 1.1000033777672535e-05,
+    "relative_qy": -2.2109596368168378e-05,
+    "relative_qz": 0.3196163981241489,
+    "velocity_wx_rad_s": -2.38998132121431e-07,
+    "velocity_wy_rad_s": 5.814235142714801e-07,
+    "velocity_wz_rad_s": -6.212295790204286e-05,
+    "velocity_x_m_s": 1.778924713196405e-07,
+    "velocity_y_m_s": -4.1799504372631633e-07,
+    "velocity_z_m_s": -1.8966418229170806e-08,
+    "elements_fit": true,
+    "polarity_roll_deg": 0.0,
+    "grasp_slip_m": 0.19212937923135703,
+    "grasp_angle_deg": 32.47755080304546,
+    "left_park_error_rad": 9.874472802139633e-11,
+    "grip_travel_m": 0.04398900274931269,
+    "grip_force_n": 0.021994501374628328,
+    "robot_unwanted_contact_n": 0.0,
+    "robot_support_contact_n": 0.0,
+    "cable_robot_contact_n": 0.0,
+    "leaf_travel_m": [
+      3.110992866850745e-06,
+      3.110992866850745e-06
+    ],
+    "plug_finger_contacts": 0,
+    "grasp_established": false,
+    "drops": 0,
+    "reset_mode": "tabletop",
+    "outcome": "running"
+  },
+  "final": {
+    "time_s": 17.680000000004146,
+    "left_depth_m": -0.10601281563655426,
+    "right_depth_m": -0.11388430368853993,
+    "insertion_depth_m": -0.11388430368853993,
+    "face_gap_m": 0.12268206945822688,
+    "offset_y_m": 0.040247484329373175,
+    "offset_z_m": -0.0505008558706721,
+    "orientation_error_deg": 37.26492548223067,
+    "blades_fit": true,
+    "contact_force_n": 0.0,
+    "other_contact_force_n": 0.0,
+    "left_contact_force_n": 0.0,
+    "right_contact_force_n": 0.0,
+    "contact_count": 0,
+    "max_penetration_m": 0.0,
+    "grasp_contact_force_n": 31.29194041850257,
+    "grasp_penetration_m": 7.63662978431153e-05,
+    "plug_weight_n": 0.2943,
+    "socket_wall_normal_n": 0.0,
+    "socket_wall_friction_n": 0.0,
+    "leaf_normal_n": 0.0,
+    "leaf_friction_n": 0.0,
+    "leaf_contact_force_n": 0.0,
+    "leaf_contact_count": 0,
+    "leaf_penetration_m": 0.0,
+    "socket_force_x_n": 0.0,
+    "socket_force_y_n": 0.0,
+    "socket_force_z_n": 0.0,
+    "socket_force_total_n": 0.0,
+    "socket_lateral_force_n": 0.0,
+    "socket_torque_x_nm": 0.0,
+    "socket_torque_y_nm": 0.0,
+    "socket_torque_z_nm": 0.0,
+    "socket_torque_nm": 0.0,
+    "finger_force_x_n": 0.0047073995808105075,
+    "finger_force_y_n": 0.030711188349431505,
+    "finger_force_z_n": 0.4356103116793778,
+    "cable_force_n": 0.1471368251033482,
+    "cable_tension_n": -0.0746008599078194,
+    "cable_torque_nm": 0.006916290898805037,
+    "speed_m_s": 0.0022533461882964668,
+    "angular_speed_rad_s": 0.0017436246658686558,
+    "valid_pose": false,
+    "relative_qw": 0.9475875413823807,
+    "relative_qx": 0.00018036598416758996,
+    "relative_qy": 0.0007923112977125652,
+    "relative_qz": 0.31949521299671174,
+    "velocity_wx_rad_s": -0.001188032214804473,
+    "velocity_wy_rad_s": -0.00045072457198807626,
+    "velocity_wz_rad_s": -0.0011940074506545284,
+    "velocity_x_m_s": -0.0012354073377861556,
+    "velocity_y_m_s": 0.0018784080613839143,
+    "velocity_z_m_s": 0.0001513965289637228,
+    "elements_fit": true,
+    "polarity_roll_deg": 0.0,
+    "grasp_slip_m": 1.7902606390091652e-05,
+    "grasp_angle_deg": 0.008051764361773222,
+    "left_park_error_rad": 1.0032302435792194e-10,
+    "grip_travel_m": 0.013728451061149931,
+    "grip_force_n": 15.456902122299866,
+    "robot_unwanted_contact_n": 0.0,
+    "robot_support_contact_n": 0.0,
+    "cable_robot_contact_n": 0.0,
+    "leaf_travel_m": [
+      3.1109928663702374e-06,
+      3.1109928663702374e-06
+    ],
+    "plug_finger_contacts": 2,
+    "grasp_established": true,
+    "drops": 0,
+    "reset_mode": "tabletop",
+    "outcome": "running",
+    "executed_dt_s": 0.02,
+    "interval_peak_contact_force_n": 0.0,
+    "action_clipped": false,
+    "applied_action": [
+      0.706855109098465,
+      1.0687081910027905,
+      -0.853738936726711,
+      1.6912722126885806,
+      1.1864521139207074,
+      0.08226550825818518,
+      -1.2777951233530591,
+      0.006
+    ],
+    "peak_contact_force_n": 0.0,
+    "peak_penetration_m": 2.193328331519251e-06,
+    "robot_unwanted_contact_peak_n": 0.0,
+    "robot_support_contact_peak_n": 0.0
+  }
+}

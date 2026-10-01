@@ -1,0 +1,2 @@
+base train_00001 success |  | depth 16.0 peak_wall 8.21 | env peak wall 8.86 | 117 s
+base train_00002 success |  | depth 15.99 peak_wall 14.73 | env peak wall 14.84 | 124 s

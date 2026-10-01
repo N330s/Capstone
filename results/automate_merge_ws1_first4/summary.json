@@ -1,0 +1,38 @@
+{
+  "what": "First automation (collect_random.py) run after merging origin/automateData into the workspace_v1 env, and re-runs of the same four scenes after each fix. Scenes are the collector's own rows (failed_preflight/*.json; seeds 1000000-1000003).",
+  "workspace": "configs/workspace_v1.json",
+  "detector": "privileged",
+  "run_1_collect_random": {
+    "command": "collect_random.py --episodes 5 --early-abort 4 --headless --video none --detector privileged",
+    "result": "0/4 accepted, aborted after 4 failures",
+    "outcomes": {
+      "train_00000": "expert_align_not_converged err=12.89mm (retry after insert_stalled at depth 10.45 mm, 2.89 N: stall exactly where the spring leaves engage)",
+      "train_00001": "expert_transit_blocked (at survey, before any motion)",
+      "train_00002": "expert_grasp_lost in transit_place: drift 0.57 mm, angle 5.7 deg",
+      "train_00003": "expert_align_not_converged err=13.63mm (retry after an insertion stall)"
+    }
+  },
+  "rerun_2_leaf_aware_insertion": {
+    "change": "place_insert.py insert phase: after leaf contact, advance only below push_force_cap_n (15 N), no 5 N wall-force retry, no withdrawal (the leaves hold the plug)",
+    "outcomes": {
+      "train_00000": "success, seated 16.00 mm, peak wall 8.73 N, max grasp angle 0.21 deg",
+      "train_00001": "expert_transit_blocked",
+      "train_00002": "expert_grasp_lost, transit_place, angle 5.68 deg",
+      "train_00003": "expert_insert_stalled depth 11.34 mm, wall 4.35 N, axial 17.08 N, lateral 0.54 mm"
+    }
+  },
+  "diagnoses": {
+    "train_00001": "Home posture holds the right hand at the workspace insertion pose (grasp site 0.401,-0.155,0.477); the sampled socket entry (0.409,-0.157,0.478) was 8 mm from it. The first transit step drives the finger pads 2-5 mm into the socket lead-ins. Sampler fix: socket_at_hand_home (keep-out 0.10 m).",
+    "train_00002": "Plug started behind the socket face (plug x 0.348 > socket x 0.289). Carrying it round to the front draped the cable over the fixture pedestal: cable tension rose from 0.1 N to 23.7 N in transit_place (cable-fixture contacts on segments 00-08) and rotated the plug out of the pinch. Straight-line cable reach was not the cause (max 0.284 m of 0.3325 m). Sampler fix: cable_wraps_pedestal (plug must start >= 30 mm on the robot side of the socket face).",
+    "train_00003": "Insertion binds as the leaves engage; cable slack during insert (0.12 N). Not fixed. This scene also has its plug behind the socket and is now rejected by cable_wraps_pedestal."
+  },
+  "rerun_3_lateral_gain_attempt_reverted": {
+    "change": "2x lateral servo gain with +/-1 mm anti-wind-up from leaf contact (the probe's scheme)",
+    "outcomes": {
+      "train_00000": "success, seated 16.00 mm, but peak wall 13.37 N (was 8.73 N)",
+      "train_00003": "still insert_stalled, now depth 9.37 mm, wall 15.76 N, axial 20.56 N"
+    },
+    "decision": "reverted: no measured benefit, higher wall force"
+  },
+  "phases": "phases/*.png = last frame of every phase (scene_rgb camera); full GIFs are in data/auto_ws1_video (not committed, 0.3-27 MB each)"
+}

@@ -1,0 +1,8 @@
+lead1 train_00000 expert_insert_stalled | depth=4.02mm force=0.00N axial=17.74N lateral=0.36mm | depth 0.0 peak_wall 0.0 | env peak wall 0.0 | 95 s
+lead1 train_00003 expert_insert_stalled | depth=9.43mm force=3.38N axial=17.37N lateral=0.40mm | depth 0.0 peak_wall 3.38 | env peak wall 3.46 | 108 s
+lead1 train_00007 expert_insert_stalled | depth=10.39mm force=4.73N axial=17.42N lateral=0.37mm | depth 0.0 peak_wall 4.91 | env peak wall 5.01 | 110 s
+lead1 train_00009 expert_insert_stalled | depth=10.39mm force=3.13N axial=17.38N lateral=0.37mm | depth 0.0 peak_wall 3.37 | env peak wall 5.91 | 85 s
+cap20 train_00000 expert_insert_stalled | depth=4.03mm force=0.00N axial=22.20N lateral=0.36mm | depth 0.0 peak_wall 0.0 | env peak wall 0.0 | 99 s
+cap20 train_00003 expert_insert_stalled | depth=11.50mm force=8.85N axial=20.88N lateral=0.55mm | depth 0.0 peak_wall 8.85 | env peak wall 9.01 | 126 s
+cap20 train_00007 leaf_force_abort |  | depth 0.0 peak_wall 7.03 | env peak wall 9.34 | 110 s
+cap20 train_00009 leaf_force_abort |  | depth 0.0 peak_wall 6.54 | env peak wall 7.9 | 90 s

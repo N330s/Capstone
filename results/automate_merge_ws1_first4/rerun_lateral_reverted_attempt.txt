@@ -1,0 +1,2 @@
+train_00000 success | None None | place hold {'max_grasp_angle_deg': 0.3558060602682345, 'peak_socket_force_n': 13.370598715050185, 'final_depth_m': 0.015999542451649654} | 359 s | data\auto_ws1_video_lat\train_00000_success.frames.npz
+train_00003 expert_insert_stalled | insert_stalled depth=9.37mm force=15.76N axial=20.56N lateral=0.46mm | place insert {'max_grasp_angle_deg': 0.9628081356682858, 'peak_socket_force_n': 15.764699896937131} | 440 s | data\auto_ws1_video_lat\train_00003_expert_insert_stalled.frames.npz

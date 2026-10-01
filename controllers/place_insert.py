@@ -31,6 +31,7 @@ writes live qpos/qvel: all kinematic queries use a private MjData.
 Privileged simulator pose (plug, socket, hand) is used here, as in every
 expert; it is a label source and must never enter policy observations.
 """
+from dataclasses import dataclass
 import numpy as np
 import mujoco
 
@@ -77,8 +78,53 @@ def smoothstep(x):
     return x * x * (3. - 2. * x)
 
 
-def closest_equivalent(basis, current):
+@dataclass(frozen=True)
+class PlugGeometry:
+    """Plug-dependent numbers of the tabletop pick-and-insert expert.
+
+    The defaults are the constants the expert was written with for the legacy two-blade
+    plug; ``plug_geometry()`` derives the same set from the connector spec embedded in a
+    model, which reproduces these defaults exactly for ``legacy_two_blade`` and gives the
+    right values for catalog plugs (e.g. Type O: 34 mm housing, earth pin)."""
+    rest_z_m: float = 0.008                   # plug body origin above the table when lying flat
+    grasp_point_m: tuple = (-0.016, 0., 0.)   # housing middle in the plug frame (tool site target)
+    preshape_travel_m: float = 0.030          # finger travel before closing (~16 mm clear per pad)
+    close_travel_m: float = 0.006             # closed finger command on the table
+    held_travel_m: float = 0.0137             # pad travel when closed on the housing
+    pick_standoff_m: float = 0.055            # pick planner's pre-insert check distance
+    place_standoff_m: float = 0.025           # preinsert: longest pin 9 mm clear of the socket face
+    half_turn_symmetric: bool = True          # a roll of 180 deg about the mating axis still mates
+
+
+LEGACY_PLUG = PlugGeometry()
+
+
+def plug_geometry(model, workspace=None):
+    """PlugGeometry for the connector embedded in ``model`` (``workspace``: loaded spec or path)."""
+    import json
+    from pathlib import Path
+    from connector.spec import ConnectorSpec
+    from envs import workspace as wsp
+    spec = ConnectorSpec.from_model(model)
+    d = spec.derived()
+    config = json.loads((Path(__file__).resolve().parents[1] / "configs/openarm_v1.json").read_text())
+    contact = wsp.finger_travel_for_width(wsp.load_workspace(workspace), d["housing_width_m"],
+                                          config["finger_base_gap_m"])
+    return PlugGeometry(
+        rest_z_m=float(d["table_rest_z_offset_m"]),
+        grasp_point_m=tuple(float(v) for v in spec.plug.grasp_offset_m),
+        preshape_travel_m=min(0.044, contact + 0.0162),
+        close_travel_m=contact - config["pickup_squeeze_m"],
+        held_travel_m=contact - 0.0001,
+        pick_standoff_m=0.055 + (-d["preinsert_x_m"] - 0.022),
+        place_standoff_m=-float(d["probe_preplug_x_m"]),
+        half_turn_symmetric=180. in tuple(float(r) for r in spec.plug.symmetry_rolls_deg))
+
+
+def closest_equivalent(basis, current, symmetric=True):
     """Socket frame (or its half-turn twin) closest to the current plug rotation."""
+    if not symmetric:
+        return basis
     twin = basis @ HALF_TURN
     angle = lambda r: np.linalg.norm(rotation_vector(r @ current.T))
     return basis if angle(basis) <= angle(twin) else twin
@@ -105,6 +151,13 @@ class ArmKinematics:
         self.plug = m.body("plug").id
         self.plug_qadr = int(m.jnt_qposadr[m.joint("plug_free").id])
         self.socket = int(m.site_bodyid[m.site("socket_entry").id])
+        # Workspace scenes: the spring leaves are child bodies of the socket and are meant to
+        # touch a seated plug, so they count as the socket; the cable is ignored by the planner
+        # (its scratch pose is stale, as in plan_carry).
+        self.socket_bodies = {self.socket} | {i for i in range(m.nbody)
+                                               if m.body(i).name.startswith("socket_leaf_")}
+        self.cable_bodies = {int(m.geom_bodyid[g]) for g in range(m.ngeom)
+                             if (m.geom(g).name or "").startswith("cable_seg")}
         self.robot_bodies = {i for i in range(m.nbody) if m.body(i).name.startswith("openarm")}
         self.fingers = {m.body(f"openarm_right_{s}_finger").id for s in ("right", "left")}
         self.fqa = np.array([m.jnt_qposadr[m.joint(f"openarm_right_finger_joint{i}").id] for i in (1, 2)])
@@ -277,7 +330,9 @@ class ArmKinematics:
             bodies = {int(m.geom_bodyid[g]) for g in (c.geom1, c.geom2)}
             if self.plug in bodies and bodies & self.fingers:
                 continue
-            if allow_plug_socket and bodies == {self.plug, self.socket}:
+            if bodies & self.cable_bodies:
+                continue
+            if allow_plug_socket and self.plug in bodies and len(bodies) == 2 and bodies & self.socket_bodies:
                 continue
             if (bodies & self.robot_bodies or self.plug in bodies) and c.dist < 0.:
                 bad.append(f"{m.geom(c.geom1).name}|{m.geom(c.geom2).name}")
@@ -314,7 +369,8 @@ def tool_target(plug_pos, plug_rot, rel_pos, rel_rot):
 
 
 def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_plug_rot=None,
-                   table_z=None, standoff=STANDOFF_M, above=ABOVE_HEIGHTS_M, finger_travel=None):
+                   table_z=None, standoff=STANDOFF_M, above=ABOVE_HEIGHTS_M, finger_travel=None,
+                   symmetric=True):
     """Kinematic plan for the seated, preinsert and above-preinsert poses.
 
     ``rel_pos``/``rel_rot``: plug pose in the robot_grasp frame (measured).
@@ -329,8 +385,8 @@ def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_
     plan = InsertionPlan()
     kin.sync(qpos, finger_travel)
     if current_plug_rot is not None:
-        basis = closest_equivalent(basis, current_plug_rot)
-    elif basis[2, 2] < 0:
+        basis = closest_equivalent(basis, current_plug_rot, symmetric)
+    elif symmetric and basis[2, 2] < 0:
         basis = basis @ HALF_TURN
     plan.basis, plan.entry = basis, np.asarray(entry, dtype=float)
     axis = basis[:, 0]
@@ -411,10 +467,11 @@ NOMINAL_GRASP_HEIGHT_M = 0.004
 NOMINAL_GRASP_TILTS_DEG = (-30., -15., 0., 15., 30.)
 
 
-def nominal_grasp(flip, tilt_deg):
-    """(plug position, plug rotation) in the robot_grasp frame for a nominal grasp."""
+def nominal_grasp(flip, tilt_deg, grasp_point=NOMINAL_GRASP_POINT_M):
+    """(plug position, plug rotation) in the robot_grasp frame for a nominal grasp.
+    ``grasp_point``: housing middle in the plug frame (``PlugGeometry.grasp_point_m``)."""
     tool_in_plug = _rot_y(90.) @ _rot_x(180. * flip) @ _rot_y(tilt_deg)
-    tool_pos_in_plug = NOMINAL_GRASP_POINT_M + np.array([0., 0., NOMINAL_GRASP_HEIGHT_M])
+    tool_pos_in_plug = np.asarray(grasp_point, dtype=float) + np.array([0., 0., NOMINAL_GRASP_HEIGHT_M])
     return -tool_in_plug.T @ tool_pos_in_plug, tool_in_plug.T
 
 
@@ -432,17 +489,18 @@ class InsertFeasibility:
     Private env/model; fixed seeds; no dependence on live state.
     """
 
-    def __init__(self, tilts=NOMINAL_GRASP_TILTS_DEG):
+    def __init__(self, tilts=NOMINAL_GRASP_TILTS_DEG, workspace=None):
         from envs.openarm_insert import OpenArmInsertEnv   # lazy: avoid import cycles
-        self.env = OpenArmInsertEnv(images=False)
+        self.env = OpenArmInsertEnv(images=False, workspace=workspace)
         self.kin = ArmKinematics(self.env.model)
+        self.geom = plug_geometry(self.env.model, self.env.workspace)
         self.tilts = tuple(tilts)
 
     def grasps_for(self, basis):
-        upright = basis @ HALF_TURN if basis[2, 2] < 0 else basis
+        upright = basis @ HALF_TURN if (self.geom.half_turn_symmetric and basis[2, 2] < 0) else basis
         out = []
         for flip in (0, 1):
-            _, rel_rot = nominal_grasp(flip, 0.)
+            _, rel_rot = nominal_grasp(flip, 0., self.geom.grasp_point_m)
             finger_axis = (upright @ rel_rot.T)[:, 2]
             if finger_axis[0] >= np.cos(np.radians(75.)):
                 out += [(flip, tilt) for tilt in self.tilts]
@@ -461,9 +519,11 @@ class InsertFeasibility:
         table_z = options.get("table_height_m")
         first = None
         for flip, tilt in self.grasps_for(basis):
-            rel_pos, rel_rot = nominal_grasp(flip, tilt)
+            rel_pos, rel_rot = nominal_grasp(flip, tilt, self.geom.grasp_point_m)
             plan = plan_insertion(self.kin, e.data.qpos.copy(), REFERENCE_POSTURE, entry, basis,
-                                  rel_pos, rel_rot, table_z=table_z, finger_travel=HELD_FINGER_TRAVEL_M)
+                                  rel_pos, rel_rot, table_z=table_z, finger_travel=self.geom.held_travel_m,
+                                  standoff=self.geom.place_standoff_m,
+                                  symmetric=self.geom.half_turn_symmetric)
             if plan.failure is None:
                 return None, [(flip, tilt)]
             first = first or plan.failure
@@ -518,6 +578,7 @@ class PlaceInsert:
     def __init__(self, env, *, kin=None, socket_estimate=None, max_retries=1, probe_offset_y_m=0.):
         self.env = env
         self.kin = kin if kin is not None else ArmKinematics(env.model)
+        self.geom = plug_geometry(env.model, getattr(env, "workspace", None))
         self.socket_estimate = socket_estimate
         self.max_retries, self.retries = max_retries, 0
         self.probe_offset_y_m = probe_offset_y_m
@@ -529,6 +590,9 @@ class PlaceInsert:
         self._pinned_s = self._contact_loss_s = 0.
         self.jp = np.zeros((3, env.model.nv))
         self.jr = np.zeros((3, env.model.nv))
+        leaves = getattr(env, "workspace", {}).get("socket_leaves", {}) if getattr(env, "leaf_geoms", ()) else {}
+        self.push_cap = float(leaves.get("push_force_cap_n", np.inf))
+        self.engaged = False
 
     # ------------------------------------------------------------ helpers
     def _truth_socket(self):
@@ -620,8 +684,16 @@ class PlaceInsert:
         entry, basis = self.socket_estimate if self.socket_estimate is not None else self._truth_socket()
         table_z = getattr(e, "reset_options", {}).get("table_height_m")
         q_now = e.target[:7].copy()
-        plan = plan_insertion(self.kin, d.qpos.copy(), q_now, entry, basis, self.rel_pos, self.rel_rot,
-                              current_plug_rot=d.xmat[e.plug].reshape(3, 3).copy(), table_z=table_z)
+        # Seed the seated IK from the live posture first, then from the posture the scene sampler's
+        # insertion screen uses; only the first MAX_SEATED_BRANCHES branches are tried per seed, so
+        # a screen-feasible socket can otherwise be refused at runtime (plan_insert_line_infeasible).
+        for seed in (q_now, REFERENCE_POSTURE):
+            plan = plan_insertion(self.kin, d.qpos.copy(), seed, entry, basis, self.rel_pos, self.rel_rot,
+                                  current_plug_rot=d.xmat[e.plug].reshape(3, 3).copy(), table_z=table_z,
+                                  standoff=self.geom.place_standoff_m,
+                                  symmetric=self.geom.half_turn_symmetric)
+            if not plan.failure:
+                break
         if plan.failure:
             self._fail(plan.failure, plan.detail)
             return self.failure
@@ -682,19 +754,19 @@ class PlaceInsert:
             return np.r_[q, self.grip]
 
         entry, basis = self._truth_socket()
-        basis = closest_equivalent(basis, e.data.xmat[e.plug].reshape(3, 3))
+        basis = closest_equivalent(basis, e.data.xmat[e.plug].reshape(3, 3), self.geom.half_turn_symmetric)
         axis = basis[:, 0]
         force = float(info.get("contact_force_n", 0.))
         self.stats["peak_socket_force_n"] = max(self.stats.get("peak_socket_force_n", 0.), force)
 
         if self.phase == "align":
-            desired = entry - axis * STANDOFF_M
+            desired = entry - axis * self.geom.place_standoff_m
             if self.retries == 0 and self.probe_offset_y_m:
                 desired = desired + basis[:, 1] * self.probe_offset_y_m
             action = self._servo(desired, basis)
             err, ang = self._plug_error(desired, basis)
             if self.phase_time >= ALIGN_S[0] and err < ALIGN_POS_TOL_M and ang < ALIGN_ANGLE_TOL_DEG:
-                self.forward = -STANDOFF_M
+                self.forward = -self.geom.place_standoff_m
                 self.progress_depth, self.stall_s = -1., 0.
                 self._goto("insert")
             elif self.phase_time > ALIGN_S[1]:
@@ -704,7 +776,14 @@ class PlaceInsert:
             return action
 
         if self.phase == "insert":
-            self.forward = min(SEAT_X_M, self.forward + INSERT_SPEED_M_S * e.dt)
+            # Spring-leaf retention (workspace scenes): once the leaves carry the plug, a withdrawal
+            # cannot extract it and ~10 N of friction must be pushed through, so the push is
+            # force-capped (push_force_cap_n, as the scripted demonstrator) instead of being judged
+            # by the rigid-socket stall/force rules. The env's own wall/leaf aborts still apply.
+            axial = abs(float(info.get("socket_force_x_n", 0.)))
+            self.engaged = self.engaged or float(info.get("leaf_contact_force_n", 0.)) > 0.1
+            if not (self.engaged and axial >= self.push_cap):
+                self.forward = min(SEAT_X_M, self.forward + INSERT_SPEED_M_S * e.dt)
             desired = entry + axis * self.forward
             if self.retries == 0 and self.probe_offset_y_m:
                 desired = desired + basis[:, 1] * self.probe_offset_y_m
@@ -712,16 +791,17 @@ class PlaceInsert:
             depth = float(info.get("insertion_depth_m", -1.))
             if depth > self.progress_depth + 2e-4:
                 self.progress_depth, self.stall_s = depth, 0.
-            elif force > 0.5 or self.forward >= SEAT_X_M:
+            elif (axial >= 0.9 * self.push_cap) if self.engaged else (force > 0.5 or self.forward >= SEAT_X_M):
                 self.stall_s += e.dt
             lateral = float(np.hypot(info.get("offset_y_m", 0.), info.get("offset_z_m", 0.)))
+            force_exceeded = force > SOCKET_FORCE_LIMIT_N and not self.engaged
             if info.get("valid_pose"):
                 self._goto("hold")
-            elif force > SOCKET_FORCE_LIMIT_N or self.stall_s > STALL_S or self.phase_time > INSERT_MAX_S:
-                why = ("socket_force" if force > SOCKET_FORCE_LIMIT_N else
+            elif force_exceeded or self.stall_s > STALL_S or self.phase_time > INSERT_MAX_S:
+                why = ("socket_force" if force_exceeded else
                        "insert_stalled" if self.stall_s > STALL_S else "insert_too_slow")
-                detail = f"depth={depth*1e3:.2f}mm force={force:.2f}N lateral={lateral*1e3:.2f}mm"
-                if self.retries < self.max_retries:
+                detail = f"depth={depth*1e3:.2f}mm force={force:.2f}N axial={axial:.2f}N lateral={lateral*1e3:.2f}mm"
+                if self.retries < self.max_retries and not self.engaged:
                     self.retries += 1
                     self.stats.setdefault("retry_reasons", []).append(f"{why}: {detail}")
                     self._goto("withdraw")
@@ -734,9 +814,9 @@ class PlaceInsert:
             return action
 
         if self.phase == "withdraw":
-            self.forward = max(-STANDOFF_M, self.forward - 3 * INSERT_SPEED_M_S * e.dt)
+            self.forward = max(-self.geom.place_standoff_m, self.forward - 3 * INSERT_SPEED_M_S * e.dt)
             action = self._servo(entry + axis * self.forward, basis)
-            if self.forward <= -STANDOFF_M:
+            if self.forward <= -self.geom.place_standoff_m:
                 self._begin_align()
             return action
 
@@ -753,6 +833,7 @@ class PlaceInsert:
 
     def _begin_align(self):
         self._pinned_s = 0.
+        self.engaged = False
         self._goto("align")
 
     def diagnostics(self):

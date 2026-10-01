@@ -135,6 +135,22 @@ class Workspace:
     # and reject the scene if any perturbed pose is infeasible.
     pick_noise_margin: bool = True
     pick_noise_sigma: float = 3.0
+    # Workspace-spec scenes (configs/workspace_*.json, filled by workspace_for_env): the socket
+    # stays on its fixture pedestal, so its entry keeps the spec's height above the table
+    # instead of resting on the table; the plug's cable is anchored to the appliance, so both the
+    # pick pose and the seated pose must be within cable reach. None = the old free-table scene.
+    workspace_path: str = None
+    workspace_sha256: str = None
+    socket_entry_above_table_m: float = None
+    cable_anchor_m: tuple = None
+    cable_attach_local_m: tuple = (-0.04, 0.0, 0.0)
+    cable_max_reach_m: float = None
+    cable_front_margin_m: float = 0.03       # plug must start this far on the robot side of the socket face
+    # The home posture holds the hand at the workspace's own insertion pose, i.e. right where a
+    # raised socket can be sampled; a socket this close leaves no room to start any transit
+    # (collection-bank seed 1000001: entry 8 mm from the hand -> transit_blocked at runtime).
+    hand_home_m: tuple = None
+    hand_keepout_m: float = 0.10
     randomize_visual: bool = True
     light_azimuth_deg: tuple = (-60.0, 60.0)
     light_elevation_deg: tuple = (35.0, 80.0)
@@ -186,6 +202,37 @@ def _check(plug, socket, axis, ws):
     return None
 
 
+def _cable_check(options, ws):
+    """'cable_reach' if the cable attachment is out of reach of the appliance anchor at the pick
+    pose or at the seated pose (plug axis along the mating axis at the entry), else None."""
+    if ws.cable_anchor_m is None or ws.cable_max_reach_m is None:
+        return None
+    anchor, attach = np.asarray(ws.cable_anchor_m), np.asarray(ws.cable_attach_local_m)
+    plug_axis = _yaw_axis(options["plug_yaw_deg"], 0.)
+    socket_axis = _yaw_axis(options["socket_yaw_deg"], options["socket_tilt_deg"])
+    # A plug that starts behind the socket face must be carried around the socket and its
+    # pedestal; the hanging cable (anchored behind, at the appliance) then drapes over the
+    # pedestal, snags and pulls the plug out of the hand (collection-bank seed 1000002: 24 N).
+    along = float(np.dot(np.asarray(options["plug_pos_m"]) - np.asarray(options["socket_pos_m"]), socket_axis))
+    if along > -ws.cable_front_margin_m:
+        return "cable_wraps_pedestal"
+    # Only the local x component of the attachment matters for these checks (y/z are 0).
+    points = (np.asarray(options["plug_pos_m"]) + plug_axis * attach[0],
+              np.asarray(options["socket_pos_m"]) + socket_axis * attach[0])
+    if max(float(np.linalg.norm(p - anchor)) for p in points) > ws.cable_max_reach_m:
+        return "cable_reach"
+    return None
+
+
+def _hand_home_check(options, ws):
+    """'socket_at_hand_home' if the socket entry sits within the resting hand's keep-out."""
+    if ws.hand_home_m is None:
+        return None
+    if float(np.linalg.norm(np.asarray(options["socket_pos_m"]) - np.asarray(ws.hand_home_m))) < ws.hand_keepout_m:
+        return "socket_at_hand_home"
+    return None
+
+
 def _visual(rng, ws):
     if not ws.randomize_visual:
         return {}
@@ -209,10 +256,10 @@ def _pick_check(options, ws):
     work until a check is actually needed."""
     if not ws.grasp_feasibility:
         return None
-    key = (float(ws.table_height_m), bool(ws.require_insert_feasible))
+    key = (float(ws.table_height_m), bool(ws.require_insert_feasible), ws.workspace_path)
     if key not in _FEASIBILITY:
         from controllers.pick_insert_expert import PickFeasibility
-        _FEASIBILITY[key] = PickFeasibility(key[0], require_insert=key[1])
+        _FEASIBILITY[key] = PickFeasibility(key[0], require_insert=key[1], workspace=key[2])
     return _FEASIBILITY[key](options)
 
 
@@ -277,12 +324,13 @@ def sample_socket(rng, ws=WORKSPACE):
     producing the same draw sequence as the range fields are tuned."""
     x_range = ws.socket_x_range or ws.x_range
     y_range = ws.socket_y_range or ws.y_range
-    socket = np.array([rng.uniform(*x_range), rng.uniform(*y_range),
-                       ws.table_height_m + ws.socket_base_below_entry_m])
+    above = (ws.socket_base_below_entry_m if ws.socket_entry_above_table_m is None
+             else ws.socket_entry_above_table_m)
+    socket = np.array([rng.uniform(*x_range), rng.uniform(*y_range), ws.table_height_m + above])
     return socket, float(rng.uniform(*ws.socket_yaw_range_deg)), float(rng.uniform(*ws.socket_tilt_range_deg))
 
 
-_INSERT_FEASIBILITY = []
+_INSERT_FEASIBILITY = {}
 
 
 def _insert_check(options, ws):
@@ -290,10 +338,10 @@ def _insert_check(options, ws):
     (private model, fixed seeds). Imported lazily: MuJoCo work only when needed."""
     if not ws.insert_feasibility:
         return None
-    if not _INSERT_FEASIBILITY:
+    if ws.workspace_path not in _INSERT_FEASIBILITY:
         from controllers.place_insert import InsertFeasibility
-        _INSERT_FEASIBILITY.append(InsertFeasibility())
-    reason, _ = _INSERT_FEASIBILITY[0](options)
+        _INSERT_FEASIBILITY[ws.workspace_path] = InsertFeasibility(workspace=ws.workspace_path)
+    reason, _ = _INSERT_FEASIBILITY[ws.workspace_path](options)
     return reason
 
 
@@ -320,6 +368,10 @@ def sample_scene(seed, ws=WORKSPACE):
             "socket_tilt_deg": socket_tilt,
             "table_height_m": ws.table_height_m,
         }
+        bad = _cable_check(options, ws) or _hand_home_check(options, ws)
+        if bad:
+            rejected.append(bad)
+            continue
         bad = _pick_check(options, ws)
         if bad:
             rejected.append(f"pick_infeasible:{bad}")
@@ -434,7 +486,43 @@ def workspace_for_env(env, ws=WORKSPACE, **overrides):
     edge of an annulus centered on the wrong point), this corrects it.
     """
     base = tuple(float(v) for v in env.reach_anchor_m())
-    return replace(ws, base_pos_m=base, **overrides)
+    spec = getattr(env, "workspace", None)
+    if spec is None:
+        return replace(ws, base_pos_m=base, **overrides)
+    # Workspace-spec scene: read table height, socket mounting height and cable reach from the
+    # env instead of the free-table defaults. The socket entry is read from the live model
+    # (home pose), so this also holds for catalog connectors with a different socket depth.
+    table = float(spec["frames"]["table_top_z_m"])
+    entry_z = float(env.data.site_xpos[env.socket_site][2])
+    cable = spec.get("cable", {})
+    anchor = reach = None
+    if cable.get("enabled"):
+        box = spec["appliance"]
+        anchor = tuple(float(c + o) for c, o in zip(box["center_m"], box["anchor_local_m"]))
+        reach = 0.95 * float(cable["length_m"])   # straight-line bound with a 5% slack margin
+    derived = dict(workspace_path=_repo_path(spec["_path"]), workspace_sha256=spec["_sha256"],
+                   table_height_m=table, socket_entry_above_table_m=entry_z - table,
+                   cable_anchor_m=anchor, cable_max_reach_m=reach,
+                   hand_home_m=tuple(round(float(v), 6) for v in env.initial_grasp_position),
+                   # Plug body origin above the table when lying flat, from the connector spec
+                   # (legacy two-blade 8 mm = the free-table default; Type O 4 mm).
+                   plug_half_height_m=float(env.derived["table_rest_z_offset_m"]),
+                   # Raised socket on its pedestal + cable + hand keep-out: the free-table ranges
+                   # left ~4% of draws past the cheap checks and some seeds found no scene in
+                   # MAX_DRAWS. Socket further back and toward the appliance, plug nearer the
+                   # robot: 51% pass the cheap checks, 13/25 of those the pick/insert IK screens.
+                   socket_x_range=(0.38, 0.46), socket_y_range=(-0.36, -0.20), plug_x_range=(0.28, 0.38),
+                   cable_attach_local_m=tuple(float(v) for v in cable.get("attach_local_m", (-0.04, 0., 0.))))
+    derived.update(overrides)
+    return replace(ws, base_pos_m=base, **derived)
+
+
+def _repo_path(path):
+    root = Path(__file__).resolve().parents[1]
+    try:
+        return Path(path).resolve().relative_to(root).as_posix()
+    except ValueError:
+        return Path(path).resolve().as_posix()
 
 
 def _row(index, seed, split, ws):

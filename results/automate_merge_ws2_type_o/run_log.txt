@@ -1,0 +1,3 @@
+v2_00000 success |  | depth 18.83 peak_wall 12.07 | sample 48 s draws 4 | total 2778 s | data\auto_ws2_geom\v2_00000_success.frames.npz
+v2_00001 success |  | depth 18.86 peak_wall 18.59 | sample 24 s draws 2 | total 2169 s | data\auto_ws2_geom\v2_00001_success.frames.npz
+v2_00002 success |  | depth 18.84 peak_wall 9.14 | sample 51 s draws 2 | total 3636 s | data\auto_ws2_geom\v2_00002_success.frames.npz

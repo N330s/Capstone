@@ -138,7 +138,7 @@ def preflight_pass(args, out, ws):
     """Walk sampled scenes until enough succeed or the attempt budget runs out."""
     accepted, rejected = [], []
     budget = int(args.episodes * args.attempt_ratio)
-    env = OpenArmInsertEnv(images=False)
+    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
     viewer, recorder = make_viewer(env, args), make_recorder(env, args)
     started, cursor = time.time(), 0
     try:
@@ -216,7 +216,7 @@ def record_pass(args, out, accepted):
     if args.resume and manifest_path.exists():
         records = json.loads(manifest_path.read_text(encoding="utf-8")).get("episodes", [])
     done = {r["episode"] for r in records}
-    env = OpenArmInsertEnv(images=True)
+    env = OpenArmInsertEnv(images=True, workspace=args.workspace)
     viewer, recorder = make_viewer(env, args), make_recorder(env, args)
     try:
         for row in accepted:
@@ -300,12 +300,14 @@ def main():
                    help="Keep video for later review")
     p.add_argument("--video-camera", default="scene_rgb")
     p.add_argument("--video-stride", type=int, default=2, help="Capture every Nth control step")
+    p.add_argument("--workspace", type=Path, default=None,
+                   help="workspace spec (default configs/workspace_v1.json)")
     args = p.parse_args()
 
     out = args.output
     out.mkdir(parents=True, exist_ok=args.resume)
     # Center the sampler on the real right-arm mount, as the manual collectors do.
-    probe = OpenArmInsertEnv(images=False)
+    probe = OpenArmInsertEnv(images=False, workspace=args.workspace)
     ws = workspace_for_env(probe)
     probe.close()
     write_json(out / "evaluation_bank.json",
