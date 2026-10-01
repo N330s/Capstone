@@ -64,7 +64,7 @@ def validate_episode(path):
             raise ValueError("Episode boundary mismatch")
         if np.any(a["terminated"] & a["truncated"]):
             raise ValueError("Terminal and truncation flags overlap")
-        if meta["outcome"]!="success":
+        if meta.get("action_source") != "human_manual" and meta["outcome"] != "success":
             raise ValueError("Pilot BC export accepts successful expert episodes only")
     return meta
 

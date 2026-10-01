@@ -5,3 +5,4 @@ third_party/openarm_mujoco/
 third_party/openpi/
 data/
 MUJOCO_LOG.TXT
+.claude/
