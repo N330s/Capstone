@@ -302,7 +302,7 @@ def main():
     p.add_argument("--video-stride", type=int, default=2, help="Capture every Nth control step")
     p.add_argument("--workspace", type=Path, default=None,
                    help="workspace spec (default configs/workspace_v1.json)")
-    p.add_argument("--eval-scenes", type=int, default=100,
+    p.add_argument("--eval-scenes", type=int, default=0,
                    help="size of the reserved evaluation bank written first (default 100; use a few "
                         "for quick tests, a smaller bank is a prefix of the full one)")
     args = p.parse_args()

@@ -12,6 +12,29 @@ def clean_info(info):
     return {k:v.tolist() if isinstance(v,np.ndarray) else v for k,v in info.items()}
 
 
+# Rendered camera -> folder under <episode>/cameras/ for the per-frame JPEG export.
+CAMERA_FOLDERS = {"scene_rgb":"head", "wrist_rgb":"wrist"}
+
+
+def export_camera_frames(path, observations, folders=CAMERA_FOLDERS, quality=95):
+    """Write every recorded frame as <episode>/cameras/<folder>/<i>.jpeg, i = 1..T+1.
+
+    Frame i is observation i-1. JPEG is lossy and for viewing / external tools only; the
+    pixels the dataset and checksums use stay in episode.npz."""
+    from PIL import Image
+    written = {}
+    for camera, folder in folders.items():
+        if camera not in observations[0].get("images",{}):
+            continue
+        out = Path(path)/"cameras"/folder
+        out.mkdir(parents=True,exist_ok=False)
+        for i, o in enumerate(observations,1):
+            Image.fromarray(o["images"][camera]).save(out/f"{i}.jpeg",quality=quality)
+        written[folder] = camera
+    return {"folders":written,"format":"jpeg","quality":quality,"first_index":1,
+            "count":len(observations),"frame_index":"file i = observation i-1"}
+
+
 def save_episode(path, observations, requested, applied, states, velocities,
                  rewards, terminated, truncated, durations, phases, infos, manifest):
     path = Path(path)
@@ -29,7 +52,9 @@ def save_episode(path, observations, requested, applied, states, velocities,
     for camera in observations[0]["images"]:
         arrays[f"image_{camera}"]=np.stack([o["images"][camera] for o in observations])
     np.savez_compressed(path/"episode.npz",**arrays)
+    frames = export_camera_frames(path, observations)
     metadata = {**manifest,"dataset_schema":SCHEMA,"action_source":"privileged_scripted_expert",
+                "camera_frames":frames,
                 "instruction":observations[0]["instruction"], "steps":len(requested),
                 "data_sha256":hashlib.sha256((path/"episode.npz").read_bytes()).hexdigest(),
                 "outcome":infos[-1]["outcome"],

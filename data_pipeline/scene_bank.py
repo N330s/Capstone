@@ -146,6 +146,18 @@ class Workspace:
     cable_attach_local_m: tuple = (-0.04, 0.0, 0.0)
     cable_max_reach_m: float = None
     cable_front_margin_m: float = 0.03       # plug must start this far on the robot side of the socket face
+    # First rest waypoint of the cable (x, y, z; None = same as the plug's attachment): where it
+    # leaves the table toward the floor appliance. A plug whose attachment starts closer than
+    # cable_edge_min_m to it has no slack to lift: the taut cord swings the friction-held plug ~25
+    # deg about the pinch axis between the lift and the handoff, a held pose no top-down grasp of the
+    # offered tilts can insert from (plan_seated_unreachable / plan_insert_line_infeasible at runtime,
+    # collection-bank rows 3, 10, 13, 14, 20, 28 of workspace_v2_cable30; the screens only model the
+    # unswung grasp). Measured on bank rows 0-25: attachment 0.269-0.284 m in x (0.034-0.049 m from
+    # the waypoint) -> all 5 plan failures (rows 3, 10, 13, 14, 20), handoff pitch -23..-29 deg
+    # (3/3 measured); 0.294 m and up (0.059 m from it) -> 0/20 plan failures, handoff pitch 0.2 deg
+    # (6/6 measured). The threshold sits between the two groups, plus a 1 mm margin.
+    cable_edge_waypoint_m: tuple = None
+    cable_edge_min_m: float = 0.06
     # The home posture holds the hand at the workspace's own insertion pose, i.e. right where a
     # raised socket can be sampled; a socket this close leaves no room to start any transit
     # (collection-bank seed 1000001: entry 8 mm from the hand -> transit_blocked at runtime).
@@ -221,6 +233,11 @@ def _cable_check(options, ws):
               np.asarray(options["socket_pos_m"]) + socket_axis * attach[0])
     if max(float(np.linalg.norm(p - anchor)) for p in points) > ws.cable_max_reach_m:
         return "cable_reach"
+    if ws.cable_edge_waypoint_m is not None:
+        attach_xy = points[0][:2]
+        edge_xy = np.array([a if w is None else w for a, w in zip(attach_xy, ws.cable_edge_waypoint_m[:2])], dtype=float)
+        if float(np.linalg.norm(attach_xy - edge_xy)) < ws.cable_edge_min_m:
+            return "cable_taut_on_lift"
     return None
 
 
@@ -495,14 +512,17 @@ def workspace_for_env(env, ws=WORKSPACE, **overrides):
     table = float(spec["frames"]["table_top_z_m"])
     entry_z = float(env.data.site_xpos[env.socket_site][2])
     cable = spec.get("cable", {})
-    anchor = reach = None
+    anchor = reach = edge = None
     if cable.get("enabled"):
+        waypoints = cable.get("rest_waypoints_world") or []
+        if waypoints:
+            edge = tuple(None if v is None else float(v) for v in waypoints[0])
         box = spec["appliance"]
         anchor = tuple(float(c + o) for c, o in zip(box["center_m"], box["anchor_local_m"]))
         reach = 0.95 * float(cable["length_m"])   # straight-line bound with a 5% slack margin
     derived = dict(workspace_path=_repo_path(spec["_path"]), workspace_sha256=spec["_sha256"],
                    table_height_m=table, socket_entry_above_table_m=entry_z - table,
-                   cable_anchor_m=anchor, cable_max_reach_m=reach,
+                   cable_anchor_m=anchor, cable_max_reach_m=reach, cable_edge_waypoint_m=edge,
                    hand_home_m=tuple(round(float(v), 6) for v in env.initial_grasp_position),
                    # Plug body origin above the table when lying flat, from the connector spec
                    # (legacy two-blade 8 mm = the free-table default; Type O 4 mm).

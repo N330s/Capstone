@@ -101,9 +101,17 @@ the cable; `place_plug` raises otherwise.
 
 | Camera | Parent | Position | Aim | FOV |
 | --- | --- | --- | --- | --- |
-| `scene_rgb` | world | (0.85, −0.90, 0.85) | xyaxes (0.8, 0.6, 0, −0.25, 0.333, 0.91) | 48° |
+| `scene_rgb` | world | (0.12, −0.21, 0.98), overhead mount 0.66 m above the table top | xyaxes (0, −1, 0, 0.9114, 0, 0.4116): looks at (0.40, −0.21, 0.36), 24° from vertical, image-up = +X | 48° |
 | `inspection` | world | (0.56, −0.32, 0.59) | xyaxes (0.75, 0.66, 0, −0.35, 0.4, 0.847) | 45° |
 | `wrist_rgb` | `openarm_right_hand` | hand-local (0.05, −0.04, 0.01) | hand-local (0, 0.006, 0.123) | 55° |
+
+`scene_rgb` was moved on 2026-10-02 from the former corner view, (0.85, −0.90, 0.85) with xyaxes
+(0.8, 0.6, 0, −0.25, 0.333, 0.91), to the overhead mount in all workspace files. It keeps the plug
+spawn area, the gripper and the socket face in view. This changes the workspace JSON hash, so datasets
+recorded earlier no longer replay strictly. Recorded episodes also save every frame as
+`<episode>/cameras/head/<i>.jpeg` (`scene_rgb`) and `cameras/wrist/<i>.jpeg` (`wrist_rgb`), with
+i = 1…T+1 and file i = observation i−1 (`data_pipeline/episodes.py`). The lossless pixels stay in
+`episode.npz`.
 
 The wrist camera carries an action-camera style visual body: 62 × 45 × 32 mm housing 18 mm behind
 the optical centre, Ø 18 × 8 mm lens, and a Ø 10 mm bracket to hand-local (0.02, −0.02, 0). All

@@ -522,3 +522,102 @@ python scripts/probe_table_insert.py
 
 Collection output must go to a new directory. Failed preflights are kept under
 `failed_preflight/` for diagnosis and are never counted as training data.
+
+## 2026-10-01: workspace_v2_cable30 (after the setup_env merge)
+
+### Context
+A collaborator merged automateData into the new workspace scene: a real table, spring-leaf socket on a fixture post, a cable, and the connector catalog. See [docs/MERGE_AUTOMATEDATA.md](MERGE_AUTOMATEDATA.md) (Thai). Their results:
+
+| Scene | Result | Notes |
+|---|---|---|
+| v1 automation | 10/16 | 4 insertion stalls at the spring leaves, unresolved |
+| v2 Type O | 3/3 | only 3 scenes, about 45 min each with the 60-segment cable |
+
+### User requests (2026-10-01)
+1. Socket always attached to its board: already implemented; `carry_fixture()` in envs/openarm_insert.py moves the post with the socket by the same rigid transform on every tabletop reset; tests/test_place_insert.py checks it; renders of sampled v1 and v2_cable30 scenes confirm. No change needed.
+2. Wire from under the table: already exists in configs/workspace_v2.json and workspace_v2_cable30.json (box on floor, cable over near table edge to plug). Not visible because collect_random.py defaults to workspace_v1 (box on table). Use `--workspace configs/workspace_v2_cable30.json`.
+3. "Sometimes OpenArm can't push the plug into the socket" = insertion stall. User chose workspace_v2_cable30 as target (Type O, 30-segment cable, ~3.8x faster than v2; the CLAUDE.md collection scene).
+
+### Plan
+Auto-mode loop (test -> fix -> test) with Sonnet subagents. Step 1 (in progress): baseline of ~16 scenes with privileged detector on v2_cable30, plus per-step diagnosis of each insertion stall (plug sag in hand vs wrist deflection). Prior v1 evidence (MERGE section 4.9): aligned < 30 um until leaf contact at ~9.9 mm, then 0.36 mm z sag within 0.6 s as push rises 12 -> 14 N; already failed: lateral gain x2, target lead <= 1 mm, 20 N cap.
+
+### Results
+
+#### Baseline (privileged detector, collection-bank rows 0–15)
+
+| Outcome | Count | Notes |
+|---|---|---|
+| success | 10/16 | depth 18.87–19.00 mm, peak socket force 7.8–19.7 N |
+| `expert_plan_seated_unreachable` (transit_place) | 5 | rows 3, 10, 13, 14 (and 28 in rows 16–31): the sampler accepted the scene and the plug was picked, but PlaceInsert could not plan the seated pose |
+| insertion stall at the leaves | 1 | row 6 (seed 1000006): stops at ~10.15 mm (leaf contact), axial 21–24 N, ends as `grasp_lost` (drift 1.02 mm) or `insert_stalled` |
+
+Row-6 variants (lateral/vertical pre-offset, grip changes) all still stall at ~10.15 mm, so it is a deterministic leaf stall. Rows 16–31 are in progress; so far rows 16, 21 and 29 succeeded, row 20 failed with `plan_insert_line_infeasible` and row 28 with `plan_seated_unreachable`.
+
+So on v2_cable30 the dominant failure is a **planner/sampler mismatch**, not the push.
+
+#### Full baseline, rows 0–31 (privileged)
+
+**20/32 success (62.5%)**. Planning failures make up 8/32: `plan_seated_unreachable` on rows 3, 10, 13, 14, 27, 28, 31 and `plan_insert_line_infeasible` on row 20. Pickup failures make up 2/32 (row 23 `grasp_no_contact`, row 30 `numerical_failure`). Insertion failures make up 2/32 (row 6 `grasp_lost`, row 17 `force_limit_abort`), so 20/22 succeed once insertion is reached. Successful episodes average 34.0 s simulated, with peak axial force of 17.0 N on average (max 19.2 N).
+
+#### Stall diagnosis (per-step traces)
+
+- **The sag is arm compliance, not grasp slip.** In successes the in-hand pose stays within 52 µm and 0.2°. The commanded hand leads the actual hand by 12–22 mm axially. Joint 7 tracking error is 48–69 mrad. No torque saturates. The same ~130 µm z sag appears in successes, so it does not cause failures.
+- **Controller wind-up.** After the 15 N cap trips, the advance freezes but the pose servo keeps integrating at 5 mm/s, so the push ramps about 5 N/s to 20–24 N and the cap is never enforced. Enforcing a literal 15 N cap breaks successes, which need 16–19 N; row 9 then stalled at 12.9 mm.
+- **Row 6.** An unexplained free-flight y/z drift (~0.5 mm/s from 8.8 mm depth, with no contacts) makes one pin hit its leaf early (9.59 mm instead of 10.04 mm). That sets up a one-sided wedge (12 N wall load). The grip then slips once axial force exceeds 15.7 N (drift 1.0 mm at 19.9 N). These variants all failed: retrying with a wind-up reset (it jams the same way), a ±100 µm bias after 9 mm, slower insertion, a finer servo clip, and a firmer squeeze (no slip, but still stalls at 10.19 mm / 24 N).
+- **Row 17.** The plug creeps 10 → 14.2 mm with about 22 mm of stored wind-up, then jumps 0.37 mm in one step. The wall force spike of 30.7 N goes over the 30 N abort.
+- **Ranked fixes.** (1) Anti-wind-up force control (bounded target lead, about 2 N/s ramp, 20–22 N cap) plus an engaged-stall recovery that resets the wind-up and changes the approach. (2) A firmer squeeze, used together with (1). (3) A y/z correction before contact, from about 6 mm depth. Wrist stiffness is not recommended before anti-wind-up is in place.
+
+#### Fixer S: planning failures (done, merged 2026-10-02)
+
+- **Root cause.** When the plug starts close to the table edge where the cable drops (first cable waypoint x = 0.235), the cord pulls taut during the lift and swings the friction-held plug about 25° around the pinch axis before handoff. Measured handoff pitch: −23.0 to −28.6° on failing rows, versus 0.2° elsewhere. The sampler and `insert_feasible` model only the nominal, unswung grasp. From the swung grasp, 0 of 29 random sockets are plannable, against 27 of 29 for the unswung grasp. Predicting the swing therefore cannot recover these scenes, so they have to be rejected.
+- **Fix.** In `data_pipeline/scene_bank.py`, new `Workspace` fields `cable_edge_waypoint_m` (read from the workspace's first `cable.rest_waypoints_world`) and `cable_edge_min_m = 0.06`. `_cable_check` now rejects `cable_taut_on_lift` when the plug's cable attachment is within 0.06 m of that waypoint in xy (failing rows sat at 0.049, good ones at 0.059 or more). v1 has no waypoint, so v1 sampling is unchanged. Three asset-free tests were added to `tests/test_workspace.py`.
+- **Result.** Rows 1, 3, 4, 10, 13, 14, 20, 27, 28 and 31 were re-run (failing rows resample to new scenes): **10/10 success, zero plan failures**. Unit tests 46/46. The effective plug x range shrinks to about ≥ 0.337 m at yaw 0. Cold scene generation is slower under contention (about 28 s per row).
+- **Environment note.** Each simulation process uses about 1.5 GB of RAM; running more than about 4 at once caused `MemoryError: bad allocation`.
+
+#### Fixer R: insertion stall (done, merged 2026-10-02)
+
+- **Shipped (controllers/place_insert.py only; no physics or env change):** a force-controlled push once the leaves touch.
+  - The target is the plug x plus a bounded lead (0.1 mm/N of force error, clamped to −0.5…+1 mm), so the integrating servo can no longer wind up.
+  - The force setpoint ramps at 4 N/s to FORCE_CAP_N = 21 N, with `push_force_cap_n` as the floor. It holds when leaf force exceeds 0.6 × the leaf abort.
+  - The engaged push has its own 15 s budget.
+  - Behaviour before leaf contact is unchanged.
+- **Engaged-stall recovery** (pull back, re-align, re-push, with guards) is implemented but **ships OFF** (`MAX_RECOVERIES = 0`). It rescued none of the stall scenes, and on v1 00000 and v2 row 6 the pull-back ended in `force_limit_abort`. The reason: the arm's lateral stiffness at the hand is only about 1 N/mm, so releasing the stored load swings the plug through the clearance.
+- **Results:**
+
+| Case | Before | After |
+|---|---|---|
+| v2 row 17 | force_limit_abort | **success** |
+| v2 row 6 | grasp_lost at ~10.15 mm | unchanged |
+| v2 rows 0, 1, 2, 4, 5, 7, 8, 9 | – / success | success |
+| v1 previously passing (00001, 00002, 00005, 00008) | success | success |
+| v1 stalls 00000, 00003, 00007, 00009 | insert_stalled | still stalled (3 of them now push 0.3–1.3 mm deeper) |
+
+- **Measured dead ends:** the leaf pair pins the plug's y regardless of where it is aimed, so y bias does nothing. A z pre-bias only shifts the stall depth slightly; at +300 µm it hit the leaf abort. Dither at 2–3 Hz and a slower engaged push changed nothing. A firmer squeeze stops the row-6 slip but it still stalls, and it turns row 17 into an abort.
+- **Remaining:** row 6's one-sided wedge comes from an unexplained y/z drift that starts at 8.8 mm depth, before contact. That has to be fixed upstream; retrying does not help.
+- Unit tests after merging both fixes: 46/46.
+
+#### Final verification (2026-10-02, unseen rows 40–55, both fixes merged)
+
+| Detector | Accepted / attempted | Failures |
+|---|---|---|
+| privileged | **14/16 (87.5%)** | row 48 `grasp_lost` in insert (drift 1.00 mm at 5.2 mm depth, the same family as row 6); row 53 `force_limit_abort` at 14.5 mm (passes with the noisy detector) |
+| noisy | **13/16 (81.3%)** | row 48 `grasp_lost` (as above); row 50 `ik_infeasible` (noisy pose estimate near a joint limit; fails fast in 18 s); row 54 `plan_seated_collision` (noisy grasp estimate, finger hits the socket frame) |
+
+These are different rows from the baseline, so the comparison with 62.5% (rows 0–31) is indicative only. There were zero planning failures with the privileged detector (the baseline had 25%) and no reset rejections. Successful episodes reach 18.8–19.0 mm depth and run 33–41 s simulated.
+
+`collect_random.py --workspace configs/workspace_v2_cable30.json --eval-scenes 2 --episodes 2 --record --detector noisy` accepted and recorded 2/2. The manifest has `complete=true`, `validate_episode` passes, and strict `replay_pilot.py` gives qpos/qvel error 0.0. Unit tests 46/46.
+
+**Remaining:** a one-sided leaf wedge with grip slip (rows 6 and 48) that begins as a y/z drift before contact; one late `force_limit_abort` (row 53); and two noisy-detector misses (rows 50 and 54) that the scene generator's noise check does not cover for the Type O plug. Leaf-force maxima of 28–53 N appear larger than the 21 N axial cap; this was not checked further.
+
+#### Iteration 1 (done)
+- Diagnosis: the row-6 stall mechanism, step by step (plug slip in the hand vs. wrist deflection), and the full 32-row breakdown.
+- Fixer R (worktree, insert phase of `controllers/place_insert.py`): recovery for stalls once the leaves are engaged (currently terminal). It backs off, re-aligns with a sag pre-bias, and retries; primary case is row 6.
+- Fixer S (worktree, planning/feasibility code and `data_pipeline/scene_bank.py`): make the sampler reject exactly the scenes the runtime cannot plan (`plan_seated_unreachable`, `plan_insert_line_infeasible`).
+
+## 2026-10-02: overhead scene camera and per-frame JPEG export
+
+Collection tuning is **paused** at the user's request. The state above (v2_cable30: 87.5% privileged, 81% noisy on rows 40–55) is where it stopped.
+
+- **Overhead camera.** `cameras.scene_rgb` was moved to an overhead mount in every workspace file (`workspace_v1`, `v1_leaf5n`, `v2`, `v2_cable30`). The camera sits at (0.12, −0.21, 0.98) m, 0.66 m above the table top, looks at (0.40, −0.21, 0.36) (24° from vertical) with a 48° field of view. It was chosen from rendered candidates: a straight-down view cannot see the socket slots, and wider views leave the task area small at 320×240. The plug spawn area, gripper, cable and socket face are in view; the hand occludes the plug from above during the grasp. The per-scene camera jitter (±4 mm, ±1.5°) still applies. Editing the workspace JSON changes its hash, so earlier datasets no longer replay strictly. [docs/WORKSPACE.md](WORKSPACE.md) is updated.
+- **JPEG frames.** `data_pipeline/episodes.py` `save_episode()` now also writes `<episode>/cameras/head/<i>.jpeg` (from `scene_rgb`) and `<episode>/cameras/wrist/<i>.jpeg` (from `wrist_rgb`), with i = 1…T+1 and file i = observation i−1, at JPEG quality 95. The folders and frame count are recorded in `metadata.json` under `camera_frames`. This applies to every collector that uses `save_episode`. `episode.npz` (lossless) is unchanged and remains what checksums and training use.
+- Unit tests 46/46.

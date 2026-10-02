@@ -70,6 +70,38 @@ GRASP_DRIFT_LIMIT_M = 0.001   # vs the transform measured at handoff (env limit)
 GRASP_ANGLE_LIMIT_DEG = 5.0
 SOCKET_FORCE_LIMIT_N = 5.0
 STALL_S = 1.0
+# Engaged-stall recovery (spring-leaf sockets): unload the leaves, re-aim with a bias against the measured
+# sag, push again. All distances are relative to where the leaves first touched the plug.
+MAX_RECOVERIES = 0              # 0 = off: none of the measured stall scenes recovered (see docs); set 1-2 to enable
+RECOVER_BACKOFF_M = 0.002     # withdraw this far behind the leaf-contact position
+RECOVER_COMPLIANT = 1.0       # after a recovery, push with lateral/attitude servo off once the pins are guided
+COMPLIANT_FROM_DEPTH_M = 0.0  # insertion depth from which the push is compliant
+FORCE_CAP_N = 21.             # force-controlled push limit (floor: push_force_cap_n)
+ENGAGED_MAX_S = 15.           # budget of the force-controlled push (stall detection ends it earlier)
+ENGAGED_SQUEEZE_M = 0.0        # extra finger closure while pushing through the leaves (firmer grip)
+FORCE_RAMP_N_S = 4.           # axial force setpoint ramp once the leaves touch
+LEAD_PER_N_M = 0.0001         # target lead per newton of force error (bounded below)
+LEAD_MAX_M = 0.001
+LEAD_BACK_M = 0.0005
+LEAF_GUARD_FRAC = 0.6         # stop raising the push at this fraction of the leaf-force abort
+DITHER_HZ = 0.                # aim-point dither while pushing through the leaves (0 = off)
+DITHER_AX_M = 0.0002
+DITHER_LAT_M = 0.00005
+RECOVER_BIAS_GAIN = 0.0       # fraction of the measured sag pre-biased against
+RECOVER_REBASE = 1.0          # drop the integrated push load when the recovery starts
+RECOVER_HOLD_LATERAL = 0.0    # pull back holding the plug's own lateral position and attitude
+RECOVER_FULL = 1.0            # 1: withdraw to the preinsert pose and re-align; 0: back off to just behind the leaves
+RECOVER_ARRIVE_M = 0.0002     # pull stage ends this close to the backed-off position
+RECOVER_ALIGN_TOL_M = 0.00005 # re-aligned to this before pushing again (normal align: 0.3 mm, reaches ~0.03)
+RECOVER_ALIGN_S = 3.0
+RECOVER_BIAS_RAMP_S = 0.6     # ramp the pre-bias in over this time (the servo integrates: no steps)
+PULL_CAP_N = 14.             # recovery pull-out force limit (leaf friction is ~10-12 N)
+PULL_RAMP_N_S = 3.
+RECOVER_WITHDRAW_S = 8.0      # give up if the leaves will not release
+RECOVER_BIAS_MAX_M = 0.0005   # per-axis cap on the pre-bias (comparable to SERVO_POS_CLIP_M)
+RECOVER_BIAS_MIN_M = 0.00003  # sag below this is alignment noise, not a bias
+RECOVER_DRIFT_FRAC = 0.6      # treat grasp drift beyond this fraction of the limit as a stall
+ENGAGED_SPEED_M_S = INSERT_SPEED_M_S   # push speed once the leaves touch (A/B: slower)
 TRACK_ERROR_LIMIT_M = 0.004   # plug off the planned line while advancing
 
 
@@ -575,7 +607,8 @@ class PlaceInsert:
     original insertion expert). Deterministic given the env state.
     """
 
-    def __init__(self, env, *, kin=None, socket_estimate=None, max_retries=1, probe_offset_y_m=0.):
+    def __init__(self, env, *, kin=None, socket_estimate=None, max_retries=1, probe_offset_y_m=0.,
+                 max_recoveries=MAX_RECOVERIES):
         self.env = env
         self.kin = kin if kin is not None else ArmKinematics(env.model)
         self.geom = plug_geometry(env.model, getattr(env, "workspace", None))
@@ -585,6 +618,7 @@ class PlaceInsert:
         self.phase, self.phase_time = "transit_place", 0.
         self.failure = self.failure_detail = None
         self.grip = float(env.target[7])
+        self.grip0 = self.grip
         self.log = []
         self.stats = {}
         self._pinned_s = self._contact_loss_s = 0.
@@ -593,6 +627,12 @@ class PlaceInsert:
         leaves = getattr(env, "workspace", {}).get("socket_leaves", {}) if getattr(env, "leaf_geoms", ()) else {}
         self.push_cap = float(leaves.get("push_force_cap_n", np.inf))
         self.engaged = False
+        self.max_recoveries, self.recoveries = max_recoveries, 0
+        self.engage_forward = None    # commanded forward where the leaves first touched the plug
+        self.bias = np.zeros(2)       # socket-frame (y, z) pre-bias against the measured sag
+        self._recover = None          # active recovery: {"forward": target, "settle_s": t}
+        self._drift_m = 0.
+        self._rebase = False
 
     # ------------------------------------------------------------ helpers
     def _truth_socket(self):
@@ -630,6 +670,7 @@ class PlaceInsert:
         pos, rot = self._plug_in_hand()
         drift = float(np.linalg.norm(pos - self.ref_pos))
         angle = float(np.degrees(np.linalg.norm(rotation_vector(rot @ self.ref_rot.T))))
+        self._drift_m = drift
         self.stats["max_grasp_drift_m"] = max(self.stats.get("max_grasp_drift_m", 0.), drift)
         self.stats["max_grasp_angle_deg"] = max(self.stats.get("max_grasp_angle_deg", 0.), angle)
         contacts = self._finger_contacts()
@@ -718,7 +759,10 @@ class PlaceInsert:
         jac = np.vstack([self.jp[:, e.va["right"]], self.jr[:, e.va["right"]]])
         change = jac.T @ np.linalg.solve(jac @ jac.T + np.eye(6) * 1e-5, error)
         lo, hi = self.kin.lo + 0.01, self.kin.hi - 0.01
-        target = np.clip(e.target[:7] + np.clip(SERVO_GAIN * change, -SERVO_STEP_CLIP_RAD, SERVO_STEP_CLIP_RAD),
+        base = e.target[:7]
+        if self._rebase:              # drop the integrated load: continue from where the arm really is
+            base, self._rebase = d.qpos[e.qa["right"]].copy(), False
+        target = np.clip(base + np.clip(SERVO_GAIN * change, -SERVO_STEP_CLIP_RAD, SERVO_STEP_CLIP_RAD),
                          lo, hi)
         pinned = (target <= lo + 1e-9) | (target >= hi - 1e-9)
         self._pinned_s = self._pinned_s + e.dt if pinned.any() else 0.
@@ -760,7 +804,7 @@ class PlaceInsert:
         self.stats["peak_socket_force_n"] = max(self.stats.get("peak_socket_force_n", 0.), force)
 
         if self.phase == "align":
-            desired = entry - axis * self.geom.place_standoff_m
+            desired = entry - axis * self.geom.place_standoff_m + self._bias_offset(basis)
             if self.retries == 0 and self.probe_offset_y_m:
                 desired = desired + basis[:, 1] * self.probe_offset_y_m
             action = self._servo(desired, basis)
@@ -781,31 +825,53 @@ class PlaceInsert:
             # force-capped (push_force_cap_n, as the scripted demonstrator) instead of being judged
             # by the rigid-socket stall/force rules. The env's own wall/leaf aborts still apply.
             axial = abs(float(info.get("socket_force_x_n", 0.)))
-            self.engaged = self.engaged or float(info.get("leaf_contact_force_n", 0.)) > 0.1
-            if not (self.engaged and axial >= self.push_cap):
+            if not self.engaged and float(info.get("leaf_contact_force_n", 0.)) > 0.1:
+                self.engaged = True
+                if self.engage_forward is None:
+                    self.engage_forward = self.forward
+            plug_x = float((e.data.xpos[e.plug] - entry) @ axis)
+            if self.engaged and np.isfinite(self.push_cap):
+                self.forward = self._force_push(plug_x, axial, float(info.get("leaf_contact_force_n", 0.)))
+            else:
                 self.forward = min(SEAT_X_M, self.forward + INSERT_SPEED_M_S * e.dt)
-            desired = entry + axis * self.forward
+            desired = entry + axis * self.forward + self._bias_offset(basis)
             if self.retries == 0 and self.probe_offset_y_m:
                 desired = desired + basis[:, 1] * self.probe_offset_y_m
-            action = self._servo(desired, basis)
+            if self.engaged and self.recoveries and DITHER_HZ:
+                desired = desired + self._dither(basis)
             depth = float(info.get("insertion_depth_m", -1.))
+            if self.recoveries and RECOVER_COMPLIANT and depth > COMPLIANT_FROM_DEPTH_M:
+                # Pins guided by the socket: only the axial line is servoed. Holding the plug's own
+                # lateral position and attitude stops the servo winding up against the hole/leaf
+                # constraint (it would clamp the plug into one leaf and bind the wall).
+                plug_pos = e.data.xpos[e.plug]
+                desired = plug_pos + axis * (self.forward - float((plug_pos - entry) @ axis))
+                action = self._servo(desired, e.data.xmat[e.plug].reshape(3, 3).copy())
+            else:
+                action = self._servo(desired, basis)
             if depth > self.progress_depth + 2e-4:
                 self.progress_depth, self.stall_s = depth, 0.
-            elif (axial >= 0.9 * self.push_cap) if self.engaged else (force > 0.5 or self.forward >= SEAT_X_M):
+            elif (axial >= 0.9 * self._force_cap()) if self.engaged else (force > 0.5 or self.forward >= SEAT_X_M):
                 self.stall_s += e.dt
             lateral = float(np.hypot(info.get("offset_y_m", 0.), info.get("offset_z_m", 0.)))
             force_exceeded = force > SOCKET_FORCE_LIMIT_N and not self.engaged
+            # The plug creeping in the hand under the push is the same stall, caught before grasp_lost.
+            drifting = False
             if info.get("valid_pose"):
                 self._goto("hold")
-            elif force_exceeded or self.stall_s > STALL_S or self.phase_time > INSERT_MAX_S:
+            elif force_exceeded or self.stall_s > STALL_S or drifting or self._too_slow():
                 why = ("socket_force" if force_exceeded else
-                       "insert_stalled" if self.stall_s > STALL_S else "insert_too_slow")
+                       "insert_stalled" if (self.stall_s > STALL_S or drifting) else "insert_too_slow")
                 detail = f"depth={depth*1e3:.2f}mm force={force:.2f}N axial={axial:.2f}N lateral={lateral*1e3:.2f}mm"
-                if self.retries < self.max_retries and not self.engaged:
+                if self.engaged and why == "insert_stalled" and self.recoveries < self.max_recoveries:
+                    self._begin_recovery(entry, basis, depth, axial, detail)
+                elif self.retries < self.max_retries and not self.engaged:
                     self.retries += 1
                     self.stats.setdefault("retry_reasons", []).append(f"{why}: {detail}")
                     self._goto("withdraw")
                 else:
+                    if self.recoveries:
+                        detail += f" after {self.recoveries} recoveries"
                     return self._fail(why, detail)
             elif self.forward < -0.004 and lateral > TRACK_ERROR_LIMIT_M:
                 return self._fail("insert_off_axis", f"lateral={lateral*1e3:.2f}mm")
@@ -814,6 +880,8 @@ class PlaceInsert:
             return action
 
         if self.phase == "withdraw":
+            if self._recover is not None:
+                return self._recover_step(entry, basis)
             self.forward = max(-self.geom.place_standoff_m, self.forward - 3 * INSERT_SPEED_M_S * e.dt)
             action = self._servo(entry + axis * self.forward, basis)
             if self.forward <= -self.geom.place_standoff_m:
@@ -831,9 +899,132 @@ class PlaceInsert:
             return action
         return self._fail("unknown_phase", self.phase)
 
+    def _too_slow(self):
+        """INSERT_MAX_S bounds the approach; the force-controlled push has its own (ENGAGED_MAX_S) budget."""
+        t_eng = getattr(self, "_engaged_t", 0.) if (self.engaged and np.isfinite(self.push_cap)) else 0.
+        return self.phase_time - t_eng > INSERT_MAX_S or t_eng > ENGAGED_MAX_S
+
+    def _abort_margin(self):
+        """Reason string when the recovery is approaching an env abort or the grasp limit, else None."""
+        info, cfg = self.env.info, self.env.metric_config
+        if float(info.get("contact_force_n", 0.)) > 0.4 * cfg.get("contact_abort_n", np.inf):
+            return f"wall {info.get('contact_force_n', 0.):.1f}N"
+        if float(info.get("leaf_contact_force_n", 0.)) > LEAF_GUARD_FRAC * cfg.get("leaf_force_abort_n", np.inf):
+            return f"leaf {info.get('leaf_contact_force_n', 0.):.1f}N"
+        if self._drift_m > 0.85 * GRASP_DRIFT_LIMIT_M:
+            return f"grasp drift {self._drift_m*1e3:.2f}mm"
+        return None
+
+    def _force_cap(self):
+        """Axial push limit once the leaves carry the plug. The hard-wired 15 N push_force_cap_n is the
+        floor; successful insertions need 16-19 N, so the force-controlled push may go to FORCE_CAP_N."""
+        return max(self.push_cap, FORCE_CAP_N) if np.isfinite(self.push_cap) else np.inf
+
+    def _force_push(self, plug_x, axial, leaf):
+        """Force-controlled push with anti-wind-up. The target is only ever a bounded lead ahead of the
+        plug, chosen from the measured axial force so the integrating servo cannot store a push that
+        the plug does not follow (the old open-loop target let the force run 5 N/s past the cap)."""
+        self._engaged_t = getattr(self, "_engaged_t", 0.) + self.env.dt
+        f_set = min(self._force_cap(), FORCE_RAMP_N_S * self._engaged_t)
+        if ENGAGED_SQUEEZE_M:
+            self.grip = getattr(self, "grip0", self.grip) - ENGAGED_SQUEEZE_M * smoothstep(self._engaged_t / 0.5)
+        if leaf > LEAF_GUARD_FRAC * self.env.metric_config.get("leaf_force_abort_n", np.inf):
+            f_set = min(f_set, axial)      # leaves near the abort load: stop raising the force
+        lead = float(np.clip((f_set - axial) * LEAD_PER_N_M, -LEAD_BACK_M, LEAD_MAX_M))
+        return min(SEAT_X_M, plug_x + lead)
+
+    def _dither(self, basis):
+        """Small oscillation of the aim point while pushing through the leaves (recovery pushes only)."""
+        self._dither_t = getattr(self, "_dither_t", 0.) + self.env.dt
+        ph = 2. * np.pi * DITHER_HZ * self._dither_t
+        return (basis[:, 0] * DITHER_AX_M * np.sin(ph) + basis[:, 1] * DITHER_LAT_M * np.sin(ph)
+                + basis[:, 2] * DITHER_LAT_M * np.cos(ph))
+
+    def _bias_offset(self, basis):
+        return basis[:, 1] * self.bias[0] + basis[:, 2] * self.bias[1]
+
+    def _begin_recovery(self, entry, basis, depth, axial, detail):
+        """Engaged stall: back the push off, unload the leaves and re-aim before pushing again.
+
+        The plug's socket-frame (y, z) offset at the stall is the sag the load produced against the
+        commanded aim point (which already includes the previous bias), so the new bias is the old one
+        minus that offset: under load the plug then ends up on the axis instead of beside it."""
+        e = self.env
+        local = basis.T @ (e.data.xpos[e.plug] - entry)
+        sag = np.where(np.abs(local[1:3]) > RECOVER_BIAS_MIN_M, local[1:3], 0.)
+        self.bias = np.clip(self.bias - RECOVER_BIAS_GAIN * sag, -RECOVER_BIAS_MAX_M, RECOVER_BIAS_MAX_M)
+        self.recoveries += 1
+        target = (self.engage_forward if self.engage_forward is not None else self.forward) - RECOVER_BACKOFF_M
+        if RECOVER_FULL:
+            target = -self.geom.place_standoff_m
+        self._recover = {"stage": "pull", "t": 0., "bias": self.bias.copy(),
+                         "forward": max(target, -self.geom.place_standoff_m)}
+        self.bias = np.zeros(2)       # applied via the ramp in _recover_step, then restored
+        self._rebase = bool(RECOVER_REBASE)
+        self.stats.setdefault("recovery", []).append(
+            {"n": self.recoveries, "detail": detail, "sag_um": [round(float(v) * 1e6) for v in local[1:3]],
+             "bias_um": [round(float(v) * 1e6) for v in self._recover["bias"]], "drift_mm": round(self._drift_m * 1e3, 3)})
+        self._goto("withdraw")
+
+    def _recover_step(self, entry, basis):
+        """Two stages. pull: retreat to just behind leaf contact while holding the plug's *current*
+        lateral position and attitude, so the servo cannot integrate a lateral error the jammed plug
+        cannot follow (that wind-up is what throws it across the clearance once the leaves let go).
+        align: with the leaves unloaded, converge on the biased aim point, then push again."""
+        e, d, info = self.env, self.env.data, self.env.info
+        r = self._recover
+        unsafe = self._abort_margin()
+        if unsafe:
+            return self._fail("insert_stalled", f"recovery stopped ({unsafe}) after {self.recoveries} recoveries")
+        plug_pos, plug_rot = d.xpos[e.plug].copy(), d.xmat[e.plug].reshape(3, 3).copy()
+        plug_x = float((plug_pos - entry) @ basis[:, 0])
+        if r["stage"] == "pull":
+            axial = float(info.get("socket_force_x_n", 0.))      # > 0: the plug is being pulled out
+            # force-controlled pull (same bounded-lead anti-wind-up as the push): unload, then ramp the
+            # pull force up to PULL_CAP_N, never beyond, until the plug is back at the target.
+            r["t_pull"] = r.get("t_pull", 0.) + e.dt
+            f_set = min(PULL_CAP_N, PULL_RAMP_N_S * r["t_pull"])
+            lead = float(np.clip((f_set - axial) * LEAD_PER_N_M, -LEAD_BACK_M, LEAD_MAX_M))
+            self.forward = max(r["forward"], plug_x - lead)
+            if RECOVER_HOLD_LATERAL:
+                action = self._servo(plug_pos + basis[:, 0] * (self.forward - plug_x), plug_rot)
+            else:
+                action = self._servo(entry + basis[:, 0] * self.forward + self._bias_offset(basis), basis)
+            if plug_x <= r["forward"] + RECOVER_ARRIVE_M:
+                self.forward = r["forward"]
+                if RECOVER_FULL:
+                    self._begin_align()      # ordinary re-align at the preinsert pose, with the bias
+                    return action
+                r["stage"], r["t"] = "align", 0.
+            elif self.phase_time > RECOVER_WITHDRAW_S:
+                return self._fail("insert_stalled", f"recovery withdraw: leaves did not release after "
+                                                    f"{self.recoveries} recoveries")
+            return action
+        r["t"] += e.dt
+        self.bias = r["bias"] * smoothstep(r["t"] / RECOVER_BIAS_RAMP_S)
+        desired = entry + basis[:, 0] * self.forward + self._bias_offset(basis)
+        action = self._servo(desired, basis)
+        err, ang = self._plug_error(desired, basis)
+        if r["t"] >= RECOVER_BIAS_RAMP_S and err < RECOVER_ALIGN_TOL_M and ang < ALIGN_ANGLE_TOL_DEG:
+            self._recover = None
+            self._engaged_t = 0.
+            self.engaged = False
+            self.progress_depth, self.stall_s = -1., 0.
+            self._pinned_s = 0.
+            self._goto("insert")
+        elif r["t"] > RECOVER_ALIGN_S:
+            return self._fail("insert_stalled", f"recovery align: err={err*1e3:.2f}mm angle={ang:.2f}deg "
+                                                f"after {self.recoveries} recoveries")
+        elif self._pinned_s > 0.5:
+            return self._fail("joint_limit", "recovery")
+        return action
+
     def _begin_align(self):
         self._pinned_s = 0.
         self.engaged = False
+        self._recover = None
+        self._rebase = False
+        self._engaged_t = 0.
         self._goto("align")
 
     def diagnostics(self):

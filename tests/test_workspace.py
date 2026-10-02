@@ -210,5 +210,47 @@ class WorkspaceSpecTests(unittest.TestCase):
         self.assertEqual(len(asset.findall("mesh")), 3)
 
 
+class CableTautLiftSamplerTests(unittest.TestCase):
+    """Sampler rule for plugs whose cable has no slack to lift (no robot assets needed)."""
+
+    @staticmethod
+    def options(plug_x, yaw=0.):
+        return {"plug_pos_m": [plug_x, -0.2, 0.324], "plug_yaw_deg": yaw, "socket_pos_m": [0.45, -0.3, 0.472],
+                "socket_yaw_deg": 0., "socket_tilt_deg": 0., "table_height_m": 0.32}
+
+    def setUp(self):
+        from data_pipeline.scene_bank import Workspace
+        self.ws = Workspace(cable_anchor_m=(0.30, -0.22, -0.415), cable_max_reach_m=1.4,
+                            cable_attach_local_m=(-0.042, 0., 0.006), cable_edge_waypoint_m=(0.235, None, 0.33))
+
+    def test_attachment_near_the_table_edge_is_rejected(self):
+        from data_pipeline.scene_bank import _cable_check
+        # attachment x = plug x - 0.042 cos(yaw); the edge waypoint is at x = 0.235
+        self.assertEqual(_cable_check(self.options(0.320), self.ws), "cable_taut_on_lift")   # 0.278
+        self.assertEqual(_cable_check(self.options(0.310, yaw=60.), self.ws), "cable_taut_on_lift")   # 0.289
+        self.assertIsNone(_cable_check(self.options(0.320, yaw=60.), self.ws))               # 0.299 (yaw matters)
+        self.assertIsNone(_cable_check(self.options(0.340), self.ws))                        # 0.298
+
+    def test_rule_is_off_without_a_table_edge_waypoint(self):
+        from dataclasses import replace
+        from data_pipeline.scene_bank import _cable_check
+        ws = replace(self.ws, cable_edge_waypoint_m=None)
+        self.assertIsNone(_cable_check(self.options(0.320), ws))
+
+    def test_workspace_for_env_reads_the_edge_from_the_spec(self):
+        from types import SimpleNamespace
+        from data_pipeline.scene_bank import Workspace, workspace_for_env
+        spec = wsp.load_workspace(wsp.ROOT / "configs/workspace_v2_cable30.json")
+        env = SimpleNamespace(
+            reach_anchor_m=lambda: (0., -0.031, 0.698), workspace=spec, socket_site=0,
+            data=SimpleNamespace(site_xpos=np.array([[0.4, -0.3, 0.472]])),
+            derived={"table_rest_z_offset_m": 0.004}, initial_grasp_position=np.array([0.1, 0.2, 0.3]))
+        ws = workspace_for_env(env, Workspace())
+        self.assertEqual(ws.cable_edge_waypoint_m, (0.235, None, 0.33))
+        v1 = wsp.load_workspace()
+        env.workspace = v1
+        self.assertIsNone(workspace_for_env(env, Workspace()).cable_edge_waypoint_m)
+
+
 if __name__ == "__main__":
     unittest.main()
