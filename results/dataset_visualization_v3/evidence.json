@@ -1,0 +1,112 @@
+{
+  "title": "OpenArm dataset and SmolVLA training evidence",
+  "assets": [
+    {
+      "image": "01_dataset_overview.png",
+      "caption": "Four successful full-task expert recordings; validation is a separate complete episode."
+    },
+    {
+      "image": "02_camera_storyboard.png",
+      "caption": "Synchronized fixed and wrist views show table start through expert insertion."
+    },
+    {
+      "image": "03_phase_coverage.png",
+      "caption": "Recorded full-task phase coverage and the small subset used by the diagnostic training run."
+    },
+    {
+      "image": "04_training_sample.png",
+      "caption": "A real 50x8 action target chunk, robot-state mapping and terminal padding convention."
+    },
+    {
+      "image": "05_training_pipeline.png",
+      "caption": "Actual data-to-training-to-guarded-simulation workflow, with separate expert labels and actor inputs."
+    },
+    {
+      "image": "06_training_evidence.png",
+      "caption": "Measured stochastic loss, held-out loss improvement, memory and reproducibility, with the unsuccessful rollout disclosed."
+    }
+  ],
+  "episodes": [
+    {
+      "episode": "train_00000",
+      "split": "train",
+      "steps": 1792,
+      "simulated_s": 35.832,
+      "data_sha256": "c4f4af4477998117bb44650ad404e6f1372989540c2beeee0ecfbab2bee2039f"
+    },
+    {
+      "episode": "train_00001",
+      "split": "train",
+      "steps": 1807,
+      "simulated_s": 36.12950000000005,
+      "data_sha256": "d50bb32be3eb3ebd2702755cff01693cf72072c5db771b3ba76bdb4a64e4b947"
+    },
+    {
+      "episode": "train_00002",
+      "split": "train",
+      "steps": 1902,
+      "simulated_s": 38.03150000000034,
+      "data_sha256": "b221697ca63937f60253e6e78f7dc17d3ce4062a5953809d35052f04e132c805"
+    },
+    {
+      "episode": "train_00003",
+      "split": "validation",
+      "steps": 1750,
+      "simulated_s": 34.99399999999987,
+      "data_sha256": "fff39f0103d9facb2defd42c963340bad7020d161357eb23325e90282dcd265a"
+    }
+  ],
+  "total_transitions": 7251,
+  "counts": {
+    "train": 5501,
+    "validation": 1750
+  },
+  "examples": {
+    "storyboard": {
+      "episode": "train_00000",
+      "frames": [
+        {
+          "step": 32,
+          "phase": "survey",
+          "timestamp_s": 1.639999999999875
+        },
+        {
+          "step": 462,
+          "phase": "descend",
+          "timestamp_s": 10.240000000001023
+        },
+        {
+          "step": 608,
+          "phase": "close",
+          "timestamp_s": 13.160000000004592
+        },
+        {
+          "step": 798,
+          "phase": "lift",
+          "timestamp_s": 16.960000000005824
+        },
+        {
+          "step": 1038,
+          "phase": "transit_place",
+          "timestamp_s": 21.759999999994637
+        },
+        {
+          "step": 1649,
+          "phase": "insert",
+          "timestamp_s": 33.97999999998022
+        }
+      ]
+    },
+    "action_example": {
+      "episode": "train_00000",
+      "step": 608,
+      "real_actions": 50
+    }
+  },
+  "sources": {
+    "C:\\Users\\Admin\\plug_env\\configs\\smolvla_collection_smoke.json": "8840acf21a6c75dce4e22d9360cab5d9b61009936a35de56ed089000f2efd894",
+    "C:\\Users\\Admin\\plug_env\\results\\smolvla_training\\qualification_v2.json": "4f6602789b2119313181941deedced21b2a7a459500568825280197d6cf5d0db",
+    "C:\\Users\\Admin\\plug_env\\results\\smolvla_rollout\\heldout_v2\\report.json": "770e8ce59feb28b5ba5d30e3e8d0e1472204228df931b4ca3da68572bd714105"
+  },
+  "limits": "Expert camera frames are not policy successes. Tiny qualification only; no bug-free or long-run stability claim."
+}

@@ -1,0 +1,355 @@
+{
+  "passed": true,
+  "unique_training_updates": 24,
+  "resume_comparison_extra_updates": 3,
+  "sample_plan": {
+    "train": [
+      {
+        "index": 179,
+        "episode": "train_00000",
+        "step": 179
+      },
+      {
+        "index": 627,
+        "episode": "train_00000",
+        "step": 627
+      },
+      {
+        "index": 1075,
+        "episode": "train_00000",
+        "step": 1075
+      },
+      {
+        "index": 1523,
+        "episode": "train_00000",
+        "step": 1523
+      },
+      {
+        "index": 1972,
+        "episode": "train_00001",
+        "step": 180
+      },
+      {
+        "index": 2424,
+        "episode": "train_00001",
+        "step": 632
+      },
+      {
+        "index": 2876,
+        "episode": "train_00001",
+        "step": 1084
+      },
+      {
+        "index": 3327,
+        "episode": "train_00001",
+        "step": 1535
+      },
+      {
+        "index": 3789,
+        "episode": "train_00002",
+        "step": 190
+      },
+      {
+        "index": 4264,
+        "episode": "train_00002",
+        "step": 665
+      },
+      {
+        "index": 4740,
+        "episode": "train_00002",
+        "step": 1141
+      },
+      {
+        "index": 5215,
+        "episode": "train_00002",
+        "step": 1616
+      }
+    ],
+    "validation": [
+      {
+        "index": 175,
+        "episode": "train_00003",
+        "step": 175
+      },
+      {
+        "index": 612,
+        "episode": "train_00003",
+        "step": 612
+      },
+      {
+        "index": 1050,
+        "episode": "train_00003",
+        "step": 1050
+      },
+      {
+        "index": 1487,
+        "episode": "train_00003",
+        "step": 1487
+      }
+    ]
+  },
+  "evaluation_before": {
+    "train": {
+      "mean": 0.3235251121222973,
+      "samples": [
+        0.6342033743858337,
+        0.22349636256694794,
+        0.2791847884654999,
+        0.1723632961511612,
+        0.5392603278160095,
+        0.24379202723503113,
+        0.25098761916160583,
+        0.19842492043972015,
+        0.514643669128418,
+        0.10833972692489624,
+        0.3584033250808716,
+        0.35920190811157227
+      ]
+    },
+    "validation": {
+      "mean": 0.3818666562438011,
+      "samples": [
+        0.7048501372337341,
+        0.18531611561775208,
+        0.40894782543182373,
+        0.22835254669189453
+      ]
+    }
+  },
+  "evaluation_after": {
+    "train": {
+      "mean": 0.24556593721111616,
+      "samples": [
+        0.4439055621623993,
+        0.17072036862373352,
+        0.20511390268802643,
+        0.11671368032693863,
+        0.3637511730194092,
+        0.22191566228866577,
+        0.19757062196731567,
+        0.16252239048480988,
+        0.34626883268356323,
+        0.10346285253763199,
+        0.3089611232280731,
+        0.30588507652282715
+      ]
+    },
+    "validation": {
+      "mean": 0.2921699434518814,
+      "samples": [
+        0.47862106561660767,
+        0.12620809674263,
+        0.3714761734008789,
+        0.19237443804740906
+      ]
+    }
+  },
+  "exact_resume": {
+    "compared_updates": 3,
+    "loss_grad_lr_data": true,
+    "trainable_weights": true,
+    "optimizer": true,
+    "scheduler": true,
+    "rng": true
+  },
+  "training_events": [
+    {
+      "step": 1,
+      "episode": "train_00001",
+      "frame": 180,
+      "loss": 0.45355841517448425,
+      "grad_norm": 7.808490753173828,
+      "lr": 1e-05
+    },
+    {
+      "step": 2,
+      "episode": "train_00000",
+      "frame": 1075,
+      "loss": 0.3021439015865326,
+      "grad_norm": 6.738121509552002,
+      "lr": 1e-05
+    },
+    {
+      "step": 3,
+      "episode": "train_00002",
+      "frame": 190,
+      "loss": 0.5247251987457275,
+      "grad_norm": 8.818014144897461,
+      "lr": 1e-05
+    },
+    {
+      "step": 4,
+      "episode": "train_00001",
+      "frame": 1535,
+      "loss": 0.18532194197177887,
+      "grad_norm": 4.474501609802246,
+      "lr": 1e-05
+    },
+    {
+      "step": 5,
+      "episode": "train_00002",
+      "frame": 665,
+      "loss": 0.11456796526908875,
+      "grad_norm": 3.4791975021362305,
+      "lr": 1e-05
+    },
+    {
+      "step": 6,
+      "episode": "train_00000",
+      "frame": 1523,
+      "loss": 0.1643400937318802,
+      "grad_norm": 5.920828819274902,
+      "lr": 1e-05
+    },
+    {
+      "step": 7,
+      "episode": "train_00000",
+      "frame": 179,
+      "loss": 0.7216152548789978,
+      "grad_norm": 11.596433639526367,
+      "lr": 1e-05
+    },
+    {
+      "step": 8,
+      "episode": "train_00001",
+      "frame": 632,
+      "loss": 0.19831515848636627,
+      "grad_norm": 5.125574111938477,
+      "lr": 1e-05
+    },
+    {
+      "step": 9,
+      "episode": "train_00002",
+      "frame": 1616,
+      "loss": 0.37846481800079346,
+      "grad_norm": 8.822463035583496,
+      "lr": 1e-05
+    },
+    {
+      "step": 10,
+      "episode": "train_00000",
+      "frame": 627,
+      "loss": 0.2294672131538391,
+      "grad_norm": 5.278722763061523,
+      "lr": 1e-05
+    },
+    {
+      "step": 11,
+      "episode": "train_00002",
+      "frame": 1141,
+      "loss": 0.32919803261756897,
+      "grad_norm": 6.709611415863037,
+      "lr": 1e-05
+    },
+    {
+      "step": 12,
+      "episode": "train_00001",
+      "frame": 1084,
+      "loss": 0.6604202389717102,
+      "grad_norm": 12.706171035766602,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 13,
+      "episode": "train_00001",
+      "frame": 180,
+      "loss": 1.1850312948226929,
+      "grad_norm": 17.52197265625,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 14,
+      "episode": "train_00000",
+      "frame": 1075,
+      "loss": 0.2317134588956833,
+      "grad_norm": 5.64654541015625,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 15,
+      "episode": "train_00002",
+      "frame": 190,
+      "loss": 0.27501049637794495,
+      "grad_norm": 6.564955711364746,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 16,
+      "episode": "train_00001",
+      "frame": 1535,
+      "loss": 0.13557884097099304,
+      "grad_norm": 4.930797576904297,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 17,
+      "episode": "train_00002",
+      "frame": 665,
+      "loss": 0.10004588216543198,
+      "grad_norm": 4.51410436630249,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 18,
+      "episode": "train_00000",
+      "frame": 1523,
+      "loss": 0.11574483662843704,
+      "grad_norm": 3.604921817779541,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 19,
+      "episode": "train_00000",
+      "frame": 179,
+      "loss": 0.3768637776374817,
+      "grad_norm": 7.54319953918457,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 20,
+      "episode": "train_00001",
+      "frame": 632,
+      "loss": 0.13860462605953217,
+      "grad_norm": 3.956972599029541,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 21,
+      "episode": "train_00002",
+      "frame": 1616,
+      "loss": 0.6900569796562195,
+      "grad_norm": 13.712556838989258,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 22,
+      "episode": "train_00000",
+      "frame": 627,
+      "loss": 0.15293705463409424,
+      "grad_norm": 4.40610408782959,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 23,
+      "episode": "train_00002",
+      "frame": 1141,
+      "loss": 1.5499688386917114,
+      "grad_norm": 29.618331909179688,
+      "lr": 9.5e-06
+    },
+    {
+      "step": 24,
+      "episode": "train_00001",
+      "frame": 1084,
+      "loss": 0.25643426179885864,
+      "grad_norm": 5.65207576751709,
+      "lr": 9.025e-06
+    }
+  ],
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "torch": "2.10.0+cu128",
+  "peak_allocated_gb": 2.137892352,
+  "seconds": 80.42705345153809,
+  "export_receipt_sha256": "03cac88930c3d128f5ce4f6edc6a5b39df535d7218b28464fd614000b23a78e3",
+  "limits": "12 training windows and 4 validation windows; one held-out episode. Offline flow loss, no task-success claim. Resume exactness verified on this hardware/runtime only."
+}

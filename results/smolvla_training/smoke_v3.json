@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "steps": 3,
+  "losses": [
+    0.231195867061615,
+    0.1892499476671219,
+    0.15508858859539032
+  ],
+  "fixed_sample_loss_after": 0.1251966506242752,
+  "parameters_updated": true,
+  "reload_weights_exact": true,
+  "processor_reload_exact": true,
+  "trainable_parameters": 99880992,
+  "frozen_gradients_absent": true,
+  "terminal_mask_consumed": true,
+  "inference_shape": [
+    1,
+    50,
+    8
+  ],
+  "gpu": "NVIDIA GeForce RTX 4060 Ti",
+  "torch": "2.10.0+cu128",
+  "peak_allocated_gb": 2.089336832,
+  "seconds": 64.23215246200562,
+  "source_manifest_sha256": "292583b7c75c7653a6573d02e2625f2a24a66dc9d658ff79bd42e17d34dd331c",
+  "base_weights_sha256": "7cd549ac2351fb069c0ddb3c34ad2d09cfc92b56a15dccdfc2e41467aaca01eb",
+  "base_config_sha256": "650584b56c104720f7a3c91d1ec6bec9e8de8ac11e60c92ba2fa82d93eda147d",
+  "limits": "Few updates on one training sample; no task success, validation loss or exact resume claim."
+}

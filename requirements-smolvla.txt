@@ -1,0 +1,5 @@
+# Separate university environment; do not install into the MuJoCo/pi0 environment.
+# Release-pinned integration target, not yet a fully resolved university lockfile.
+lerobot[smolvla]==0.4.4
+# Closed-loop evaluation against the pinned automateData collector environment.
+mujoco==3.11.0

@@ -1,0 +1,13 @@
+{
+  "checkpoint": {
+    "repo_id": "lerobot/smolvla_base",
+    "revision": "d9f33c94a60fb382c90dea2164c96845bd955e28",
+    "local_directory": "data/models/smolvla_base"
+  },
+  "backbone_configuration_and_tokenizer": {
+    "repo_id": "HuggingFaceTB/SmolVLM2-500M-Video-Instruct",
+    "revision": "7b375e1b73b11138ff12fe22c8f2822d8fe03467",
+    "local_directory": "data/models/smolvlm_backbone",
+    "note": "Configuration/tokenizer only. Full SmolVLA checkpoint supplies backbone weights with load_vlm_weights=false."
+  }
+}

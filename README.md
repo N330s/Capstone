@@ -1,5 +1,24 @@
 # Two-blade connector simulation
 
+## SmolVLA training and evaluation
+
+The SmolVLA collection-to-training-to-simulation integration now executes using
+the teammate's source-matched `automateData` scene. The tiny trained policy does
+not yet complete the task; the preserved two-blade baseline below is separate.
+
+- [Dataset and training visualizations: PDF](results/dataset_visualization_v3/dataset_training_report.pdf)
+- [Pipeline status, evidence and RTX 4090 budget](docs/SMOLVLA_PIPELINE_REPORT.md)
+- [Camera storyboard](results/dataset_visualization_v3/02_camera_storyboard.png)
+- [Training workflow](results/dataset_visualization_v3/05_training_pipeline.png)
+- [Measured training results](results/dataset_visualization_v3/06_training_evidence.png)
+- [Visualization guide](results/dataset_visualization_v3/README.md)
+
+![Real recorded camera views](results/dataset_visualization_v3/02_camera_storyboard.png)
+
+GitHub renders the PNGs and Markdown directly. Download the PDF to view the report;
+download the visualization folder to open its offline `index.html` gallery.
+Raw training datasets, model checkpoints and third-party checkouts are not uploaded.
+
 **Continuous table -> grasp -> insert now works** in a separately versioned,
 90-degree-rotated socket fixture. Six physical validation runs pass; nominal
 command replay is exact. See [full-task results and video](docs/FULL_TASK_DEMONSTRATOR.md).
@@ -11,8 +30,9 @@ validated in the full-task variant above. The held-plug insertion benchmark belo
 remains unchanged and is viewed with `--task insertion`.
 
 New: [ten varied demonstrations and camera review](docs/DATA_COLLECTION.md), with
-reserved evaluation resets. SmolVLA is now the first training target; training has
-not started and contact visibility needs attention before scaling collection.
+reserved evaluation resets. This is the older scene's collection. SmolVLA is now
+the first training target; its newer-scene qualification is linked above. Contact
+visibility and larger-scale learned-policy performance still need validation.
 
 The next milestone is now implemented: **OpenArm v1 bimanual, right-arm physical
 insertion, and 20 replayable pilot episodes**. Start with

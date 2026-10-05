@@ -1,0 +1,234 @@
+{
+  "passed": true,
+  "lerobot_version": "0.4.4",
+  "runtime_versions": {
+    "torch": "2.10.0",
+    "torchvision": "0.25.0",
+    "numpy": "2.2.6",
+    "datasets": "4.8.5",
+    "av": "15.1.0",
+    "transformers": "4.57.6"
+  },
+  "installed_packages": {
+    "Farama-Notifications": "0.0.6",
+    "GitPython": "3.2.0",
+    "ImageIO": "2.38.0",
+    "Jinja2": "3.1.6",
+    "MarkupSafe": "3.0.4",
+    "PyYAML": "6.0.3",
+    "accelerate": "1.15.0",
+    "aiohappyeyeballs": "2.7.1",
+    "aiohttp": "3.14.3",
+    "aiosignal": "1.4.0",
+    "annotated-types": "0.8.0",
+    "anyio": "4.15.1",
+    "attrs": "26.1.0",
+    "av": "15.1.0",
+    "certifi": "2026.7.22",
+    "charset-normalizer": "3.5.2",
+    "click": "8.5.0",
+    "cloudpickle": "3.1.2",
+    "cmake": "4.1.3",
+    "colorama": "0.4.6",
+    "datasets": "4.8.5",
+    "deepdiff": "8.6.2",
+    "diffusers": "0.35.2",
+    "dill": "0.4.1",
+    "docopt": "0.6.2",
+    "draccus": "0.10.0",
+    "einops": "0.8.2",
+    "filelock": "4.0.9",
+    "frozenlist": "1.8.0",
+    "fsspec": "2026.2.0",
+    "gitdb": "4.0.12",
+    "gymnasium": "1.3.0",
+    "h11": "0.16.0",
+    "httpcore": "1.0.9",
+    "httpx": "0.28.1",
+    "huggingface-hub": "0.35.3",
+    "idna": "3.20",
+    "imageio-ffmpeg": "0.6.0",
+    "importlib_metadata": "9.0.1",
+    "inquirerpy": "0.3.4",
+    "jsonlines": "4.0.0",
+    "lerobot": "0.4.4",
+    "mergedeep": "1.3.4",
+    "mpmath": "1.3.0",
+    "multidict": "6.9.1",
+    "multiprocess": "0.70.19",
+    "mypy_extensions": "1.1.0",
+    "networkx": "3.6.1",
+    "num2words": "0.5.14",
+    "numpy": "2.2.6",
+    "opencv-python-headless": "4.12.0.88",
+    "orderly-set": "5.5.0",
+    "packaging": "25.0",
+    "pandas": "3.0.6",
+    "pfzy": "0.3.4",
+    "pillow": "12.3.0",
+    "pip": "22.3",
+    "platformdirs": "4.12.2",
+    "prompt_toolkit": "3.0.53",
+    "propcache": "0.5.4",
+    "protobuf": "6.33.6",
+    "psutil": "7.2.2",
+    "pyarrow": "25.0.1",
+    "pydantic": "2.13.5",
+    "pydantic_core": "2.46.5",
+    "pynput": "1.8.2",
+    "pyserial": "3.5",
+    "python-dateutil": "2.9.0.post0",
+    "pyyaml-include": "1.4.1",
+    "regex": "2026.9.29",
+    "requests": "2.34.2",
+    "rerun-sdk": "0.26.2",
+    "safetensors": "0.8.0",
+    "sentry-sdk": "2.71.0",
+    "setuptools": "80.10.2",
+    "six": "1.17.0",
+    "smmap": "5.0.3",
+    "sympy": "1.14.0",
+    "termcolor": "3.3.0",
+    "tokenizers": "0.22.2",
+    "toml": "0.10.2",
+    "torch": "2.10.0",
+    "torchvision": "0.25.0",
+    "tqdm": "4.70.1",
+    "transformers": "4.57.6",
+    "typing-inspect": "0.9.0",
+    "typing-inspection": "0.4.4",
+    "typing_extensions": "4.16.0",
+    "tzdata": "2026.5",
+    "urllib3": "2.8.0",
+    "wandb": "0.24.2",
+    "wcwidth": "0.9.1",
+    "xxhash": "4.0.1",
+    "yarl": "1.25.1",
+    "zipp": "4.1.0"
+  },
+  "cuda_available": false,
+  "source_manifest_sha256": "292583b7c75c7653a6573d02e2625f2a24a66dc9d658ff79bd42e17d34dd331c",
+  "samples": [
+    {
+      "split": "train",
+      "episode": "train_00000",
+      "step": 0,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 4.31406307220459,
+        "observation.images.camera2": 2.080169916152954
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00000",
+      "step": 896,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 3.7574737071990967,
+        "observation.images.camera2": 2.386336326599121
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00000",
+      "step": 1791,
+      "valid_actions": 1,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 4.152348518371582,
+        "observation.images.camera2": 2.753997564315796
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00001",
+      "step": 0,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 2.9691708087921143,
+        "observation.images.camera2": 1.61733078956604
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00001",
+      "step": 903,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 2.9152560234069824,
+        "observation.images.camera2": 2.394474983215332
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00001",
+      "step": 1806,
+      "valid_actions": 1,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 3.1676084995269775,
+        "observation.images.camera2": 2.7798008918762207
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00002",
+      "step": 0,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 8.629219055175781,
+        "observation.images.camera2": 5.027296543121338
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00002",
+      "step": 951,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 6.945980548858643,
+        "observation.images.camera2": 6.7244391441345215
+      }
+    },
+    {
+      "split": "train",
+      "episode": "train_00002",
+      "step": 1901,
+      "valid_actions": 1,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 7.567052364349365,
+        "observation.images.camera2": 4.645985126495361
+      }
+    },
+    {
+      "split": "validation",
+      "episode": "train_00003",
+      "step": 0,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 10.235832214355469,
+        "observation.images.camera2": 5.641163349151611
+      }
+    },
+    {
+      "split": "validation",
+      "episode": "train_00003",
+      "step": 875,
+      "valid_actions": 50,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 7.914622783660889,
+        "observation.images.camera2": 11.474800109863281
+      }
+    },
+    {
+      "split": "validation",
+      "episode": "train_00003",
+      "step": 1749,
+      "valid_actions": 1,
+      "image_mean_absolute_error_255": {
+        "observation.images.camera1": 8.652993202209473,
+        "observation.images.camera2": 7.927335262298584
+      }
+    }
+  ],
+  "limits": "Boundary/midpoint checks only; compression errors reported, visual task quality not certified. No model test."
+}

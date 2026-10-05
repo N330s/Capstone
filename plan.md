@@ -1,6 +1,8 @@
 # OpenArm Plug Insertion: Demonstrations, VLA Fine-Tuning, and RLT
 
-Updated 2026-09-13 after continuous table-to-insertion validation and command replay.
+Updated 2026-10-04: trained-policy simulation rollout and exact expert replay
+completed. The pipeline executes; autonomous task success remains unachieved.
+Team ownership and university RTX 4090 target retained.
 
 ## Goal and scope
 
@@ -38,11 +40,13 @@ The plug is physically grasped, not welded or moved by an external holder.
 | First varied batch | Ten successful episodes with exact command replay; 1,746 transitions, 8/2 train-validation split, distance/lateral/angular variation. 100 evaluation resets reserved. No recovery episodes. `docs/DATA_COLLECTION.md` |
 | Continuous table-to-insertion | Six physical cases pass with the socket rotated 90 degrees about its unchanged insertion axis/location; nominal command replay is exact. Full-task synchronized RGB training data is not yet collected. `docs/FULL_TASK_DEMONSTRATOR.md` |
 
-The pilot is a narrow near-nominal integration dataset, not evidence of learned
-policy competence or generalization. No VLA has been fine-tuned, no RLT module has
-been trained, and no physical transfer has been validated. Checkpoint-specific
-LeRobot export, upstream preprocessing runtime checks, and model inference remain
-outstanding. The local adapter is not a complete training integration. See
+The earlier two-blade pilot is a narrow near-nominal integration dataset, not
+evidence of learned policy competence or generalization. The current training
+integration instead uses the teammate's Type O / universal_th cable scene,
+source-matched to the new recordings. SmolVLA export/readback, tiny fine-tuning,
+save/reload, saved-state resume and guarded policy inference now execute locally;
+the learned policy fails before pickup. No RLT module has been trained and no
+physical transfer has been validated. See the current milestone below and
 [VLA_ADAPTER.md](docs/VLA_ADAPTER.md) for the precise implemented boundary and the
 retained float32 contact-sensitivity diagnostic.
 
@@ -50,6 +54,39 @@ See [OPENARM_PIPELINE.md](docs/OPENARM_PIPELINE.md) for commands and artifacts,
 [SIM2REAL_CONTRACT.md](docs/SIM2REAL_CONTRACT.md) for calibration gaps, and
 `PHYSICS_CHANGELOG.md` for contact-model changes. Preserve the straight-slot
 baseline in `results/two_blade_v1_straight/` and box prototype in `baselines/box_v0/`.
+
+## Team ownership and current priority
+
+| Owner | Deliverable | Integration boundary |
+| --- | --- | --- |
+| Data-collection teammate | Automated, synchronized full-task demonstrations and coverage reports | Versioned episodes, timestamps, commanded/applied actions, outcomes and splits |
+| Scene teammate | Improved scene, camera visibility, reset distributions and contact validation | Versioned assets/config, reproducible reset/step API, success and safety diagnostics |
+| User / training workstream | Dataset validation/export, SmolVLA training and deployment, evaluation, token training and RLT | One shared observation/action decoder and reproducible experiment bundles |
+
+The teammate's `automateData` branch now provides the reusable reset/step environment
+used for the integration rollout; the older local full-task script remains separate.
+Do not independently rebuild their collector or scene. Require a versioned integration
+release before either team scales work. Keep the older scene as a frozen baseline;
+new geometry/camera/control versions must not silently replace training assets.
+
+Primary training target is the university **RTX 4090 (24 GB VRAM)**, not the local
+8 GB development GPU. Linux is the preferred deployment target; university OS,
+RAM, driver, persistent disk quota, job limits and installation permissions still
+need confirmation. GPU memory is separate from RAM and disk capacity.
+Source: [NVIDIA specifications](https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/).
+
+Reserve **500 GB free SSD space** for a bounded compressed-data SFT + RLT project;
+**1 TB free** gives more room for versions and experiments, but is not enough for
+unlimited raw RGB archives. A **150-200 GB** allocation can support an initial
+small fine-tuning experiment, not the whole planned campaign. These are planning
+estimates, not measured usage. See [TRAINING_AND_STORAGE.md](docs/TRAINING_AND_STORAGE.md)
+for assumptions, per-category budgets and retention rules.
+
+Fine-tuning should reuse upstream LeRobot rather than reimplement its optimizer.
+The substantial project work is correct data/control integration and closed-loop
+evaluation. SmolVLA-based RLT is a separate research adaptation, not a trainer flag.
+The next user-owned milestone is a validated dataset-to-training-to-rollout path;
+RL begins only after supervised policy and token-interface gates pass.
 
 ## Current baseline and remaining geometry work
 
@@ -406,7 +443,7 @@ withdraw-and-realign. Force and numerical aborts still terminate safely.
 
 Primary first baseline is now **SmolVLA**, following the user's model choice.
 Pin its LeRobot/checkpoint revisions, implement its own preprocessing and terminal
-mask mapping, then profile one training batch on the local 8 GB GPU before an
+mask mapping, then profile one training batch on the university RTX 4090 before an
 overfit run. The existing pi0 adapter is preserved as a later comparison.
 SmolVLA-based RLT would be a method adaptation, not an exact PI reproduction.
 Sources: [SmolVLA guide](https://huggingface.co/docs/lerobot/main/smolvla) and
@@ -423,19 +460,30 @@ available GPU/VRAM, normalization, action dimensionality, and feature-hook acces
 Verify that the selected implementation exposes internal embeddings and sampled
 action chunks. An action-only remote endpoint is insufficient for later RLT.
 
-The current workspace is Windows with an 8 GB GPU. Verify SmolVLA's installed
-runtime and actual memory footprint; do not inherit openpi's LoRA requirement as
-a blanket requirement for all models. For the secondary pi0 path, plan a separate Linux GPU training/inference
-environment; openpi documents Ubuntu support. Keep MuJoCo scene development
-independent. Check backend-specific fine-tuning support before selecting LoRA or
-full updates. Available compute remains unknown; confirm the training host and
-resource budget before large checkpoint downloads or training jobs.
+The local Windows/8 GB machine remains a development host. Use an isolated,
+version-pinned SmolVLA environment on the university 4090; do not inherit the old
+openpi dependency pins or its LoRA requirements. Start with the selected SmolVLA
+recipe's frozen backbone/action-expert training configuration, explicitly record
+trainable parameters, and test mixed precision and microbatches of 1-4 before
+scaling. Use gradient accumulation when needed; do not assume an upstream A100
+batch size or training time applies to this machine. Profile decoding, GPU memory,
+training throughput and inference with rendering enabled. Separate training and
+evaluation initially to avoid unnecessary GPU contention. Confirm host access and
+disk quota before downloads. The secondary pi0 path remains deferred.
 Source: [openpi requirements and training guide](https://github.com/Physical-Intelligence/openpi).
 
-If compute requires a smaller VLA, record it as a deliberate alternative and prove
-the feature/action interface first. Do not silently replace the PI-oriented path.
+Use SmolVLA as the deliberate first baseline; do not switch to pi0 merely to match
+the RLT paper before this pipeline is working.
 
 ### 5B. Build a small, replayable dataset before scaling collection
+
+The collection teammate owns new demonstrations. Request 5-10 synchronized
+full-task episodes first, then approximately 50 for the first learning baseline,
+expanding toward 100-300 only after coverage and policy evaluation. These counts
+are experiment budgets, not precision-insertion sample-efficiency guarantees.
+The old held-plug pilots are adapter fixtures/component benchmarks only; they
+cannot teach table pickup. Freeze the data contract in
+[TRAINING_AND_STORAGE.md](docs/TRAINING_AND_STORAGE.md) before bulk export.
 
 The original 20 pilot episodes and a separate ten-episode varied batch are
 collected. The latter varies approach distance and small angles as well as Y/Z;
@@ -479,8 +527,9 @@ normalization bugs. Then train on the pilot/full dataset and evaluate closed-loo
 rollouts, not just validation loss.
 
 Compare the unfine-tuned checkpoint, scripted expert, and supervised checkpoint.
-The supervised VLA should attempt the entire already-held approach/insertion
-task: do not omit precision demonstrations on the assumption that RL will solve
+The supervised VLA should attempt the entire table -> grasp -> transport -> insert
+task; report held-plug insertion separately as a component benchmark. Do not omit
+precision demonstrations on the assumption that RL will solve
 a behavior the VLA never learned.
 
 Start with one instruction and one task. This tests visuomotor adaptation, not
@@ -489,10 +538,11 @@ this baseline works, retaining earlier tasks during subsequent training.
 
 ### Gate 5
 
-Dataset replay passes; the policy is competent on near-nominal insertion and
-reaches the precision phase consistently. Report its actual boundary failures,
-latency, forces, and held-out success. A useful initial target is >=80% near-nominal
-success; this is a project gate, not a paper result. If it fails due to perception
+Dataset replay passes; the policy reaches the precision phase consistently from
+table starts. Report full-task success, pickup success, handoff frequency and
+insertion success conditional on handoff, plus boundary failures, latency and
+forces. A useful initial target is >=80% near-nominal full-task success; this is
+a project gate, not a paper result. If it fails due to perception
 or action-interface bugs, fix those before RL.
 
 ## Phase 6 — Prepare Physical Intelligence's RL Token interface
@@ -519,7 +569,8 @@ Record exactly which embedding layer/tokens are available, their shape, camera
 preprocessing, and inference timing. Audit this mapping against paper Section IV-A
 before calling the implementation RLT-compatible.
 
-Train and validate the token module on held-out demonstration episodes. Confirm
+Train the token module on training episodes and validate on separate validation
+episodes; do not train on the untouched evaluation set. Confirm
 that reconstruction gradients do not alter the VLA and that token training leaves
 reference actions unchanged. Check whether the representation varies across
 visually distinct approach/contact states; low reconstruction loss alone does not
@@ -531,7 +582,8 @@ this bundle invalidates cached features and replay entries.
 
 **Gate 6:** reproducible feature extraction, held-out token checks, unchanged VLA
 reference behavior, and an inference latency report. Freeze this bundle before
-online RL. Do not claim exact reproduction when using pi0/pi0.5 on OpenArm.
+online RL. SmolVLA feature selection and OpenArm control make this an adaptation,
+not an exact reproduction. Pin the paper version and document deviations.
 
 ## Phase 7 — RLT in simulation, initially on insertion only
 
@@ -591,7 +643,7 @@ regressing near-nominal behavior or increasing unacceptable contacts.
 
 ## Phase 8 — End-to-end handoff and eventual physical transfer
 
-Evaluate the entire held-plug approach -> handoff -> insertion trajectory.
+Evaluate the entire table -> grasp -> transport -> handoff -> insertion trajectory.
 An oracle socket-distance switch is a diagnostic baseline only. Train or validate
 a handoff predictor using deployable observations and labeled phase transitions.
 Define fallback/withdrawal behavior when handoff or insertion fails.
@@ -619,7 +671,7 @@ If real hardware becomes available, measure blade/slot dimensions, lead-ins,
 housing grasp geometry, insertion/withdrawal forces, and failure boundaries.
 Calibrate against those measurements before making sim-to-real claims.
 
-Add polarized geometry, pickup, unplugging, alternate fixtures, and multiple
+Add polarized geometry, unplugging, alternate fixtures, and multiple
 connector instances as separate versioned tasks. Preserve comparable benchmarks.
 
 ## Repository structure and remaining additions
@@ -649,8 +701,98 @@ from the existing lightweight MuJoCo environment.
 
 ## Concrete next implementation milestone
 
-Immediate milestone: **phase-aware full-task environment and synchronized pilot
-demonstrations**, followed by the SmolVLA one-batch smoke test. Continuous physical
+2026-10-04 closed-loop integration completed:
+
+- Loaded the saved update-24 model and upstream processors, using only cameras,
+  bimanual state and instruction; decoded eight physical-unit right-arm targets.
+- Used a separate `automateData` checkout at
+  `b7297ba82701fe7e7814c32ea617a85f832b74a4`, matching all ten recorded source
+  hashes, workspace, robot XML and runtime scene/control contract. Reset state
+  matches the held-out recording exactly. The teammate's scene is not modified.
+- With a five-command / 0.10 s prefix, the learned policy executed 12 commands
+  (0.235 s) before a finger/socket-frame collision triggered the existing guard.
+  Peak unwanted robot contact: 65.13 N; no grasp. All 12 targets were clipped by
+  existing bounds/rate limits. This is an engineering-path pass, NOT task success.
+- A 100-command expert replay from the same reset matches recorded qpos/qvel
+  exactly, with zero unwanted robot contact. It is a two-second control check,
+  not a new full-episode success run or an untouched policy benchmark.
+- Warm inference averaged 0.304 s, exceeding the 0.10 s prefix. Simulation pauses
+  during prediction; real-time serving is not qualified. No hardware execution.
+- 42 regression/provenance tests pass. Reports, commands and video:
+  [SIM_POLICY_ROLLOUT.md](docs/SIM_POLICY_ROLLOUT.md).
+
+**Next user-owned implementation: a configurable full-window supervised trainer
+and repeatable evaluation, before RLT.** Exercise the mask-compatible upstream
+trainer over all training frames, including the initial stationary/table-start
+phase (the tiny diagnostic only used 12 spaced windows). Add process-level resume
+qualification, regular held-out loss checks and bounded checkpoint retention;
+run a short budgeted training experiment before an extended university run.
+Keep `train_00003` validation-only and train-only normalization. Re-evaluate the
+same smoke reset first; then compare base/trained/expert policies on a separately
+reserved reset list. Profile the 4090 and design the policy-worker/controller
+handoff for measured latency without hiding it by blindly extending contact-phase
+prefixes. Obtain approximately 50 varied full-task demonstrations before claiming
+a useful baseline. Only after supervised task competence and the feature/token
+gates pass, begin insertion-only SmolVLA RLT adaptation. Sim-to-real remains later.
+
+The entries below are historical progress notes; pending claims describe their
+respective dates, not the latest status above.
+
+2026-10-04 qualification completed: 24 stochastic training updates across 12
+windows from all three training episodes, evaluated on four windows from the
+held-out episode. Mean flow loss improves 0.3235 -> 0.2456 (train) and
+0.3819 -> 0.2922 (validation). After restoring update-12 weights/processors,
+optimizer, scheduler, RNG and sample position, three updates match the
+uninterrupted branch exactly. Evidence: `results/smolvla_training/qualification_v2.json`.
+The sampler now batches Hx8 action samples correctly before preprocessing; this
+fix is also applied to the original smoke script. This verifies saved-state
+reconstruction on the tested runtime; a separate-process resume launcher and
+closed-loop task performance remain to be tested. Next implementation target:
+policy inference and short-prefix execution in the teammate's matching v3 scene,
+with phase/safety/latency reporting. No RLT or physical execution has started.
+
+2026-10-04 training progress: real pretrained SmolVLA passes a three-update,
+batch-one GPU smoke test on the local RTX 4060 Ti with BF16 autocast. Fixed-sample
+loss falls 0.2312 -> 0.1252; model weights reload exactly, numeric processors
+reload consistently, and postprocessed inference returns finite 50x8 commands.
+Peak PyTorch-allocated GPU memory is 2.09 GB. Evidence:
+`results/smolvla_training/smoke_v3.json`. Added the explicit LeRobot 0.4.4 padding
+mask spelling shim; no installed upstream source was edited. This qualifies the
+small diagnostic loop, not full trainer/resume, held-out competence or deployment.
+Next: multi-sample tiny-fit + validation + resume qualification, then a rollout
+through the teammate's matching v3 scene/controller. RLT remains later.
+
+2026-10-03 runtime progress: real LeRobot 0.4.4 export and readback now pass in
+isolated `.venv-smolvla` (CPU PyTorch; original simulator environment unchanged).
+Fixed upstream codec identifier to `h264`. Successful export:
+`data/collection_smolvla_smoke_v2`, 7,251 rows, approximately 38 MB. Twelve actual
+readback samples cover first/middle/terminal commands in all four episodes;
+states/actions, task text and padding masks pass, both camera streams decode.
+See `results/smolvla_export/readback.json` for package versions and compression
+errors; lossy image quality still needs task-specific visual review. Next is the
+CUDA model/processor forward-backward and save/reload test, not another data-only
+adapter test. No model training, resume qualification or policy rollout is claimed.
+
+2026-10-03 integration update: teammate `automateData` source inspected; v3
+data-order checks and explicit smoke split selection implemented. Four local
+full-task recordings pass source validation (3 train / 5,501 steps; 1 validation /
+1,750 steps). The manifest's missing `train_00005` is explicitly excluded only in
+the smoke selection, not silently skipped or removed from the original manifest.
+Ten adapter tests pass. Real LeRobot export/readback, model training and save/reload,
+and a matching-v3-environment rollout remain the next acceptance steps; do not
+claim the complete pipeline works from source validation alone.
+
+First training-side slice implemented 2026-09-27: strict raw SmolVLA data adapter,
+split-separated optional LeRobot export, and local-only dry-run/smoke launcher.
+LeRobot 0.4.4 is the release target; university dependency and checkpoint hashes
+are not yet locked. Existing varied pilot passes source validation. Export writer
+and launcher have local unit coverage, but real LeRobot export/model runtime,
+resume and closed-loop evaluator remain unvalidated/unimplemented respectively.
+See [SMOLVLA_TRAINING.md](docs/SMOLVLA_TRAINING.md) for commands and exact boundaries.
+
+Immediate user-owned milestone: **SmolVLA dataset validation, university training
+smoke test, and closed-loop evaluator**. The teammates' phase-aware full-task
+environment and synchronized pilot are integration dependencies. Continuous physical
 table pickup -> transport -> insertion now passes six cases using a socket rotated
 90 degrees about its unchanged axis/location. Synchronizing joint interpolation
 fixed a transport-path collision; the measured acquired grasp is retained through
@@ -660,25 +802,29 @@ These are scripted engineering validations, not a generalization result or a
 completed full-task learning dataset. See [FULL_TASK_DEMONSTRATOR.md](docs/FULL_TASK_DEMONSTRATOR.md).
 
 Goal: **a checkpoint-specific VLA data/inference round-trip and tiny supervised
-smoke test**, using the existing pilot before collecting much more data.
+smoke test**. Use existing held-plug data for adapter tests while waiting for the
+first full-task release; do not present those tests as full-task policy training.
 
 Current priority: SmolVLA, not pi0. The ten-episode varied collection and camera
 review are complete. Before broad collection, improve or validate precision-view
-observability, implement the SmolVLA adapter, and profile a single training batch
-on the local GPU. No SmolVLA install, checkpoint download, or overfit run is
+observability with the scene teammate, implement the SmolVLA adapter, and profile
+a single training batch on the university 4090. No SmolVLA install, checkpoint
+download, or overfit run is
 claimed complete. Preserve the pi0 work below as a secondary track.
 
-Progress: pi0 base / JAX LoRA selected as the first candidate; official source is
+Historical secondary work: pi0 base / JAX LoRA was the first candidate; source is
 pinned to `215abfb217dbac7d5f1273282331b9b1866c0479`. The OpenArm numeric/camera
 adapter and full-window raw-pilot path are implemented and locally tested.
 Checkpoint weights and training dependencies are not downloaded. Local hardware
-is an 8 GB RTX 4060 Ti on Windows; a suitable Linux training host is unconfirmed.
-Before training, investigate the retained float32 replay velocity failure across
-more seeds/timesteps, runtime-test upstream transforms, and connect the filtered
-dataset to the trainer. Do not equate this partial progress with milestone exit.
+is an 8 GB RTX 4060 Ti on Windows; the new training target is the university 4090,
+with its OS still unconfirmed. Preserve the retained float32 replay diagnostic;
+test SmolVLA's own runtime transforms and decoded-command physics rather than
+assuming the pi0 adapter validates a different model. This partial work is not
+milestone completion.
 
-1. Pin the selected PI checkpoint, license, repository/backend revision, and
-   Linux GPU host/VRAM budget. Check internal embedding access for later RLT now,
+1. Agree the teammate data/environment contract and obtain a 5-10 episode sample.
+   Pin SmolVLA checkpoint/license and LeRobot/PyTorch revisions; record university
+   host access, OS, VRAM, RAM, disk quota and cache paths. Check embedding access for later RLT now,
    without implementing the token trainer yet. Record any adaptation from the
    paper's model explicitly.
 2. Implement a version-pinned LeRobot/checkpoint adapter. Map both cameras,
@@ -690,14 +836,25 @@ dataset to the trainer. Do not equate this partial progress with milestone exit.
    fit improvement, save/reload consistency, valid decoded commands, and zero
    leakage of simulator pose/contact diagnostics into actor inputs. Run a short
    policy-server-to-simulator rollout to catch timing and normalization bugs.
+   Add a launcher with configurable data/output roots, train/validation splits,
+   precision, microbatch/accumulation, seed and checkpoint retention. Prove
+   interrupted-job resume including optimizer, scheduler, RNG and data position.
 4. Add a seeded closed-loop evaluator comparing expert, base VLA, and fine-tuned
    VLA with identical resets and safety limits. Record latency, chosen chunk
    horizon/execution prefix, success, contacts, and failure phase. Separate smoke
    test rollouts from an untouched benchmark of at least 100 held-out resets.
-5. Only after interface checks pass, expand toward 100-300 demonstrations with
+5. Train a first full-task baseline on approximately 50 demonstrations from the
+   collection teammate. Only after interface checks pass, request expansion toward
+   100-300 demonstrations with
    reachable pose/angle variation and genuine expert recoveries. Split by episode
    and scene configuration, refit normalization on training only, and evaluate
    near-nominal versus boundary/generalization performance separately.
+6. After Gate 5, implement feature extraction and token reconstruction (Gate 6),
+   then bounded insertion-only chunk replay and actor/critic training (Gate 7).
+   Test sparse rewards, duration-aware targets, frozen gradients, safety aborts
+   and resume before long RL runs. Start with one rollout environment sharing a
+   frozen policy service; profile throughput before adding workers. Evaluate
+   final table-to-insertion handoff before claiming end-to-end improvement.
 
 Exit criterion for this next milestone: a reproducible training configuration,
 checkpoint-specific data validation, a saved tiny-fit checkpoint, and a measured
@@ -719,15 +876,23 @@ robot execution is part of this documentation update.
 | OpenArm revision and active side | Resolved for simulation | User-confirmed v1, both arms present, right active and left parked |
 | Gripper/control interface | Hardware adapter | Implemented seven joint targets + per-finger travel; real controller mapping still requires audit |
 | Cameras and rate | Physical calibration | Implemented fixed/wrist RGB at 50 Hz command boundaries; mounts/rate are simulation assumptions |
-| GPU/Linux training environment | VLA smoke test | Local 8 GB GPU is below documented LoRA requirement; separate Linux host unconfirmed |
-| VLA checkpoint/backend | Upstream runtime validation | SmolVLA primary; pi0_base / JAX LoRA retained as secondary. SmolVLA revisions/runtime not yet pinned |
+| University training environment | VLA smoke test | RTX 4090 / 24 GB VRAM; OS, RAM, access and persistent storage quota unconfirmed; Linux preferred |
+| Storage and retention | Dataset transfer / training | 500 GB free SSD working allocation, 1 TB preferred; compressed video and bounded replay/checkpoints |
+| Teammate integration release | Full-task training | Versioned scene/reset-step API and 5-10 synchronized episodes; then roughly 50-episode baseline |
+| VLA checkpoint/backend | University baseline | SmolVLA primary; local revisions/runtime pinned and tested. University dependency lock remains to qualify; pi0/JAX secondary |
 | Token feature hook and implementation fidelity | RLT training | Audit selected model against paper Section IV |
 | Action horizon/execution prefix | Closed-loop VLA evaluation | Measure latency and contact response first |
 | Physical deployment | Real-robot runs | Later calibrated unpowered fixture |
 
 ## Research references
 
-Checked 2026-09-12. Pin source/code revisions at implementation time.
+SmolVLA, RTX 4090 and RLT abstract rechecked 2026-09-27; existing method details
+reference paper v1. Paper v2 is available: audit version differences before
+implementation and pin source/code revisions, rather than following moving main.
+
+- [SmolVLA training guide](https://huggingface.co/docs/lerobot/smolvla).
+- [RTX 4090 specifications](https://www.nvidia.com/en-us/geforce/graphics-cards/40-series/rtx-4090/).
+- [RL Token paper version history](https://arxiv.org/abs/2604.23073).
 
 - [Physical Intelligence RLT overview, March 19, 2026](https://www.pi.website/research/rlt).
 - [RL Token paper, arXiv v1, April 24, 2026](https://arxiv.org/html/2604.23073v1).

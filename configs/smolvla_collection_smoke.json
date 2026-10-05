@@ -1,0 +1,11 @@
+{
+  "purpose": "Pipeline smoke test only; four locally available full-task episodes. Not a generalization benchmark.",
+  "collector_branch": "automateData",
+  "collector_branch_revision_inspected": "b7297ba82701fe7e7814c32ea617a85f832b74a4",
+  "provenance_note": "Revision inspected, not proof that this revision generated the data; episode source hashes remain authoritative.",
+  "excluded_reason": "Manifest lists train_00005, but its directory is absent from this local copy.",
+  "splits": {
+    "train": ["train_00000", "train_00001", "train_00002"],
+    "validation": ["train_00003"]
+  }
+}

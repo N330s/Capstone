@@ -1,0 +1,4 @@
+# Optional plotting dependencies for dataset presentation generation and tests.
+numpy>=1.24
+Pillow>=9
+matplotlib>=3.7

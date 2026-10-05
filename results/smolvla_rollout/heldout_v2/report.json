@@ -1,0 +1,193 @@
+{
+  "pipeline_passed": true,
+  "pipeline_passed_definition": "Commands executed through the interface; not task success or safety qualification",
+  "safety_abort": true,
+  "mode": "policy",
+  "final_contacts": [
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_28"
+      ],
+      "bodies": [
+        "world",
+        "cable_seg_28"
+      ],
+      "force_n": 82.23141949133364,
+      "distance_m": -0.0029975033831150496
+    },
+    {
+      "geoms": [
+        "cable_seg_28",
+        "appliance_box"
+      ],
+      "bodies": [
+        "cable_seg_28",
+        "appliance"
+      ],
+      "force_n": 78.62048105401645,
+      "distance_m": -0.0030024966168849783
+    },
+    {
+      "geoms": [
+        "cable_seg_29",
+        "appliance_box"
+      ],
+      "bodies": [
+        "cable_seg_29",
+        "appliance"
+      ],
+      "force_n": 46.649047413919455,
+      "distance_m": -0.003002496616885034
+    },
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_29"
+      ],
+      "bodies": [
+        "world",
+        "cable_seg_29"
+      ],
+      "force_n": 43.20418245471305,
+      "distance_m": -0.002997503383114994
+    },
+    {
+      "geoms": [
+        "socket_frame_right",
+        "openarm_right_left_finger_collision"
+      ],
+      "bodies": [
+        "socket",
+        "openarm_right_left_finger"
+      ],
+      "force_n": 27.881936743138453,
+      "distance_m": -4.32955118781866e-05
+    },
+    {
+      "geoms": [
+        "socket_frame_top",
+        "openarm_right_left_finger_collision"
+      ],
+      "bodies": [
+        "socket",
+        "openarm_right_left_finger"
+      ],
+      "force_n": 24.282243351971935,
+      "distance_m": -3.1132637149103984e-05
+    },
+    {
+      "geoms": [
+        "socket_frame_top",
+        "openarm_right_left_finger_collision"
+      ],
+      "bodies": [
+        "socket",
+        "openarm_right_left_finger"
+      ],
+      "force_n": 12.964081434018462,
+      "distance_m": -3.1132637149103984e-05
+    },
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_27"
+      ],
+      "bodies": [
+        "world",
+        "cable_seg_27"
+      ],
+      "force_n": 1.621059641777201,
+      "distance_m": -0.00014560895826243054
+    },
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_28"
+      ],
+      "bodies": [
+        "world",
+        "cable_seg_28"
+      ],
+      "force_n": 1.4441451550413136,
+      "distance_m": -0.00014560895826248605
+    },
+    {
+      "geoms": [
+        "cable_seg_01",
+        "work_table"
+      ],
+      "bodies": [
+        "cable_seg_01",
+        "world"
+      ],
+      "force_n": 0.31682495951193357,
+      "distance_m": -2.1024151324126102e-05
+    }
+  ],
+  "final_robot_contacts": [
+    {
+      "geoms": [
+        "socket_frame_right",
+        "openarm_right_left_finger_collision"
+      ],
+      "bodies": [
+        "socket",
+        "openarm_right_left_finger"
+      ],
+      "force_n": 27.881936743138453,
+      "distance_m": -4.32955118781866e-05
+    },
+    {
+      "geoms": [
+        "socket_frame_top",
+        "openarm_right_left_finger_collision"
+      ],
+      "bodies": [
+        "socket",
+        "openarm_right_left_finger"
+      ],
+      "force_n": 24.282243351971935,
+      "distance_m": -3.1132637149103984e-05
+    },
+    {
+      "geoms": [
+        "socket_frame_top",
+        "openarm_right_left_finger_collision"
+      ],
+      "bodies": [
+        "socket",
+        "openarm_right_left_finger"
+      ],
+      "force_n": 12.964081434018462,
+      "distance_m": -3.1132637149103984e-05
+    }
+  ],
+  "replay_errors": null,
+  "task_success": false,
+  "outcome": "robot_collision",
+  "failure_phase_diagnostic": "pregrasp",
+  "steps": 12,
+  "simulated_s": 0.235,
+  "wall_s": 3.91955400002189,
+  "execution_prefix": 5,
+  "inference_calls": 3,
+  "latency_mean_s": 0.48264426668174565,
+  "latency_warm_mean_s": 0.30352784995920956,
+  "latency_max_s": 0.8408771001268178,
+  "latency_scope": "Model plus action postprocessing, excluding observation preprocessing and rendering",
+  "prefix_duration_s": 0.1,
+  "latency_within_prefix_fraction": 0.0,
+  "commands_clipped": 12,
+  "grasp_established": false,
+  "peak_socket_force_n": 0.0,
+  "peak_penetration_m": 2.6973814482127156e-06,
+  "peak_robot_unwanted_contact_n": 65.12826152912885,
+  "peak_robot_support_contact_n": 0.0,
+  "left_park_error_max_rad": 1.0011833988115023e-10,
+  "reset_state_max_error": 0.0,
+  "checkpoint_weights_sha256": "5849cf837860ef181b91a4bc1bdf3b9f8a162aa4c96118979bbebb609e954aa3",
+  "source_episode": "train_00003",
+  "policy_seed": 1000,
+  "limits": "One smoke rollout on a seen validation reset; synchronous paused-time inference. No real-time or task generalization claim."
+}

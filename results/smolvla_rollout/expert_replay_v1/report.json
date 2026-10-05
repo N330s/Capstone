@@ -1,0 +1,106 @@
+{
+  "pipeline_passed": true,
+  "mode": "replay",
+  "final_contacts": [
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_28"
+      ],
+      "force_n": 80.56594538949169,
+      "distance_m": -0.002999747682611684
+    },
+    {
+      "geoms": [
+        "cable_seg_28",
+        "appliance_box"
+      ],
+      "force_n": 76.00412295472219,
+      "distance_m": -0.003000252317388344
+    },
+    {
+      "geoms": [
+        "cable_seg_29",
+        "appliance_box"
+      ],
+      "force_n": 43.87105558711757,
+      "distance_m": -0.0030002523173882885
+    },
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_29"
+      ],
+      "force_n": 42.537856143583035,
+      "distance_m": -0.0029997476826117394
+    },
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_27"
+      ],
+      "force_n": 1.4304504226435086,
+      "distance_m": -0.0001244609158068651
+    },
+    {
+      "geoms": [
+        "floor",
+        "cable_seg_28"
+      ],
+      "force_n": 1.2688782659536015,
+      "distance_m": -0.0001244609158068651
+    },
+    {
+      "geoms": [
+        "cable_seg_01",
+        "work_table"
+      ],
+      "force_n": 0.3239580568797071,
+      "distance_m": -2.1940220927955424e-05
+    },
+    {
+      "geoms": [
+        "work_table",
+        "housing"
+      ],
+      "force_n": 0.2859123415999128,
+      "distance_m": -2.725086328347545e-06
+    },
+    {
+      "geoms": [
+        "work_table",
+        "housing"
+      ],
+      "force_n": 0.10883700724875507,
+      "distance_m": -9.714600806008921e-07
+    }
+  ],
+  "replay_errors": {
+    "qpos_max": 0.0,
+    "qvel_max": 0.0
+  },
+  "task_success": false,
+  "outcome": "step_budget_exhausted",
+  "failure_phase_diagnostic": "pregrasp",
+  "steps": 100,
+  "simulated_s": 2.0000000000000013,
+  "wall_s": 13.99965210002847,
+  "execution_prefix": 5,
+  "inference_calls": 0,
+  "latency_mean_s": null,
+  "latency_max_s": null,
+  "prefix_duration_s": 0.1,
+  "latency_within_prefix_fraction": null,
+  "commands_clipped": 0,
+  "grasp_established": false,
+  "peak_socket_force_n": 0.0,
+  "peak_penetration_m": 2.7406095903428213e-06,
+  "peak_robot_unwanted_contact_n": 0.0,
+  "peak_robot_support_contact_n": 0.0,
+  "left_park_error_max_rad": 1.00565756846494e-10,
+  "reset_state_max_error": 0.0,
+  "checkpoint_weights_sha256": "5849cf837860ef181b91a4bc1bdf3b9f8a162aa4c96118979bbebb609e954aa3",
+  "source_episode": "train_00003",
+  "policy_seed": 1000,
+  "limits": "One smoke rollout on a seen validation reset; synchronous paused-time inference. No real-time or task generalization claim."
+}
