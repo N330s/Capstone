@@ -1,0 +1,23 @@
+# Whitelist for docker/collect.Dockerfile: only what automated collection needs.
+# Keeps data/ and results/ (many GB) out of the build context.
+*
+!third_party/openarm_mujoco/LICENSE
+!third_party/openarm_mujoco/v1/openarm_bimanual.xml
+!third_party/openarm_mujoco/v1/meshes
+!assets/connector
+!configs
+!connector
+!envs
+!controllers
+!data_pipeline
+!scripts/collect_random.py
+!scripts/rollout_viewer.py
+!scripts/replay_pilot.py
+!tests/test_workspace.py
+!tests/test_place_insert.py
+!tests/test_openarm.py
+!tests/test_carry_path.py
+!tests/test_connector.py
+!tests/test_collection.py
+**/__pycache__
+envs/openarm_insert_temp.py

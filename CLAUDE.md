@@ -90,6 +90,8 @@ Layers, bottom to top (each imports only from below):
    scene from the dataset manifest.
    **`configs/workspace_v2_cable30.json`** = v2 with a 30-segment cable (~3.8x faster physics), the
    v2 scene for automated collection (`collect_random.py --workspace ... [--eval-scenes N]`).
+   A slim collection-only Docker image is `docker/collect.Dockerfile` (+ whitelist `.dockerignore`);
+   usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),
    `table_pickup.py` (`PickupProbe`: downward-rest → raise → approach → descend → close → lift),
    `carry_path.py` (`plan_carry`: bidirectional RRT with a rigid carried-plug proxy on scratch
