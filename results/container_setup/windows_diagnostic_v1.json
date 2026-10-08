@@ -1,0 +1,75 @@
+{
+  "passed": false,
+  "selected_checks_passed": true,
+  "failed": [],
+  "skipped": [
+    "torchcodec_decode",
+    "offscreen_render",
+    "persistent_storage"
+  ],
+  "timestamp_utc": "2026-10-08T15:03:31.873201+00:00",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "python": "3.11.0 (main, Oct 24 2022, 18:26:48) [MSC v.1933 64 bit (AMD64)]",
+  "checks": {
+    "runtime_versions": {
+      "status": "passed",
+      "details": {
+        "torch": "2.10.0+cu128",
+        "torchvision": "0.25.0+cu128",
+        "lerobot": "0.4.4",
+        "mujoco": "3.11.0",
+        "numpy": "2.2.6",
+        "av": "15.1.0",
+        "transformers": "4.57.6",
+        "datasets": "4.8.5"
+      }
+    },
+    "dependency_health": {
+      "status": "passed",
+      "details": "No broken requirements found."
+    },
+    "smolvla_imports": {
+      "status": "passed",
+      "details": {
+        "policy_class": "SmolVLAPolicy",
+        "processors": "make_pre_post_processors",
+        "weights_loaded": false
+      }
+    },
+    "cuda": {
+      "status": "passed",
+      "details": {
+        "gpu": "NVIDIA GeForce RTX 4060 Ti",
+        "cuda": "12.8",
+        "free_gb": 7.347372032,
+        "total_gb": 8.585216,
+        "bf16_matmul": true
+      }
+    },
+    "video_encode": {
+      "status": "passed",
+      "details": null
+    },
+    "pyav_decode": {
+      "status": "passed",
+      "details": {
+        "frames": 3,
+        "rgb_shape": [
+          64,
+          96,
+          3
+        ]
+      }
+    },
+    "torchcodec_decode": {
+      "status": "skipped"
+    },
+    "offscreen_render": {
+      "status": "skipped"
+    },
+    "persistent_storage": {
+      "status": "skipped"
+    }
+  },
+  "limits": "Infrastructure only; no model-weight, dataset, training, task-success or resume qualification."
+}

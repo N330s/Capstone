@@ -2,6 +2,8 @@
 
 ## SmolVLA training and evaluation
 
+For the lab GPU host, see [Docker setup and qualification](docs/LAB_SETUP.md).
+
 The SmolVLA collection-to-training-to-simulation integration now executes using
 the teammate's source-matched `automateData` scene. The tiny trained policy does
 not yet complete the task; the preserved two-blade baseline below is separate.

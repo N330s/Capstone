@@ -8,6 +8,7 @@ third_party/capstone_automateData/
 data/
 outputs/
 test_collection_new_env/
+.env
 
 # Superseded / incomplete presentation drafts; publish the reviewed v3 only.
 results/dataset_visualization_v1/

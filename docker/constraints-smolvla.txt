@@ -1,0 +1,17 @@
+# Qualified Windows core versions; Linux container still needs runtime qualification.
+# This is a critical-package constraint set, not a fully resolved Linux lockfile.
+torch==2.10.0
+torchvision==0.25.0
+lerobot==0.4.4
+mujoco==3.11.0
+numpy==2.2.6
+av==15.1.0
+transformers==4.57.6
+datasets==4.8.5
+huggingface-hub==0.35.3
+accelerate==1.15.0
+diffusers==0.35.2
+safetensors==0.8.0
+# LeRobot requires TorchCodec on Linux; official compatibility: 0.10 <-> torch 2.10.
+# Install its CPU wheel for CPU video decoding; PyTorch remains CUDA-enabled.
+torchcodec==0.10.0

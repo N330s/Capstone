@@ -1,7 +1,9 @@
 # OpenArm Plug Insertion: Demonstrations, VLA Fine-Tuning, and RLT
 
-Updated 2026-10-04: trained-policy simulation rollout and exact expert replay
-completed. The pipeline executes; autonomous task success remains unachieved.
+Updated 2026-10-08: lab Docker recipe and infrastructure preflight added; image
+build and Linux/4090 qualification remain pending. Trained-policy simulation
+rollout and exact expert replay completed earlier. The pipeline executes;
+autonomous task success remains unachieved.
 Team ownership and university RTX 4090 target retained.
 
 ## Goal and scope
@@ -700,6 +702,17 @@ the documented collection/fetch workflow. Keep heavy model dependencies separate
 from the existing lightweight MuJoCo environment.
 
 ## Concrete next implementation milestone
+
+2026-10-08 lab setup preparation: Dockerfile, GPU Compose service, critical-package
+constraints, non-root/read-only runtime, persistent storage mounts and an offline
+infrastructure preflight are implemented. Compose configuration parses locally.
+A Windows-only diagnostic passes version/import/dependency, CUDA BF16 and PyAV
+checks; TorchCodec, Linux EGL and container mounts were skipped, so it is NOT a
+full container pass. The local Docker Linux engine is not running: the image has
+not been built or GPU-tested. See [LAB_SETUP.md](docs/LAB_SETUP.md) for the host
+checklist, bundle transfer, build, no-skips preflight, training qualification and
+detached-job commands. Qualify the Linux image and short training run on the lab
+host before full-window training or accepting any 4090 throughput estimate.
 
 2026-10-04 closed-loop integration completed:
 

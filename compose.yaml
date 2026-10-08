@@ -1,0 +1,69 @@
+name: openarm-training
+services:
+  smolvla:
+    image: openarm-smolvla:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PYTHON_IMAGE: ${OPENARM_PYTHON_IMAGE:-python:3.11-slim-bookworm}
+    platform: linux/amd64
+    user: "${OPENARM_UID:-1000}:${OPENARM_GID:-1000}"
+    working_dir: /workspace
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    shm_size: 2gb
+    tmpfs:
+      - /tmp:size=1g,mode=1777
+    environment:
+      MUJOCO_GL: egl
+      PYOPENGL_PLATFORM: egl
+      NVIDIA_DRIVER_CAPABILITIES: compute,utility,graphics
+      HF_HUB_OFFLINE: "1"
+      HF_DATASETS_OFFLINE: "1"
+      WANDB_MODE: disabled
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${OPENARM_GPU_ID:-0}"]
+              capabilities: [gpu]
+    volumes:
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE to an existing absolute project-storage directory}/raw
+        target: /raw
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE}/models
+        target: /models
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE}/assets
+        target: /assets
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE}/assets/openarm_mujoco
+        target: /workspace/third_party/openarm_mujoco
+        read_only: true
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE}/datasets
+        target: /datasets
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE}/runs
+        target: /runs
+        bind: {create_host_path: false}
+      - type: bind
+        source: ${OPENARM_STORAGE:?Set OPENARM_STORAGE}/cache
+        target: /cache
+        bind: {create_host_path: false}
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: "3"}
