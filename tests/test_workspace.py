@@ -1,5 +1,6 @@
 """Workspace spec tests; no robot assets needed."""
 import json
+import sys
 import unittest
 import xml.etree.ElementTree as ET
 import numpy as np
@@ -250,6 +251,45 @@ class CableTautLiftSamplerTests(unittest.TestCase):
         v1 = wsp.load_workspace()
         env.workspace = v1
         self.assertIsNone(workspace_for_env(env, Workspace()).cable_edge_waypoint_m)
+
+
+class CollectRandomStartRowTests(unittest.TestCase):
+    """--start-row block arithmetic; no env, no rows generated."""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "collect_random", wsp.ROOT / "scripts/collect_random.py")
+        sys.path.insert(0, str(wsp.ROOT / "scripts"))
+        try:
+            cls.cr = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(cls.cr)
+        finally:
+            sys.path.pop(0)
+
+    def test_default_start_reproduces_old_blocks(self):
+        for cursor, budget in ((0, 600), (63, 600), (64, 600), (130, 600), (599, 600)):
+            block = cursor - cursor % 64
+            self.assertEqual(self.cr.row_block(0, cursor, budget),
+                             (block, min(64, budget - block), cursor - block))
+
+    def test_start_row_offsets_but_keeps_relative_alignment(self):
+        self.assertEqual(self.cr.row_block(5000, 0, 600), (5000, 64, 0))
+        self.assertEqual(self.cr.row_block(5000, 70, 600), (5064, 64, 6))
+        self.assertEqual(self.cr.row_block(5001, 64, 600), (5065, 64, 0))
+
+    def test_last_partial_block(self):
+        self.assertEqual(self.cr.row_block(5000, 590, 600), (5000 + 576, 24, 14))
+        self.assertEqual(self.cr.row_block(0, 10, 20), (0, 20, 10))
+
+    def test_run_signature_and_namespace(self):
+        from types import SimpleNamespace
+        a = SimpleNamespace(workspace=None, detector="noisy", validation_fraction=0.1, start_row=0)
+        b = SimpleNamespace(workspace=None, detector="noisy", validation_fraction=0.1, start_row=5000)
+        self.assertEqual(self.cr.run_signature(a)["start_row"], 0)
+        self.assertNotEqual(self.cr.run_signature(a), self.cr.run_signature(b))
+        self.assertGreater(self.cr.SEED_NAMESPACE_WIDTH, 5000)
 
 
 if __name__ == "__main__":

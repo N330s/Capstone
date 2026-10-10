@@ -14,6 +14,10 @@ Each sampled scene goes through two stages, one scene at a time:
 The run stops once --episodes episodes are recorded (or the attempt budget is
 spent). Without --record only the preflight stage runs.
 
+Row numbering: attempt k draws bank row --start-row + k (seed COLLECTION_SEED_BASE + row).
+The default 0 reproduces earlier runs exactly; e.g. --start-row 5000 draws a fresh set of
+scenes. Blocks and the validation split stay aligned relative to --start-row.
+
 Stopping and resuming (--record runs): progress.json is updated after every
 stage. Rerun the same command with --resume: a scene interrupted while recording
 is recorded again (its partial folder is replaced); a scene interrupted during
@@ -48,6 +52,7 @@ import numpy as np
 from controllers.pick_insert_expert import PickInsertExpert
 from data_pipeline.scene_bank import (collection_bank, evaluation_bank, as_reset_options,
                                       workspace_for_env, COLLECTION_SEED_BASE, EVALUATION_SEED_BASE,
+                                      SEED_NAMESPACE_WIDTH,
                                       iter_collection_bank)
 from data_pipeline.episodes import SCHEMA, save_episode, clean_info
 from envs.openarm_insert import OpenArmInsertEnv
@@ -56,6 +61,15 @@ from rollout_viewer import LiveViewer, VideoRecorder, ViewerClosed
 MAX_STEPS = 6000
 # Rows are drawn in blocks of this size; the validation split is the tail of each block.
 BATCH = 64
+
+
+def row_block(start_row, cursor, budget):
+    """Block holding attempt `cursor`: (absolute block start row, rows in block, rows to skip).
+
+    cursor and budget count attempts (relative); the returned start is the absolute bank row,
+    for iter_collection_bank(n=n, start=abs_start). Blocks are aligned relative to start_row."""
+    block = cursor - cursor % BATCH
+    return start_row + block, min(BATCH, budget - block), cursor - block
 
 
 def write_json(path, value):
@@ -164,10 +178,11 @@ def preflight_pass(args, out, ws):
             # generated one at a time, so a batch is never fully materialized
             # (each row costs a live PickFeasibility/InsertFeasibility plan)
             # when the target is reached partway through it.
-            batch_n = min(BATCH, budget - cursor)
+            # cursor is block-aligned here (rows are consumed a full batch at a time), so skip is 0.
+            abs_start, batch_n, _ = row_block(args.start_row, cursor, budget)
             batch = iter_collection_bank(n=batch_n,
                                          validation_fraction=args.validation_fraction,
-                                         ws=ws, start=cursor)
+                                         ws=ws, start=abs_start)
             for row in batch:
                 if len(accepted) >= args.episodes:
                     break
@@ -222,14 +237,15 @@ def preflight_pass(args, out, ws):
                 "attempted": cursor, "attempt_budget": budget,
                 "acceptance_rate": len(accepted) / max(cursor, 1),
                 "failure_reasons": reasons, "wall_seconds": round(time.time() - started, 1),
-                "detector_mode": args.detector})
+                "detector_mode": args.detector, "start_row": args.start_row})
     return accepted, cursor
 
 
 def run_signature(args):
     """What decides which scenes a run draws; --resume refuses to continue under different values."""
     return {"workspace": args.workspace.as_posix() if args.workspace else None,
-            "detector": args.detector, "validation_fraction": args.validation_fraction}
+            "detector": args.detector, "validation_fraction": args.validation_fraction,
+            "start_row": args.start_row}
 
 
 def row_artifacts(directory, row_id):
@@ -324,12 +340,12 @@ def collect_pass(args, out, ws, state):
             # never depends on where a run was stopped. Rows drawn before a resume come back
             # from the scene cache.
             cursor = state["cursor"]
-            block = cursor - cursor % BATCH
+            abs_start, block_n, skip = row_block(args.start_row, cursor, budget)
             rows = itertools.islice(
-                iter_collection_bank(n=min(BATCH, budget - block),
+                iter_collection_bank(n=block_n,
                                      validation_fraction=args.validation_fraction,
-                                     ws=ws, start=block),
-                cursor - block, None)
+                                     ws=ws, start=abs_start),
+                skip, None)
             for row in rows:
                 if len(records) >= args.episodes:
                     break
@@ -384,7 +400,7 @@ def collect_pass(args, out, ws, state):
                 "acceptance_rate": len(accepted) / max(state["cursor"], 1),
                 "failure_reasons": reasons,
                 "wall_seconds_this_session": round(time.time() - started, 1),
-                "detector_mode": args.detector})
+                "detector_mode": args.detector, "start_row": args.start_row})
     save_progress()
     return records, failures
 
@@ -397,6 +413,7 @@ def build_manifest(args, out, env, records, failures, complete):
             "purpose": "randomized table-top pick-and-insert; plug and socket poses sampled",
             "task_stages": ["survey", "grasp", "transport", "insert"],
             "detector_mode": args.detector,
+            "start_row": args.start_row,
             "collection_mode": "per scene: preflight, then record on success (resumable)",
             "robot_manifest": env.manifest(),
             "complete": complete,
@@ -419,6 +436,9 @@ def main():
     p.add_argument("--attempt-ratio", type=float, default=3.0,
                    help="preflight attempt budget as a multiple of --episodes")
     p.add_argument("--validation-fraction", type=float, default=0.1)
+    p.add_argument("--start-row", type=int, default=0,
+                   help="first bank row (seed offset) drawn; --start-row 5000 draws a fresh set "
+                        "of scenes, the default 0 reproduces earlier runs")
     p.add_argument("--detector", choices=("noisy", "privileged"), default="noisy")
     p.add_argument("--record", action="store_true", help="Record images for accepted scenes")
     p.add_argument("--resume", action="store_true",
@@ -441,6 +461,13 @@ def main():
                    help="size of the reserved evaluation bank written first (default 100; use a few "
                         "for quick tests, a smaller bank is a prefix of the full one)")
     args = p.parse_args()
+    if args.start_row < 0:
+        p.error("--start-row must be >= 0")
+    budget = int(args.episodes * args.attempt_ratio)
+    if args.start_row + budget > SEED_NAMESPACE_WIDTH:
+        raise SystemExit(f"--start-row {args.start_row} + attempt budget {budget} exceeds the "
+                         f"collection seed namespace ({SEED_NAMESPACE_WIDTH} rows); rows would "
+                         "collide with the evaluation seeds. Lower --start-row or --episodes.")
 
     out = args.output
     progress_path = out / "progress.json"
