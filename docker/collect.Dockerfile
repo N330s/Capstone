@@ -20,8 +20,9 @@ RUN apt-get update \
 # Same versions as the development venv, so recordings are reproducible.
 RUN pip install --no-cache-dir mujoco==3.11.0 numpy==2.5.3 Pillow==12.3.0
 
+# PYOPENGL_PLATFORM is deliberately unset: mujoco sets it from MUJOCO_GL. A fixed value here
+# would make -e MUJOCO_GL=osmesa fail, and mujoco then silently drops mujoco.Renderer.
 ENV MUJOCO_GL=egl \
-    PYOPENGL_PLATFORM=egl \
     NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1

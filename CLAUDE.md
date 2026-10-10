@@ -89,7 +89,9 @@ Layers, bottom to top (each imports only from below):
    `collect_varied.py`/`validate_openarm.py` take `--workspace`; `replay_pilot.py` rebuilds the
    scene from the dataset manifest.
    **`configs/workspace_v2_cable30.json`** = v2 with a 30-segment cable (~3.8x faster physics), the
-   v2 scene for automated collection (`collect_random.py --workspace ... [--eval-scenes N]`).
+   v2 scene for automated collection (`collect_random.py --workspace ... [--eval-scenes N]`;
+   per scene: preflight, then record on success; `progress.json` + `--resume` redo only the
+   interrupted stage).
    A slim collection-only Docker image is `docker/collect.Dockerfile` (+ whitelist `.dockerignore`);
    usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),

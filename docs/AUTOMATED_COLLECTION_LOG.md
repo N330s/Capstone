@@ -621,3 +621,38 @@ Collection tuning is **paused** at the user's request. The state above (v2_cable
 - **Overhead camera.** `cameras.scene_rgb` was moved to an overhead mount in every workspace file (`workspace_v1`, `v1_leaf5n`, `v2`, `v2_cable30`). The camera sits at (0.12, −0.21, 0.98) m, 0.66 m above the table top, looks at (0.40, −0.21, 0.36) (24° from vertical) with a 48° field of view. It was chosen from rendered candidates: a straight-down view cannot see the socket slots, and wider views leave the task area small at 320×240. The plug spawn area, gripper, cable and socket face are in view; the hand occludes the plug from above during the grasp. The per-scene camera jitter (±4 mm, ±1.5°) still applies. Editing the workspace JSON changes its hash, so earlier datasets no longer replay strictly. [docs/WORKSPACE.md](WORKSPACE.md) is updated.
 - **JPEG frames.** `data_pipeline/episodes.py` `save_episode()` now also writes `<episode>/cameras/head/<i>.jpeg` (from `scene_rgb`) and `<episode>/cameras/wrist/<i>.jpeg` (from `wrist_rgb`), with i = 1…T+1 and file i = observation i−1, at JPEG quality 95. The folders and frame count are recorded in `metadata.json` under `camera_frames`. This applies to every collector that uses `save_episode`. `episode.npz` (lossless) is unchanged and remains what checksums and training use.
 - Unit tests 46/46.
+
+## 2026-10-08: per-scene preflight → record, exact resume
+
+**Why.** `collect_random.py --record` used to preflight every scene first and record afterwards. A stop during preflight made `--resume` treat the partial accepted list as final, so the dataset came out smaller than asked. A kill while an episode was being saved left a half-written folder, and the resume then crashed because `save_episode` refuses to overwrite. The user asked for one scene at a time (record only after a successful preflight), and for a resume that redoes exactly the interrupted stage.
+
+**What changed (only `scripts/collect_random.py`).**
+- `collect_pass` replaces `record_pass` for `--record` runs. For each row it preflights (no images); if that succeeds, it records straight away. The run ends when `--episodes` episodes are recorded or the attempt budget (`episodes × attempt_ratio`) runs out. A preflight-only run (no `--record`) still uses `preflight_pass`, unchanged.
+- One env serves both stages. `env.images` is switched on only for the recording, since `observe()` checks it on every call. That keeps one model in memory (about 1.5 GB per process, as before), and no hashed env source changed.
+- `progress.json` is written after every stage. It holds the next row to preflight (`cursor`), any accepted row whose recording has not finished (`pending_record`), the accepted/rejected/recorded/failed lists, and the run signature (workspace, detector, validation fraction). All JSON outputs are now written atomically (temp file + rename).
+- `--resume`:
+  - stopped while recording → delete the partial `<id>/` folder and any stale `failed_attempts/<id>*`, then re-record that row;
+  - stopped during preflight → preflight row `cursor` again.
+
+  It refuses to resume under a different signature. A higher `--episodes` is allowed, to extend a run.
+- Rows are still drawn from the same 64-row blocks (`iter_collection_bank(start=block)` + skip), so ids, seeds and splits do not depend on where a run stopped.
+- Each recorded episode stores `trace_matches_preflight`: whether the recorded qpos trajectory equals its preflight bit for bit. It is null for a recording redone after a resume, because the preflight trace is gone by then.
+- `manifest.json` is rewritten after each stage. `complete` now means "recorded ≥ `--episodes`". There is also a new `collection_mode` field.
+
+**Verification** (v2_cable30, privileged detector, `--episodes 2 --record --headless --video none --eval-scenes 1`, three runs in parallel; driver `scratchpad/resume_test.py` kills the process with TerminateProcess, like a crash):
+
+| Run | What happened | Result |
+|---|---|---|
+| reference | uninterrupted | 2/2 recorded, `trace_matches_preflight` true for both |
+| kill_record | killed 1 s after `train_00000/` appeared (mid `save_episode`, 1 file written). `progress.json` showed `pending train_00000`, records [] | resume removed the partial folder, re-recorded `train_00000`, then preflighted and recorded `train_00001`: 2/2 |
+| kill_preflight | killed 5 s into the preflight of `train_00001`. `progress.json`: cursor 1, nothing pending, records [`train_00000`] | resume restarted `train_00001`'s preflight and recorded it: 2/2 |
+
+- In both resumed datasets, all 11 non-image arrays (qpos, qvel, actions requested/applied, reward, flags, timing, phase) are **bit-identical** to the reference. Both have 1797/1810 JPEGs per camera and no `.tmp` or `failed_*` leftovers.
+- `data_sha256` differs between runs, and so do the image arrays: at most 1/255 on about 0.005% of pixels. **This is not caused by resume.** Re-rendering the same state four times in one process alternates between two pixel hashes per camera (OpenGL driver on this Windows machine). The rendered images are therefore not bit-reproducible; the physics is. `replay_pilot.py` checks only the physics.
+- Strict `replay_pilot.py` on both resumed datasets: all 4 episodes qpos/qvel error **0.0**, outcome success. Unit tests **46/46** OK.
+- **Docker** (`openarm-collect` 507 MB and `:cpu` 796 MB, both rebuilt with this script):
+  - The first in-container record failed with `module 'mujoco' has no attribute 'Renderer'`. The image set `PYOPENGL_PLATFORM=egl`, which conflicts with `-e MUJOCO_GL=osmesa`; mujoco then swallows the ImportError and drops `Renderer`. Rendering had never been reached in the container before, because the 2026-10-06 run was killed with exit 137. Fix: do not set `PYOPENGL_PLATFORM` in the Dockerfile (mujoco derives it from `MUJOCO_GL`).
+  - After the fix, the `:cpu` image (OSMesa) recorded 1/1 with `complete: true` and `trace_matches_preflight: true`, 1794 + 1794 JPEGs, 155 MB for the episode. Strict `replay_pilot.py` in the container gave error 0.0.
+  - The episode has 1793 steps against 1796 on Windows for the same seed. This is the known cross-platform floating-point difference, so do not mix platforms in strict replay.
+  - The exit-137 kill: `docker stats` peaked at 2.96 GiB for one collector, so two in parallel on the 7.6 GiB Docker VM ran out of memory. `docs/DOCKER_COLLECTION.md` now says about 3 GB per container.
+  - EGL on an NVIDIA GPU is still unverified; it needs the Linux machine.

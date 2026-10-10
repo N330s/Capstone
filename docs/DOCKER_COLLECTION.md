@@ -51,13 +51,40 @@ arguments. Without a display the live viewer is skipped automatically; `--headle
 explicit.
 
 No NVIDIA GPU: build with `--build-arg CPU_RENDER=1` and run with `-e MUJOCO_GL=osmesa` and no `--gpus`.
+Do not set `PYOPENGL_PLATFORM`. MuJoCo derives it from `MUJOCO_GL`, and a mismatch makes it silently drop
+`mujoco.Renderer` (error: `module 'mujoco' has no attribute 'Renderer'`).
 Recording is then slower. If the EGL check above fails on a GPU machine, use the CPU variant until the
 toolkit is fixed. A preflight-only run (without `--record`) renders nothing and works in either image.
 
+## Stop, resume, pause
+
+`collect_random.py --record` handles one scene at a time. It preflights the scene without images and,
+if the preflight succeeds, records it right away. `progress.json` in the output folder is updated after
+every stage.
+
+- **Resume** after a crash, Ctrl+C, reboot or `docker stop`: run the **same command** again with
+  `--resume` added. A scene that was being recorded is recorded again, and its half-written folder is
+  replaced. A scene that was in preflight is preflighted again. Finished episodes are never redone.
+  Workspace, detector and validation fraction must match the first run; `--episodes` may be raised to
+  extend a run.
+- **Pause** without stopping: start the container with `-d --name collect1`, then
+  `docker pause collect1` / `docker unpause collect1`. This freezes the process in place; nothing is
+  lost or redone. It does not survive a reboot (use `--resume` then).
+
+```bash
+docker run -d --name collect1 --gpus all --user $(id -u):$(id -g) -v $PWD/data:/app/data openarm-collect \
+  scripts/collect_random.py --workspace configs/workspace_v2_cable30.json --episodes 50 --record --headless --output data/run1
+docker logs -f collect1          # watch progress (Ctrl+C only stops watching)
+# after a stop: docker rm collect1, then the same docker run line with --resume appended
+```
+
 ## Notes
 
-- **RAM:** about 1.5 GB per collector process. To run several in parallel, start several containers, each
-  with its own `--output`. They can share `./data/.scene_cache`, whose writes are atomic.
+- **RAM:** plan on about 3 GB per collector container (measured peak 2.96 GiB with `docker stats`). Two
+  collectors run in parallel on an 8 GB Docker VM were killed with exit code 137, out of memory, so allow
+  roughly 3 GB per container plus headroom. To run several in parallel, start several containers, each with
+  its own `--output`. They can share `./data/.scene_cache`, whose writes are atomic. Exit code 137 means
+  out of memory: rerun with `--resume`.
 - **Scene cache:** the first run on a new machine generates the scenes (slow; see
   `docs/AUTOMATED_COLLECTION_LOG.md`). Keep `./data` mounted so later runs reuse the cache. Don't copy a
   cache across operating systems.
@@ -66,7 +93,7 @@ toolkit is fixed. A preflight-only run (without `--record`) renders nothing and 
   the 1e-19 level between Linux and Windows floating-point libraries. Strict replay (`replay_pilot.py`)
   is therefore exact **within the same image/platform**. Replay container-recorded datasets in the
   container, and don't mix container and Windows recordings in one strict-replay check.
-- **Disk:** a recorded episode is `episode.npz` plus about 71 MB of JPEG frames
-  (`cameras/head`, `cameras/wrist`).
+- **Disk:** a recorded episode is about 155 MB: `episode.npz` plus about 71 MB of JPEG frames
+  (`cameras/head`, `cameras/wrist`). 50 episodes need about 8 GB.
 - **Rebuild** the image after any code or config change; the image is a snapshot of the repo at build time.
 - Variance of the sampled scenes is unchanged from the repo; the image only packages the collector.

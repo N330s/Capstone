@@ -1,15 +1,23 @@
 """Automated collection over randomized plug/socket scenes.
 
-Two passes:
+Each sampled scene goes through two stages, one scene at a time:
 
-  preflight  images off, fast. Walks sampled scenes until --episodes of them
-             succeed. Every failure is retained in rejected_scenes.json with its
-             phase log and failure reason, plus a qpos trajectory under
+  preflight  images off, fast. Every failure is retained in rejected_scenes.json
+             with its phase log and failure reason, plus a qpos trajectory under
              failed_preflight/ that scripts/replay_episode.py can play back --
              resampling is budgeted and logged, never silent.
-  record     images on, replays exactly the accepted (seed, options) pairs and
-             writes episodes. A rollout that fails here is retained under
-             failed_attempts/ and is never labelled as BC data.
+  record     only for a scene whose preflight succeeded, straight away: images
+             on, the same (seed, options) again, written as an episode. A rollout
+             that fails here is retained under failed_attempts/ and is never
+             labelled as BC data.
+
+The run stops once --episodes episodes are recorded (or the attempt budget is
+spent). Without --record only the preflight stage runs.
+
+Stopping and resuming (--record runs): progress.json is updated after every
+stage. Rerun the same command with --resume: a scene interrupted while recording
+is recorded again (its partial folder is replaced); a scene interrupted during
+preflight is preflighted again. Nothing finished is redone.
 
 Watching and reviewing:
 
@@ -26,7 +34,10 @@ Watching and reviewing:
 """
 import argparse
 import hashlib
+import itertools
 import json
+import os
+import shutil
 import time
 from pathlib import Path
 import sys
@@ -43,10 +54,15 @@ from envs.openarm_insert import OpenArmInsertEnv
 from rollout_viewer import LiveViewer, VideoRecorder, ViewerClosed
 
 MAX_STEPS = 6000
+# Rows are drawn in blocks of this size; the validation split is the tail of each block.
+BATCH = 64
 
 
 def write_json(path, value):
-    path.write_text(json.dumps(value, indent=2), encoding="utf-8")
+    # Write then rename: a run killed mid-write leaves the previous file, never a truncated one.
+    tmp = path.with_name(path.name + ".tmp")
+    tmp.write_text(json.dumps(value, indent=2), encoding="utf-8")
+    os.replace(tmp, path)
 
 
 def sha256(path):
@@ -148,7 +164,7 @@ def preflight_pass(args, out, ws):
             # generated one at a time, so a batch is never fully materialized
             # (each row costs a live PickFeasibility/InsertFeasibility plan)
             # when the target is reached partway through it.
-            batch_n = min(64, budget - cursor)
+            batch_n = min(BATCH, budget - cursor)
             batch = iter_collection_bank(n=batch_n,
                                          validation_fraction=args.validation_fraction,
                                          ws=ws, start=cursor)
@@ -210,33 +226,78 @@ def preflight_pass(args, out, ws):
     return accepted, cursor
 
 
-def record_pass(args, out, accepted):
-    records, failures = [], []
-    manifest_path = out / "manifest.json"
-    if args.resume and manifest_path.exists():
-        records = json.loads(manifest_path.read_text(encoding="utf-8")).get("episodes", [])
-    done = {r["episode"] for r in records}
-    env = OpenArmInsertEnv(images=True, workspace=args.workspace)
+def run_signature(args):
+    """What decides which scenes a run draws; --resume refuses to continue under different values."""
+    return {"workspace": args.workspace.as_posix() if args.workspace else None,
+            "detector": args.detector, "validation_fraction": args.validation_fraction}
+
+
+def row_artifacts(directory, row_id):
+    """Everything save_failure / VideoRecorder.save wrote for one row (<id>, <id>.json, <id>.mp4, ...)."""
+    if not directory.is_dir():
+        return []
+    return [p for p in directory.iterdir() if p.name == row_id or p.name.startswith(row_id + ".")]
+
+
+def remove_partial(paths):
+    """Delete what an interrupted stage left behind, so the stage is redone from scratch."""
+    for path in paths:
+        if path.is_dir():
+            shutil.rmtree(path)
+        elif path.exists():
+            path.unlink()
+        else:
+            continue
+        print("removed partial", path, flush=True)
+
+
+def collect_pass(args, out, ws, state):
+    """Preflight scene after scene; record each one straight after a successful preflight.
+
+    state (progress.json) is saved after every stage. state["cursor"] is the next row to
+    preflight; state["pending_record"] is an accepted row whose recording has not finished."""
+    budget = int(args.episodes * args.attempt_ratio)
+    accepted, rejected = state["accepted"], state["rejected"]
+    records, failures = state["records"], state["failures"]
+    # One env for both stages: observe() renders only while env.images is set, so a
+    # preflight costs no rendering and the process keeps a single model in memory.
+    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
     viewer, recorder = make_viewer(env, args), make_recorder(env, args)
-    try:
-        for row in accepted:
-            if row["id"] in done:
-                print("skip", row["id"], flush=True)
-                continue
-            try:
-                result, payload, trace = rollout(env, row, record=True, detector_mode=args.detector,
-                                                 viewer=viewer, recorder=recorder)
-            except ViewerClosed:
-                raise SystemExit("Viewer closed; stopping. Rerun with --resume --headless.")
-            if result["outcome"] != "success":
-                save_failure(out / "failed_attempts", row["id"], result, trace,
-                             recorder=recorder, payload=payload)
-                failures.append({"episode": row["id"], "outcome": result["outcome"],
-                                 "expert": result["expert"]})
-                print("FAILED (retained, not a BC label)", row["id"], result["outcome"], flush=True)
-                if args.strict:
-                    raise RuntimeError("Recorded rollout failed and --strict is set")
-                continue
+    started = time.time()
+
+    def save_progress():
+        write_json(out / "preflight_accepted.json", accepted)
+        write_json(out / "rejected_scenes.json", rejected)
+        write_json(out / "collection_bank.json", accepted)
+        write_json(out / "manifest.json", build_manifest(args, out, env, records, failures,
+                                                         complete=len(records) >= args.episodes))
+        write_json(out / "progress.json", state)
+
+    def record(row, preflight_qpos):
+        print("recording", row["id"], flush=True)
+        remove_partial([out / row["id"], *row_artifacts(out / "failed_attempts", row["id"]),
+                        *row_artifacts(out / "video", row["id"])])
+        env.images = True
+        try:
+            result, payload, trace = rollout(env, row, record=True, detector_mode=args.detector,
+                                             viewer=viewer, recorder=recorder)
+        except ViewerClosed:
+            raise SystemExit("Viewer closed; stopping. Rerun with --resume --headless.")
+        finally:
+            env.images = False
+        # Rendering only reads the state, so the recorded run must retrace its preflight
+        # exactly. None = not checked (the preflight happened before a resume).
+        matches = None if preflight_qpos is None else bool(np.array_equal(trace["qpos"],
+                                                                          preflight_qpos))
+        if matches is False:
+            print("WARNING: recorded trajectory differs from its preflight", row["id"], flush=True)
+        if result["outcome"] != "success":
+            save_failure(out / "failed_attempts", row["id"], result, trace,
+                         recorder=recorder, payload=payload)
+            failures.append({"episode": row["id"], "outcome": result["outcome"],
+                             "expert": result["expert"], "trace_matches_preflight": matches})
+            print("FAILED (retained, not a BC label)", row["id"], result["outcome"], flush=True)
+        else:
             if recorder is not None and args.video == "all":
                 recorder.save(out / "video" / row["id"], metadata={"outcome": "success"})
             meta = save_episode(out / row["id"], *payload, env.manifest())
@@ -244,20 +305,91 @@ def record_pass(args, out, accepted):
                             "steps": meta["steps"], "data_sha256": meta["data_sha256"],
                             "retries": result["expert"]["retries"],
                             "regrasps": result["expert"]["regrasps"],
-                            "detection_error": result["expert"]["detection_error"]})
-            write_json(manifest_path, build_manifest(args, out, env, records, failures, accepted))
-            print("recorded", row["id"], meta["steps"], flush=True)
+                            "detection_error": result["expert"]["detection_error"],
+                            "trace_matches_preflight": matches})
+            print("recorded", row["id"], meta["steps"],
+                  f"({len(records)}/{args.episodes} recorded)", flush=True)
+        state["pending_record"] = None
+        save_progress()
+        if result["outcome"] != "success" and args.strict:
+            raise RuntimeError("Recorded rollout failed and --strict is set")
+
+    try:
+        if state["pending_record"] is not None:
+            print("resume: the previous run stopped while recording", state["pending_record"]["id"],
+                  flush=True)
+            record(state["pending_record"], None)
+        while len(records) < args.episodes and state["cursor"] < budget:
+            # Rows come from the same BATCH-sized blocks as preflight_pass, so a row's split
+            # never depends on where a run was stopped. Rows drawn before a resume come back
+            # from the scene cache.
+            cursor = state["cursor"]
+            block = cursor - cursor % BATCH
+            rows = itertools.islice(
+                iter_collection_bank(n=min(BATCH, budget - block),
+                                     validation_fraction=args.validation_fraction,
+                                     ws=ws, start=block),
+                cursor - block, None)
+            for row in rows:
+                if len(records) >= args.episodes:
+                    break
+                print("preflight", row["id"], flush=True)
+                remove_partial(row_artifacts(out / "failed_preflight", row["id"]))
+                trace = None
+                try:
+                    result, _, trace = rollout(env, row, detector_mode=args.detector,
+                                               viewer=viewer, recorder=recorder)
+                except ViewerClosed:
+                    raise SystemExit("Viewer closed; stopping. Rerun with --resume --headless.")
+                except (ValueError, RuntimeError) as error:
+                    result = {**{k: v for k, v in row.items() if k != "sampler"},
+                              "outcome": "reset_or_runtime_rejection",
+                              "error": f"{type(error).__name__}: {error}"}
+                ok = result["outcome"] == "success"
+                state["cursor"] += 1
+                (accepted if ok else rejected).append(result)
+                if not ok and trace is not None:
+                    save_failure(out / "failed_preflight", row["id"], result, trace,
+                                 recorder=recorder)
+                expert_diag = result.get("expert") or {}
+                detail = (result.get("error") or expert_diag.get("failure_detail")
+                          or expert_diag.get("failure") or "")
+                print(f"{row['id']} {result['outcome']} "
+                      f"({len(accepted)} accepted, {state['cursor']} attempted)"
+                      f"{' | ' + str(detail) if detail else ''}", flush=True)
+                state["pending_record"] = result if ok else None
+                save_progress()
+                if not accepted and state["cursor"] >= args.early_abort:
+                    raise SystemExit(
+                        f"Aborting: {state['cursor']} attempts, zero successes. Last failure: "
+                        f"{result['outcome']} {detail}. Diagnostics and video are in "
+                        f"{out/'failed_preflight'}; replay with scripts/replay_episode.py.")
+                if ok:
+                    record(result, trace["qpos"])
     finally:
         if recorder is not None:
             recorder.close()
         if viewer is not None:
             viewer.close()
         env.close()
-    write_json(manifest_path, build_manifest(args, out, env, records, failures, accepted))
+    reasons = {}
+    for r in rejected:
+        key = r["outcome"]
+        if key.startswith("expert_"):
+            key = f"{key} ({(r.get('expert') or {}).get('phase')})"
+        reasons[key] = reasons.get(key, 0) + 1
+    write_json(out / "preflight_stats.json",
+               {"requested": args.episodes, "accepted": len(accepted), "recorded": len(records),
+                "attempted": state["cursor"], "attempt_budget": budget,
+                "acceptance_rate": len(accepted) / max(state["cursor"], 1),
+                "failure_reasons": reasons,
+                "wall_seconds_this_session": round(time.time() - started, 1),
+                "detector_mode": args.detector})
+    save_progress()
     return records, failures
 
 
-def build_manifest(args, out, env, records, failures, accepted):
+def build_manifest(args, out, env, records, failures, complete):
     return {"schema": SCHEMA,
             "episodes": records,
             "failed_recordings": failures,
@@ -265,8 +397,9 @@ def build_manifest(args, out, env, records, failures, accepted):
             "purpose": "randomized table-top pick-and-insert; plug and socket poses sampled",
             "task_stages": ["survey", "grasp", "transport", "insert"],
             "detector_mode": args.detector,
+            "collection_mode": "per scene: preflight, then record on success (resumable)",
             "robot_manifest": env.manifest(),
-            "complete": len(records) == len(accepted),
+            "complete": complete,
             "collection_script_sha256": sha256(__file__),
             "expert_sha256": sha256(sys.modules[PickInsertExpert.__module__].__file__),
             "scene_bank_module_sha256": sha256(sys.modules[collection_bank.__module__].__file__),
@@ -288,9 +421,11 @@ def main():
     p.add_argument("--validation-fraction", type=float, default=0.1)
     p.add_argument("--detector", choices=("noisy", "privileged"), default="noisy")
     p.add_argument("--record", action="store_true", help="Record images for accepted scenes")
-    p.add_argument("--resume", action="store_true", help="Reuse an existing output directory")
+    p.add_argument("--resume", action="store_true",
+                   help="Continue a stopped run in the same --output (a scene that was being "
+                        "recorded is recorded again; one in preflight is preflighted again)")
     p.add_argument("--strict", action="store_true",
-                   help="Abort the record pass on the first failed rollout")
+                   help="Stop on the first recorded rollout that fails")
     p.add_argument("--headless", action="store_true",
                    help="No live window. Use this for unattended collection runs.")
     p.add_argument("--realtime", type=float, default=1.0,
@@ -308,6 +443,16 @@ def main():
     args = p.parse_args()
 
     out = args.output
+    progress_path = out / "progress.json"
+    state = None
+    if args.record and args.resume:
+        if not progress_path.exists():
+            raise SystemExit(f"--resume: {progress_path} not found. Only --record runs made by this "
+                             "version of the collector can be resumed.")
+        state = json.loads(progress_path.read_text(encoding="utf-8"))
+        if state["run"] != run_signature(args):
+            raise SystemExit(f"--resume: this run was started with {state['run']}, not "
+                             f"{run_signature(args)}; those decide which scenes are drawn.")
     out.mkdir(parents=True, exist_ok=args.resume)
     # Center the sampler on the real right-arm mount, as the manual collectors do.
     probe = OpenArmInsertEnv(images=False, workspace=args.workspace)
@@ -317,25 +462,35 @@ def main():
                {"status": "reserved; not executed or used for tuning", "scenes": args.eval_scenes,
                 "resets": evaluation_bank(args.eval_scenes, ws=ws)})
 
+    if args.record:
+        if state is None:
+            state = {"run": run_signature(args), "cursor": 0, "pending_record": None,
+                     "accepted": [], "rejected": [], "records": [], "failures": []}
+        else:
+            print(f"resuming: {len(state['records'])} recorded, {state['cursor']} scenes attempted",
+                  flush=True)
+        records, failures = collect_pass(args, out, ws, state)
+        if len(records) < args.episodes:
+            print(f"WARNING: only {len(records)}/{args.episodes} episodes recorded in "
+                  f"{state['cursor']} attempts. Retained diagnostics in rejected_scenes.json.",
+                  flush=True)
+        print(f"done: {len(records)} episodes recorded, {len(failures)} retained as failures",
+              flush=True)
+        return
+
     accepted_path = out / "preflight_accepted.json"
     if args.resume and accepted_path.exists():
         accepted = json.loads(accepted_path.read_text(encoding="utf-8"))
         attempted = len(accepted)
-        print(f"resuming with {len(accepted)} accepted scenes", flush=True)
+        print(f"preflight already done: {len(accepted)} accepted scenes", flush=True)
     else:
         accepted, attempted = preflight_pass(args, out, ws)
-
     write_json(out / "collection_bank.json", accepted)
     if not accepted:
         raise SystemExit("Preflight accepted nothing; check the Workspace bounds and the expert.")
     if len(accepted) < args.episodes:
         print(f"WARNING: only {len(accepted)}/{args.episodes} scenes succeeded in "
               f"{attempted} attempts. Retained diagnostics in rejected_scenes.json.", flush=True)
-
-    if not args.record:
-        return
-    records, failures = record_pass(args, out, accepted)
-    print(f"done: {len(records)} episodes recorded, {len(failures)} retained as failures", flush=True)
 
 
 if __name__ == "__main__":
