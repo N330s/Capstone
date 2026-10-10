@@ -541,11 +541,16 @@ class InsertFeasibility:
     def __call__(self, options):
         """(None, [(flip, tilt), ...feasible]) or (reason, [])."""
         options = {k: v for k, v in options.items() if k != "visual"}
+        self.settled = None
         try:
             self.env.reset(seed=0, options=options)
         except (RuntimeError, ValueError) as error:
             return f"reset_failed:{type(error).__name__}", []
         e = self.env
+        # Plug pose after the reset's 1 s settle (the cable moves it): the pose the expert sees.
+        xmat = e.data.xmat[e.plug]
+        self.settled = {"plug_xy_m": e.data.xpos[e.plug][:2].tolist(),
+                        "plug_yaw_deg": float(np.degrees(np.arctan2(xmat[3], xmat[0])))}
         entry = e.data.site_xpos[e.socket_site].copy()
         basis = e.data.site_xmat[e.socket_site].reshape(3, 3).copy()
         table_z = options.get("table_height_m")

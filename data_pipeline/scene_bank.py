@@ -163,6 +163,14 @@ class Workspace:
     # (collection-bank seed 1000001: entry 8 mm from the hand -> transit_blocked at runtime).
     hand_home_m: tuple = None
     hand_keepout_m: float = 0.10
+    # Exact home-posture check (v2 workspaces): reject a socket + fixture the right arm, at its open
+    # reset posture, already touches (PickFeasibility.home_contacts). Lets hand_keepout_m drop to the
+    # small value that only guards the entry point itself.
+    home_collision_check: bool = False
+    # Certify the plug pose AFTER the reset's 1 s settle (the cable moves it by mm and degrees):
+    # the pick check and the noise-margin sweep run on that pose. Needs insert_feasibility (its
+    # reset supplies the settled pose). The pre-settle noise sweep is then skipped (same cost).
+    certify_settled_pose: bool = False
     randomize_visual: bool = True
     light_azimuth_deg: tuple = (-60.0, 60.0)
     light_elevation_deg: tuple = (35.0, 80.0)
@@ -171,6 +179,15 @@ class Workspace:
     table_hue_jitter: float = 0.08
 
 WORKSPACE = Workspace()
+
+# Stage 1 of the v2 reach map (docs/AUTOMATED_COLLECTION_LOG.md): ranges widened to the measured
+# kinematic reach, plug x >= 0.32 (below it the cable is taut on lift), exact home-posture
+# collision check instead of the 0.10 m hand keep-out, settled-pose certification. Applied only
+# to workspace_v2* specs by workspace_for_env; v1 and the free table keep their ranges.
+V2_STAGE1 = dict(plug_x_range=(0.32, 0.43), plug_y_range=(-0.38, -0.06), plug_yaw_range_deg=(-40.0, 60.0),
+                 socket_x_range=(0.37, 0.49), socket_y_range=(-0.44, -0.10), socket_yaw_range_deg=(-15.0, 35.0),
+                 reach_range_m=(0.25, 0.75), hand_keepout_m=0.06,
+                 home_collision_check=True, certify_settled_pose=True)
 MAX_DRAWS = 200
 
 
@@ -250,6 +267,14 @@ def _hand_home_check(options, ws):
     return None
 
 
+def _home_collision_check(options, ws):
+    """'socket_home_collision' if the open right hand at its home posture touches the socket or
+    its fixture. One mj_collision on the sampler's private scratch model."""
+    if not (ws.home_collision_check and ws.grasp_feasibility):
+        return None
+    return "socket_home_collision" if _pick_feasibility(ws).home_contacts(options) else None
+
+
 def _visual(rng, ws):
     if not ws.randomize_visual:
         return {}
@@ -265,6 +290,14 @@ def _visual(rng, ws):
 _FEASIBILITY = {}
 
 
+def _pick_feasibility(ws):
+    key = (float(ws.table_height_m), bool(ws.require_insert_feasible), ws.workspace_path)
+    if key not in _FEASIBILITY:
+        from controllers.pick_insert_expert import PickFeasibility
+        _FEASIBILITY[key] = PickFeasibility(key[0], require_insert=key[1], workspace=key[2])
+    return _FEASIBILITY[key]
+
+
 def _pick_check(options, ws):
     """Name of the reason the expert cannot plan this pick, or None.
 
@@ -273,11 +306,7 @@ def _pick_check(options, ws):
     work until a check is actually needed."""
     if not ws.grasp_feasibility:
         return None
-    key = (float(ws.table_height_m), bool(ws.require_insert_feasible), ws.workspace_path)
-    if key not in _FEASIBILITY:
-        from controllers.pick_insert_expert import PickFeasibility
-        _FEASIBILITY[key] = PickFeasibility(key[0], require_insert=key[1], workspace=key[2])
-    return _FEASIBILITY[key](options)
+    return _pick_feasibility(ws)(options)
 
 
 _NOISE_BOUNDS = None
@@ -350,16 +379,38 @@ def sample_socket(rng, ws=WORKSPACE):
 _INSERT_FEASIBILITY = {}
 
 
-def _insert_check(options, ws):
-    """Reason the socket pose admits no insertion plan, or None. Deterministic
-    (private model, fixed seeds). Imported lazily: MuJoCo work only when needed."""
+def _insert_check_full(options, ws):
+    """(reason or None, settled plug pose or None). Deterministic (private model, fixed seeds).
+    The settled pose ({plug_xy_m, plug_yaw_deg}) is the plug after the insert screen's env.reset
+    settle. Imported lazily: MuJoCo work only when needed."""
     if not ws.insert_feasibility:
-        return None
+        return None, None
     if ws.workspace_path not in _INSERT_FEASIBILITY:
         from controllers.place_insert import InsertFeasibility
         _INSERT_FEASIBILITY[ws.workspace_path] = InsertFeasibility(workspace=ws.workspace_path)
-    reason, _ = _INSERT_FEASIBILITY[ws.workspace_path](options)
-    return reason
+    screen = _INSERT_FEASIBILITY[ws.workspace_path]
+    reason, _ = screen(options)
+    return reason, screen.settled
+
+
+def _insert_check(options, ws):
+    """Reason the socket pose admits no insertion plan, or None."""
+    return _insert_check_full(options, ws)[0]
+
+
+def _wrap_deg(a):
+    return float((a + 180.0) % 360.0 - 180.0)
+
+
+def _settled_options(options, settled):
+    """options with the plug at its settled xy/yaw (yaw kept on the commanded branch), plus the
+    drift (mm in xy, deg in yaw)."""
+    dyaw = _wrap_deg(settled["plug_yaw_deg"] - options["plug_yaw_deg"])
+    dxy = np.asarray(settled["plug_xy_m"]) - np.asarray(options["plug_pos_m"][:2])
+    out = dict(options)
+    out["plug_pos_m"] = [float(settled["plug_xy_m"][0]), float(settled["plug_xy_m"][1]), options["plug_pos_m"][2]]
+    out["plug_yaw_deg"] = float(options["plug_yaw_deg"]) + dyaw
+    return out, float(np.linalg.norm(dxy) * 1000.0), dyaw
 
 
 def sample_scene(seed, ws=WORKSPACE):
@@ -385,7 +436,7 @@ def sample_scene(seed, ws=WORKSPACE):
             "socket_tilt_deg": socket_tilt,
             "table_height_m": ws.table_height_m,
         }
-        bad = _cable_check(options, ws) or _hand_home_check(options, ws)
+        bad = _cable_check(options, ws) or _hand_home_check(options, ws) or _home_collision_check(options, ws)
         if bad:
             rejected.append(bad)
             continue
@@ -393,16 +444,34 @@ def sample_scene(seed, ws=WORKSPACE):
         if bad:
             rejected.append(f"pick_infeasible:{bad}")
             continue
-        bad = _pick_noise_margin_check(options, ws)
-        if bad:
-            rejected.append(f"pick_infeasible:{bad}")
-            continue
-        bad = _insert_check(options, ws)
+        settle = ws.certify_settled_pose and ws.insert_feasibility
+        if not settle:
+            bad = _pick_noise_margin_check(options, ws)
+            if bad:
+                rejected.append(f"pick_infeasible:{bad}")
+                continue
+        bad, settled = _insert_check_full(options, ws)
         if bad:
             rejected.append(f"insert_infeasible:{bad}")
             continue
+        diag = {"draws": draw + 1, "rejected": rejected}
+        if settle:
+            if settled is None:
+                rejected.append("settled_pose_unavailable")
+                continue
+            sopts, drift_mm, drift_deg = _settled_options(options, settled)
+            bad = _pick_check(sopts, ws)
+            if bad:
+                rejected.append(f"settled_pick_infeasible:{bad}")
+                continue
+            bad = _pick_noise_margin_check(sopts, ws)
+            if bad:
+                rejected.append(f"settled_noise_margin:{bad}")
+                continue
+            diag["settle_drift_mm"] = round(drift_mm, 2)
+            diag["settle_drift_yaw_deg"] = round(drift_deg, 2)
         options["visual"] = _visual(rng, ws)
-        return options, {"draws": draw + 1, "rejected": rejected}
+        return options, diag
     raise ValueError(f"no feasible scene for seed {seed} in {MAX_DRAWS} draws; widen Workspace")
 
 
@@ -533,6 +602,8 @@ def workspace_for_env(env, ws=WORKSPACE, **overrides):
                    # robot: 51% pass the cheap checks, 13/25 of those the pick/insert IK screens.
                    socket_x_range=(0.38, 0.46), socket_y_range=(-0.36, -0.20), plug_x_range=(0.28, 0.38),
                    cable_attach_local_m=tuple(float(v) for v in cable.get("attach_local_m", (-0.04, 0., 0.))))
+    if str(spec.get("version", "")).startswith("workspace_v2"):
+        derived.update(V2_STAGE1)
     derived.update(overrides)
     return replace(ws, base_pos_m=base, **derived)
 

@@ -253,6 +253,97 @@ class CableTautLiftSamplerTests(unittest.TestCase):
         self.assertIsNone(workspace_for_env(env, Workspace()).cable_edge_waypoint_m)
 
 
+class V2Stage1SamplerTests(unittest.TestCase):
+    """v2 reach-map ranges, settled-pose certification bookkeeping, home-collision check."""
+
+    RANGE_FIELDS = ("plug_x_range", "plug_y_range", "plug_yaw_range_deg", "socket_x_range", "socket_y_range",
+                    "socket_yaw_range_deg", "reach_range_m", "hand_keepout_m", "home_collision_check",
+                    "certify_settled_pose")
+
+    @staticmethod
+    def stub_env(spec):
+        from types import SimpleNamespace
+        return SimpleNamespace(
+            reach_anchor_m=lambda: (0., -0.031, 0.698), workspace=spec, socket_site=0,
+            data=SimpleNamespace(site_xpos=np.array([[0.4, -0.3, 0.472]])),
+            derived={"table_rest_z_offset_m": 0.004}, initial_grasp_position=np.array([0.4008, -0.1551, 0.4761]))
+
+    def test_v1_ranges_unchanged_and_v2_gets_stage1(self):
+        from dataclasses import replace
+        from data_pipeline.scene_bank import Workspace, workspace_for_env, V2_STAGE1
+        base = Workspace()
+        v1 = workspace_for_env(self.stub_env(wsp.load_workspace()), base)
+        # the pre-existing workspace-spec overrides, nothing more
+        self.assertEqual((v1.plug_x_range, v1.socket_x_range, v1.socket_y_range),
+                         ((0.28, 0.38), (0.38, 0.46), (-0.36, -0.20)))
+        for field in ("plug_y_range", "plug_yaw_range_deg", "socket_yaw_range_deg", "reach_range_m",
+                      "hand_keepout_m", "home_collision_check", "certify_settled_pose"):
+            self.assertEqual(getattr(v1, field), getattr(base, field), field)
+        for name in ("workspace_v2.json", "workspace_v2_cable30.json"):
+            v2 = workspace_for_env(self.stub_env(wsp.load_workspace(wsp.ROOT / "configs" / name)), base)
+            for field in self.RANGE_FIELDS:
+                self.assertEqual(getattr(v2, field), V2_STAGE1[field], field)
+        self.assertEqual(V2_STAGE1["plug_x_range"], (0.32, 0.43))
+        self.assertEqual(V2_STAGE1["socket_yaw_range_deg"], (-15.0, 35.0))
+        self.assertEqual(V2_STAGE1["hand_keepout_m"], 0.06)
+        # an explicit override still wins
+        custom = workspace_for_env(self.stub_env(wsp.load_workspace(wsp.ROOT / "configs/workspace_v2_cable30.json")),
+                                   base, plug_x_range=(0.35, 0.36))
+        self.assertEqual(custom.plug_x_range, (0.35, 0.36))
+
+    def test_settled_pose_rejections_are_distinct_and_counted(self):
+        from unittest import mock
+        from dataclasses import replace
+        from data_pipeline import scene_bank as sb
+        ws = replace(sb.Workspace(), socket_x_range=(0.5, 0.5), socket_y_range=(-0.3, -0.3),
+                     plug_x_range=(0.3, 0.3), plug_y_range=(-0.2, -0.2), plug_yaw_range_deg=(0., 0.),
+                     socket_yaw_range_deg=(0., 0.), grasp_feasibility=False, certify_settled_pose=True,
+                     home_collision_check=True)
+        settled = {"plug_xy_m": [0.302, -0.2], "plug_yaw_deg": 10.0}
+        # draws: 1 home collision, 2 settled pick fails, 3 settled noise fails, 4 accepted
+        noises = iter(["plug_yaw+:grasp_ik", None])
+        homes = iter(["socket_home_collision", None, None, None])
+        # _pick_check runs pre-settle then post-settle on draws 2-4 (draw 1 dies on the home check)
+        picks = iter([None, "grasp_ik", None, None, None, None])
+        with mock.patch.object(sb, "_home_collision_check", lambda o, w: next(homes)), \
+                mock.patch.object(sb, "_pick_check", lambda o, w: next(picks)), \
+                mock.patch.object(sb, "_insert_check_full", lambda o, w: (None, settled)), \
+                mock.patch.object(sb, "_pick_noise_margin_check", lambda o, w: next(noises)), \
+                mock.patch.object(sb, "_cable_check", lambda o, w: None):
+            options, diag = sb.sample_scene(1, ws)
+        self.assertEqual(diag["draws"], 4)
+        self.assertEqual(diag["rejected"], ["socket_home_collision", "settled_pick_infeasible:grasp_ik",
+                                            "settled_noise_margin:plug_yaw+:grasp_ik"])
+        self.assertAlmostEqual(diag["settle_drift_mm"], 2.0, places=2)
+        self.assertAlmostEqual(diag["settle_drift_yaw_deg"], 10.0, places=2)
+
+    def test_settled_options_wrap_yaw(self):
+        from data_pipeline.scene_bank import _settled_options
+        o = {"plug_pos_m": [0.3, -0.2, 0.324], "plug_yaw_deg": 175.0}
+        s, mm, dyaw = _settled_options(o, {"plug_xy_m": [0.303, -0.196], "plug_yaw_deg": -175.0})
+        self.assertAlmostEqual(dyaw, 10.0)
+        self.assertAlmostEqual(s["plug_yaw_deg"], 185.0)
+        self.assertAlmostEqual(mm, 5.0)
+
+    @unittest.skipUnless((wsp.ROOT / "third_party/openarm_mujoco").exists(), "needs robot assets")
+    def test_home_collision_check_on_scratch_model(self):
+        from dataclasses import replace
+        from data_pipeline import scene_bank as sb
+        ws = replace(sb.Workspace(), table_height_m=0.32, workspace_path="configs/workspace_v2_cable30.json",
+                     home_collision_check=True)
+        pf = sb._pick_feasibility(ws)
+        before = pf.qpos0.copy()
+        pose = lambda x, y: {"socket_pos_m": [x, y, 0.472], "socket_yaw_deg": 0., "socket_tilt_deg": 0.}
+        # a socket wall pressing on the open fingers (0.046 m from the hand: also inside any keep-out)
+        self.assertEqual(sb._home_collision_check(pose(0.39, -0.20), ws), "socket_home_collision")
+        # 0.063 m from the hand (outside the 0.06 m keep-out) but the fingers still hit the wall
+        self.assertEqual(sb._home_collision_check(pose(0.37, -0.10), ws), "socket_home_collision")
+        # beyond the hand: clear
+        self.assertIsNone(sb._home_collision_check(pose(0.42, -0.20), ws))
+        self.assertIsNone(sb._home_collision_check(pose(0.46, -0.155), ws))
+        np.testing.assert_array_equal(pf.qpos0, before)
+
+
 class CollectRandomStartRowTests(unittest.TestCase):
     """--start-row block arithmetic; no env, no rows generated."""
 

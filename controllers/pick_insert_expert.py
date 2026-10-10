@@ -533,16 +533,31 @@ class PickFeasibility:
                 adr = m.jnt_qposadr[m.joint(f"openarm_{side}_finger_joint{i}").id]
                 self.qpos0[adr] = self.open_travel if side == "right" else .025
 
-    def __call__(self, options):
+    def _place_socket(self, options):
+        """Move the socket and its pedestal (private model) to the options' pose; (basis, entry)."""
         from envs.openarm_insert import OpenArmInsertEnv, carry_fixture
         m = self.model
-        yaw_tilt = OpenArmInsertEnv._yaw_tilt_matrix
-        basis = yaw_tilt(float(options.get("socket_yaw_deg", 0.)), float(options.get("socket_tilt_deg", 0.)))
+        basis = OpenArmInsertEnv._yaw_tilt_matrix(float(options.get("socket_yaw_deg", 0.)),
+                                                  float(options.get("socket_tilt_deg", 0.)))
         entry = np.asarray(options["socket_pos_m"], dtype=float)
         quat = np.zeros(4)
         mujoco.mju_mat2Quat(quat, basis.ravel())
         m.body_quat[self.socket], m.body_pos[self.socket] = quat, entry   # site sits at the body origin
         carry_fixture(m, self.mount_home)   # the pedestal travels with the socket, as in the env
+        return basis, entry
+
+    def home_contacts(self, options):
+        """Penetrating contacts between the right arm at the reset (home) posture, fingers open,
+        and the socket + fixture placed per ``options`` (plug and cable ignored). Scratch data
+        only; [] means the home pose is clear."""
+        self._place_socket(options)
+        return self.planner.contacts(self.home, self.open_travel, ignore_plug=True)
+
+    def __call__(self, options):
+        from envs.openarm_insert import OpenArmInsertEnv
+        m = self.model
+        yaw_tilt = OpenArmInsertEnv._yaw_tilt_matrix
+        basis, entry = self._place_socket(options)
         plug_pos, plug_mat = flat_plug_pose(np.asarray(options["plug_pos_m"], dtype=float),
                                             yaw_tilt(float(options.get("plug_yaw_deg", 0.)), 0.),
                                             self.table_z, self.geom.rest_z_m)
