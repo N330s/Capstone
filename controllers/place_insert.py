@@ -103,6 +103,11 @@ RECOVER_BIAS_MIN_M = 0.00003  # sag below this is alignment noise, not a bias
 RECOVER_DRIFT_FRAC = 0.6      # treat grasp drift beyond this fraction of the limit as a stall
 ENGAGED_SPEED_M_S = INSERT_SPEED_M_S   # push speed once the leaves touch (A/B: slower)
 TRACK_ERROR_LIMIT_M = 0.004   # plug off the planned line while advancing
+# Engaged leaf push: lateral admittance on the finger force. The arm's coupled stiffness turns its stored
+# axial/lateral/pitch deflection into lateral finger force that pins the blades on the walls; the target
+# backs off that force (1e-4 m/N; 3e-5 was too slow). Lateral offset is capped at LATERAL_ADMIT_MAX_M.
+LATERAL_ADMIT_M_PER_N = 1e-4
+LATERAL_ADMIT_MAX_M = 0.025
 
 
 def smoothstep(x):
@@ -852,6 +857,22 @@ class PlaceInsert:
                 plug_pos = e.data.xpos[e.plug]
                 desired = plug_pos + axis * (self.forward - float((plug_pos - entry) @ axis))
                 action = self._servo(desired, e.data.xmat[e.plug].reshape(3, 3).copy())
+            elif self.engaged and np.isfinite(self.push_cap):
+                # Lateral force null: aim at the plug itself plus the axial lead, minus an admittance on
+                # the lateral finger force (socket site frame -> world); attitude stays on the socket.
+                site_rot = e.data.site_xmat[e.socket_site].reshape(3, 3)
+                f_world = site_rot @ np.array([float(info.get(f"finger_force_{a}_n", 0.)) for a in "xyz"])
+                f_lat = np.array([float(f_world @ basis[:, 1]), float(f_world @ basis[:, 2])])
+                self.stats["peak_finger_lateral_n"] = max(self.stats.get("peak_finger_lateral_n", 0.),
+                                                          float(np.abs(f_lat).sum()))
+                plug_pos = e.data.xpos[e.plug]
+                shift = -LATERAL_ADMIT_M_PER_N * f_lat
+                norm = float(np.linalg.norm(shift))
+                if norm > LATERAL_ADMIT_MAX_M:
+                    shift *= LATERAL_ADMIT_MAX_M / norm
+                desired = (plug_pos + axis * (self.forward - float((plug_pos - entry) @ axis))
+                           + basis[:, 1] * shift[0] + basis[:, 2] * shift[1])
+                action = self._servo(desired, basis)
             else:
                 action = self._servo(desired, basis)
             if depth > self.progress_depth + 2e-4:
