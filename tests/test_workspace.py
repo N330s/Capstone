@@ -291,6 +291,58 @@ class V2Stage1SamplerTests(unittest.TestCase):
                                    base, plug_x_range=(0.35, 0.36))
         self.assertEqual(custom.plug_x_range, (0.35, 0.36))
 
+    def test_pick_insert_margin_field(self):
+        from data_pipeline.scene_bank import Workspace, workspace_for_env, V2_STAGE1
+        self.assertIsNone(Workspace().pick_insert_margin_rad)
+        self.assertEqual(V2_STAGE1["pick_insert_margin_rad"], 0.09)
+        base = Workspace()
+        v1 = workspace_for_env(self.stub_env(wsp.load_workspace()), base)
+        self.assertIsNone(v1.pick_insert_margin_rad)
+        v2 = workspace_for_env(self.stub_env(wsp.load_workspace(wsp.ROOT / "configs/workspace_v2_cable30.json")), base)
+        self.assertEqual(v2.pick_insert_margin_rad, 0.09)
+
+    def test_pick_check_applies_margin_only_when_robust(self):
+        from unittest import mock
+        from data_pipeline import scene_bank as sb
+        calls = []
+
+        class Fake:
+            def __call__(self, options, min_insert_margin=None):
+                calls.append(min_insert_margin)
+
+        ws = sb.Workspace(pick_insert_margin_rad=0.09)
+        with mock.patch.object(sb, "_pick_feasibility", return_value=Fake()):
+            sb._pick_check({}, ws)
+            sb._pick_check({}, ws, robust=True)
+            sb._pick_check({}, sb.Workspace(), robust=True)
+        self.assertEqual(calls, [None, 0.09, None])
+
+    def test_plan_grasp_prefers_robust_insert_margin(self):
+        from unittest import mock
+        from controllers import pick_insert_expert as pie
+        planner = object.__new__(pie.GraspPlanner)
+        margins = {-15.0: 0.056, -30.0: 0.13}
+
+        def cand(plug_pos, plug_mat, flip, tilt, q_now):
+            if flip != 0 or tilt not in margins:
+                return None, "grasp_ik"
+            return {"flip": flip, "tilt_deg": tilt, "margin": 0.2, "score": 0.3 - 0.002 * abs(tilt),
+                    "q_grasp": None, "lift": [None]}, "ok"
+
+        with mock.patch.object(pie, "GRASP_TILTS_DEG", (0.0, -15.0, 15.0, -30.0, 30.0)),                 mock.patch.object(planner, "_candidate", side_effect=cand, create=True),                 mock.patch.object(planner, "insert_feasible", side_effect=lambda f, t, *a, **k: margins[t], create=True):
+            plan, log = planner.plan_grasp(np.zeros(3), np.eye(3), insert=(None, None), require_insert=True)
+            self.assertEqual(plan["tilt_deg"], -30.0)   # no early stop at the marginal -15 level
+            self.assertAlmostEqual(plan["insert_margin"], 0.13)
+            self.assertEqual({e["tilt_deg"]: e["insert_margin"] for e in log if e["result"] == "ok"},
+                             {-15.0: 0.056, -30.0: 0.13})
+            margins[-30.0] = None                        # only the marginal grasp is feasible: fall back to it
+            plan, _ = planner.plan_grasp(np.zeros(3), np.eye(3), insert=(None, None), require_insert=True)
+            self.assertEqual(plan["tilt_deg"], -15.0)
+            margins[-30.0] = 0.08                        # best available margin wins when none reach 0.10
+            margins[-15.0] = 0.06
+            plan, _ = planner.plan_grasp(np.zeros(3), np.eye(3), insert=(None, None), require_insert=True)
+            self.assertEqual(plan["tilt_deg"], -30.0)
+
     def test_settled_pose_rejections_are_distinct_and_counted(self):
         from unittest import mock
         from dataclasses import replace
@@ -306,7 +358,7 @@ class V2Stage1SamplerTests(unittest.TestCase):
         # _pick_check runs pre-settle then post-settle on draws 2-4 (draw 1 dies on the home check)
         picks = iter([None, "grasp_ik", None, None, None, None])
         with mock.patch.object(sb, "_home_collision_check", lambda o, w: next(homes)), \
-                mock.patch.object(sb, "_pick_check", lambda o, w: next(picks)), \
+                mock.patch.object(sb, "_pick_check", lambda o, w, robust=False: next(picks)), \
                 mock.patch.object(sb, "_insert_check_full", lambda o, w: (None, settled)), \
                 mock.patch.object(sb, "_pick_noise_margin_check", lambda o, w: next(noises)), \
                 mock.patch.object(sb, "_cable_check", lambda o, w: None):

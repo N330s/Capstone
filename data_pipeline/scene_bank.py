@@ -124,6 +124,12 @@ class Workspace:
     # grasp can reach the socket standoff and seated poses.
     grasp_feasibility: bool = True
     require_insert_feasible: bool = True
+    # Minimum insertion-plan joint margin (rad) of the grasp the planner picks, enforced on the
+    # exact-pose and settled-pose pick checks (not the noise sweep). None = no floor (old behaviour).
+    # Grasps that just clear the 0.05 rad floor flip to infeasible at runtime (true socket and
+    # measured in-hand grasp vs the noisy detection seen at pick time). Set slightly below
+    # pick_insert_expert.INSERT_ROBUST_MARGIN_RAD (the runtime preference).
+    pick_insert_margin_rad: float = None
     # A scene that is only pick-feasible at its exact (privileged) pose is not
     # safe to certify: the noisy Detector's per-episode bias + per-step noise
     # (controllers.pick_insert_expert.Detector) moves the plug/socket the
@@ -187,7 +193,8 @@ WORKSPACE = Workspace()
 V2_STAGE1 = dict(plug_x_range=(0.32, 0.43), plug_y_range=(-0.38, -0.06), plug_yaw_range_deg=(-40.0, 60.0),
                  socket_x_range=(0.37, 0.49), socket_y_range=(-0.44, -0.10), socket_yaw_range_deg=(-15.0, 35.0),
                  reach_range_m=(0.25, 0.75), hand_keepout_m=0.06,
-                 home_collision_check=True, certify_settled_pose=True)
+                 home_collision_check=True, certify_settled_pose=True,
+                 pick_insert_margin_rad=0.09)
 MAX_DRAWS = 200
 
 
@@ -298,7 +305,7 @@ def _pick_feasibility(ws):
     return _FEASIBILITY[key]
 
 
-def _pick_check(options, ws):
+def _pick_check(options, ws, robust=False):
     """Name of the reason the expert cannot plan this pick, or None.
 
     Pure function of the options: a private model, fixed IK seeds, the reset
@@ -306,7 +313,7 @@ def _pick_check(options, ws):
     work until a check is actually needed."""
     if not ws.grasp_feasibility:
         return None
-    return _pick_feasibility(ws)(options)
+    return _pick_feasibility(ws)(options, min_insert_margin=ws.pick_insert_margin_rad if robust else None)
 
 
 _NOISE_BOUNDS = None
@@ -440,7 +447,7 @@ def sample_scene(seed, ws=WORKSPACE):
         if bad:
             rejected.append(bad)
             continue
-        bad = _pick_check(options, ws)
+        bad = _pick_check(options, ws, robust=True)
         if bad:
             rejected.append(f"pick_infeasible:{bad}")
             continue
@@ -460,7 +467,7 @@ def sample_scene(seed, ws=WORKSPACE):
                 rejected.append("settled_pose_unavailable")
                 continue
             sopts, drift_mm, drift_deg = _settled_options(options, settled)
-            bad = _pick_check(sopts, ws)
+            bad = _pick_check(sopts, ws, robust=True)
             if bad:
                 rejected.append(f"settled_pick_infeasible:{bad}")
                 continue

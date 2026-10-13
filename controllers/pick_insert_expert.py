@@ -80,6 +80,11 @@ GRASP_PENETRATION_BACKOFF_M = 0.0006  # one pad only and already squeezing this 
 MAX_GRASP_CORRECTION_M = 0.006        # cap on the accumulated one-sided-contact correction
 MIN_JOINT_MARGIN_RAD = 0.05
 GOOD_JOINT_MARGIN_RAD = 0.15
+# Insertion-plan joint margin a grasp should have to be preferred. Grasps that only just clear
+# MIN_JOINT_MARGIN_RAD (0.056-0.076, tilt -15) flipped to infeasible at runtime (true socket +
+# measured in-hand grasp vs the noisy socket + nominal grasp seen at pick time); tilt -30 had
+# 0.12-0.15 on the same scenes (iteration-1 plan, item A).
+INSERT_ROBUST_MARGIN_RAD = 0.10
 TRANSIT_SPEED_RAD_S = 0.3             # smoothstep peak = 1.5x this, env cap is 0.5
 DESCEND_SPEED_RAD_S = 0.18
 LIFT_SPEED_RAD_S = 0.15
@@ -353,8 +358,10 @@ class GraspPlanner:
 
     # ------------------------------------------------------------ planning
     def insert_feasible(self, flip, tilt, insert, seed=None, lift_end=None):
-        """Can the hand reach the standoff and seated poses holding the plug
-        with this grasp? ``insert`` = (socket entry position, upright basis)."""
+        """Minimum joint margin (rad) of the insertion plan the hand would run holding the plug
+        with this grasp, or None when it cannot reach the standoff/seated poses or plan the
+        insertion. ``insert`` = (socket entry position, upright basis). The best margin over the
+        seeds is returned (early once it reaches INSERT_ROBUST_MARGIN_RAD)."""
         entry, basis = insert
         G = grasp_rotation_in_plug(flip, tilt)
         plug_in_tool = -G.T @ (np.asarray(self.geom.grasp_point_m) + np.array([0., 0., GRASP_HEIGHT_OFFSET_M]))
@@ -366,11 +373,11 @@ class GraspPlanner:
                 q = self.solve(plug - rot @ plug_in_tool, rot, ([q] if q is not None else []) + self.seeds,
                                good=MIN_JOINT_MARGIN_RAD)
                 if q is None or self.margin(q) < MIN_JOINT_MARGIN_RAD:
-                    return False
+                    return None
                 # The hand holding the plug there must not hit the socket or table.
                 self.place_plug(plug, basis)
                 if self.contacts(q, self.geom.held_travel_m, ignore_plug=True):
-                    return False
+                    return None
         finally:
             self.d.qpos[self.plug_qadr:self.plug_qadr + 7] = saved
         # The pick is only insert-consistent if the planner that will actually run the insertion
@@ -383,14 +390,22 @@ class GraspPlanner:
         # Same seeds, in the same order, as PlaceInsert.start() at runtime: the posture the arm is
         # in when the insertion is planned (end of this grasp's lift), then REFERENCE_POSTURE.
         # The seated IK is strongly seed-dependent at the raised socket (REFERENCE alone: 0/20).
+        best = None
         for q_seed in ([lift_end] if lift_end is not None else []) + [REFERENCE_POSTURE]:
             plan = plan_insertion(self._insert_kin, self.d.qpos.copy(), q_seed, entry, basis,
                                   *nominal_grasp(flip, tilt, self.geom.grasp_point_m), table_z=self.table_z,
                                   finger_travel=self.geom.held_travel_m, standoff=self.geom.place_standoff_m,
                                   symmetric=self.geom.half_turn_symmetric)
             if plan.failure is None:
-                return True
-        return False
+                kin = self._insert_kin
+                margin = min([kin.margin(plan.q_seated), kin.margin(plan.q_pre)]
+                             + [kin.margin(qi) for qi in plan.insertion]
+                             + [kin.margin(qd) for qd in plan.descent])
+                if best is None or margin > best:
+                    best = margin
+                if best >= INSERT_ROBUST_MARGIN_RAD:
+                    break
+        return best
 
     @staticmethod
     def _flip_order(plug_mat, tilt):
@@ -414,20 +429,27 @@ class GraspPlanner:
                 plan, why = self._candidate(plug_pos, plug_mat, flip, tilt, q_now)
                 entry = {"flip": flip, "tilt_deg": tilt, "result": why}
                 if plan is not None:
-                    plan["insert_consistent"] = (insert is not None and
-                                                 self.insert_feasible(flip, tilt, insert, plan["q_grasp"],
-                                                                      lift_end=plan["lift"][-1]))
+                    margin = (self.insert_feasible(flip, tilt, insert, plan["q_grasp"],
+                                                   lift_end=plan["lift"][-1]) if insert is not None else None)
+                    plan["insert_margin"] = margin
+                    plan["insert_consistent"] = margin is not None
                     entry["insert_consistent"] = plan["insert_consistent"]
+                    entry["insert_margin"] = None if margin is None else round(float(margin), 4)
                     plans.append(plan)
                 log.append(entry)
-            if any(p["margin"] >= GOOD_JOINT_MARGIN_RAD and (insert is None or p["insert_consistent"])
+            if any(p["margin"] >= GOOD_JOINT_MARGIN_RAD and
+                   (insert is None or (p["insert_consistent"] and p["insert_margin"] >= INSERT_ROBUST_MARGIN_RAD))
                    for p in plans):
                 break
         if require_insert:
             plans = [p for p in plans if p["insert_consistent"]]
         if not plans:
             return None, log
-        return max(plans, key=lambda p: (p["insert_consistent"], p["score"])), log
+        # Robust-insertion grasps first (margin capped at INSERT_ROBUST_MARGIN_RAD; otherwise the
+        # best available margin wins among the rest), then the old score.
+        return max(plans, key=lambda p: (p["insert_consistent"],
+                                         min(p["insert_margin"] or 0.0, INSERT_ROBUST_MARGIN_RAD),
+                                         p["score"])), log
 
     def _candidate(self, plug_pos, plug_mat, flip, tilt, q_now):
         R = plug_mat @ grasp_rotation_in_plug(flip, tilt)
@@ -553,7 +575,9 @@ class PickFeasibility:
         self._place_socket(options)
         return self.planner.contacts(self.home, self.open_travel, ignore_plug=True)
 
-    def __call__(self, options):
+    def __call__(self, options, min_insert_margin=None):
+        """None if the pick is plannable, else the reject reason. ``min_insert_margin`` (rad), with
+        require_insert, also rejects a chosen grasp whose insertion plan margin is below it."""
         from envs.openarm_insert import OpenArmInsertEnv
         m = self.model
         yaw_tilt = OpenArmInsertEnv._yaw_tilt_matrix
@@ -567,6 +591,10 @@ class PickFeasibility:
                                           travel=self.open_travel)
         if plan is None:
             return reason
+        if self.require_insert and min_insert_margin is not None:
+            got = plan.get("insert_margin") or 0.0
+            if got < min_insert_margin:
+                return f"insert_margin_low:{got:.3f}"
         return None
 
 
@@ -706,6 +734,8 @@ class PickInsertExpert:
                            joint_margin_rad=round(plan["margin"], 4),
                            finger_clearance_m=round(plan["finger_clearance_m"], 4),
                            insert_consistent=plan["insert_consistent"],
+                           insert_margin=(None if plan["insert_margin"] is None
+                                          else round(float(plan["insert_margin"]), 4)),
                            transit_waypoints=len(plan["transit"]))
         self.plan_summaries.append(summary)
         self.plan = plan
