@@ -47,6 +47,7 @@ PREINSERT_SOCKET_CLEARANCE_M = 0.002
 HELD_FINGER_TRAVEL_M = 0.0137 # right finger travel when closed on the housing (measured)
 SEAT_X_M = 0.00003            # final plug target along the mating axis (validated)
 MIN_JOINT_MARGIN_RAD = 0.05   # hard limit on every planned configuration
+FALLBACK_JOINT_MARGIN_RAD = 0.03   # runtime-only retry margin (PlaceInsert.start); screens stay strict
 GOOD_JOINT_MARGIN_RAD = 0.15  # preferred margin when choosing among IK solutions
 FINGER_SOCKET_CLEARANCE_M = 0.0005
 FINGER_TABLE_CLEARANCE_M = 0.002
@@ -407,7 +408,7 @@ def tool_target(plug_pos, plug_rot, rel_pos, rel_rot):
 
 def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_plug_rot=None,
                    table_z=None, standoff=STANDOFF_M, above=ABOVE_HEIGHTS_M, finger_travel=None,
-                   symmetric=True):
+                   symmetric=True, min_margin=MIN_JOINT_MARGIN_RAD):
     """Kinematic plan for the seated, preinsert and above-preinsert poses.
 
     ``rel_pos``/``rel_rot``: plug pose in the robot_grasp frame (measured).
@@ -418,6 +419,7 @@ def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_
     pose check out wins. The transport end point is straight above the
     preinsert pose at the highest height in ``above`` whose vertical descent is
     feasible (0 means transport directly to the preinsert pose).
+    ``min_margin``: hard joint-limit margin for every IK/line configuration.
     """
     plan = InsertionPlan()
     kin.sync(qpos, finger_travel)
@@ -434,7 +436,7 @@ def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_
     table_kw = dict(table_clearance=FINGER_TABLE_CLEARANCE_M if table_z is not None else 0.)
     contact_kw = dict(allow_plug_socket=True, socket_clearance=FINGER_SOCKET_CLEARANCE_M, **table_kw)
 
-    seated = kin.ik_all(seated_tool, tool_rot, q_now)
+    seated = kin.ik_all(seated_tool, tool_rot, q_now, min_margin=min_margin)
     if not seated:
         return plan.fail("plan_seated_unreachable")
     reason = None
@@ -445,7 +447,7 @@ def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_
             reason = reason or ("plan_seated_collision", ",".join(hit))
             continue
         # Work backwards from the seated posture so the insertion line is continuous.
-        insertion = kin.line(q_seated, seated_tool, pre_tool, tool_rot)
+        insertion = kin.line(q_seated, seated_tool, pre_tool, tool_rot, min_margin=min_margin)
         if insertion is None:
             reason = reason or ("plan_insert_line_infeasible", "")
             continue
@@ -466,7 +468,8 @@ def plan_insertion(kin, qpos, q_now, entry, basis, rel_pos, rel_rot, *, current_
     for height in above:
         if height <= 0:
             break
-        up = kin.line(q_pre, pre_tool, pre_tool + np.array([0., 0., height]), tool_rot)
+        up = kin.line(q_pre, pre_tool, pre_tool + np.array([0., 0., height]), tool_rot,
+                      min_margin=min_margin)
         if up is None:
             continue
         if any(kin.collisions(q, rel_pos, rel_rot, socket_clearance=PREINSERT_SOCKET_CLEARANCE_M, **table_kw)
@@ -738,13 +741,21 @@ class PlaceInsert:
         # Seed the seated IK from the live posture first, then from the posture the scene sampler's
         # insertion screen uses; only the first MAX_SEATED_BRANCHES branches are tried per seed, so
         # a screen-feasible socket can otherwise be refused at runtime (plan_insert_line_infeasible).
-        for seed in (q_now, REFERENCE_POSTURE):
-            plan = plan_insertion(self.kin, d.qpos.copy(), seed, entry, basis, self.rel_pos, self.rel_rot,
-                                  current_plug_rot=d.xmat[e.plug].reshape(3, 3).copy(), table_z=table_z,
-                                  standoff=self.geom.place_standoff_m,
-                                  symmetric=self.geom.half_turn_symmetric)
+        # Runtime-only fallback: if the strict margin refuses every seed, retry once at the relaxed margin.
+        for margin in (MIN_JOINT_MARGIN_RAD, FALLBACK_JOINT_MARGIN_RAD):
+            for seed in (q_now, REFERENCE_POSTURE):
+                plan = plan_insertion(self.kin, d.qpos.copy(), seed, entry, basis, self.rel_pos, self.rel_rot,
+                                      current_plug_rot=d.xmat[e.plug].reshape(3, 3).copy(), table_z=table_z,
+                                      standoff=self.geom.place_standoff_m,
+                                      symmetric=self.geom.half_turn_symmetric, min_margin=margin)
+                if not plan.failure:
+                    break
             if not plan.failure:
                 break
+        if not plan.failure:
+            self.stats["insert_plan_fallback"] = margin < MIN_JOINT_MARGIN_RAD
+            self.stats["insert_plan_margin_rad"] = float(min(
+                self.kin.margin(q) for q in [plan.q_seated, plan.q_pre, plan.q_above] + plan.insertion + plan.descent))
         if plan.failure:
             self._fail(plan.failure, plan.detail)
             return self.failure

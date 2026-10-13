@@ -82,6 +82,13 @@ class PlaceInsertTests(unittest.TestCase):
         self.assertEqual(place.start(), "handoff_not_held")
         np.testing.assert_array_equal(env.data.qpos, qpos)
 
+    def test_plan_insertion_default_margin_is_strict(self):
+        import inspect
+        from controllers import place_insert as pi
+        default = inspect.signature(pi.plan_insertion).parameters["min_margin"].default
+        self.assertEqual(default, pi.MIN_JOINT_MARGIN_RAD)
+        self.assertLess(pi.FALLBACK_JOINT_MARGIN_RAD, pi.MIN_JOINT_MARGIN_RAD)
+
     def test_insert_feasibility_screen(self):
         screen = InsertFeasibility()
         reason, grasps = screen(scene((0.42, -0.30), 0., self.entry_z))
