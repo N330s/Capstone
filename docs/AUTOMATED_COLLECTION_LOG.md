@@ -656,3 +656,162 @@ Collection tuning is **paused** at the user's request. The state above (v2_cable
   - The episode has 1793 steps against 1796 on Windows for the same seed. This is the known cross-platform floating-point difference, so do not mix platforms in strict replay.
   - The exit-137 kill: `docker stats` peaked at 2.96 GiB for one collector, so two in parallel on the 7.6 GiB Docker VM ran out of memory. `docs/DOCKER_COLLECTION.md` now says about 3 GB per container.
   - EGL on an NVIDIA GPU is still unverified; it needs the Linux machine.
+
+## 2026-10-10: wider scene variance + success loop (v2_cable30, noisy detector)
+
+**Request.** Make plug and socket placement as wide as the arm can really reach, add `--start-row` so runs draw fresh scenes, and raise success to ≥ 90% with the noisy detector.
+- **Loop:** Opus plans from code analysis and test reports, Sonnet codes, Sonnet tests; work runs in parallel where possible.
+- **Constraints:** Docker is untouched. `envs/*.py` may change. Changes to `configs/workspace_v2_cable30.json` need the user's confirmation.
+
+**Starting point.**
+- **Accepted scenes span:**
+  - plug x 0.28–0.38, y −0.30…−0.12, yaw −20…60°;
+  - socket x 0.38–0.46, y −0.36…−0.26 (nominal −0.36…−0.20, but the cable and hand-home checks reject y > −0.257), yaw −10…30°.
+- **Repeats:** every run starts at row 0, so the same scenes repeat.
+- **Success:** 81% noisy / 87.5% privileged (rows 40–55).
+
+**Stop criterion.** Noisy ≥ 90% on 32 fresh rows at the widest kept ranges, confirmed on a second fresh 48-row set; otherwise stop after 6 iterations.
+
+### Iteration 0 (parallel)
+- A (Sonnet, worktree): `--start-row` for `collect_random.py`.
+- B (Sonnet): sharded test harness `run_rows.py`; baseline on rows 5000–5031, noisy.
+- C (Opus): reach map, i.e. which sampler checks bind where, and a staged widening proposal.
+- **A done** (commit a653bba, fast-forwarded onto `automation_new_environment`).
+  - `--start-row N` (default 0; attempt k draws row N+k, seed `COLLECTION_SEED_BASE + N + k`). Blocks and splits stay aligned relative to N, so default 0 reproduces earlier runs. The helper `row_block()` is shared by both passes.
+  - `start_row` is stored in `run_signature` (so `--resume` refuses a different value), in the manifest and in `preflight_stats`. A guard keeps seeds inside `SEED_NAMESPACE_WIDTH`.
+  - Tests 50/50.
+- **Incident:** removing coder A's worktree also deleted the main `third_party/openarm_mujoco`. `git worktree remove` followed the `third_party` directory junction the coder had created. It was re-fetched with `scripts/fetch_openarm.ps1` (pinned 161039cd); `scene_sha256` and `source_hashes` match the 10-08 recordings exactly. B and C were told to rerun anything that ran while the files were missing (about 7 minutes). From now on: remove a junction itself (`rmdir`) before removing its worktree.
+- **C done** (reach map: `scratchpad/loop/iter0_reach_map.md` + maps).
+  - **Physical bands:** socket insertion reach caps x at ≤ 0.51; the feasible y band shifts with yaw (centre ≈ −0.27 + 0.0051·yaw, 0.24–0.30 m wide). Plug pick reach is x ≤ 0.48 at yaw 0 (≤ 0.45 at ±45°).
+  - **Cable:** `cable_taut_on_lift` makes x ≥ 0.337 at yaw 0, so 44% of today's draws are wasted because `plug_x_range` starts at 0.28.
+  - **Conservative rules:** `socket_at_hand_home` (0.10 m) is what cuts socket y at −0.257. The reach annulus is redundant with IK, and keepout and cable reach never fire on v2.
+  - **Settle drift:** the 1 s reset settle moves the plug 0.1–8.4 mm and −17…+23°, but the sampler certifies the pre-settle pose.
+  - **Proposal:** Stage 1 (plug x 0.32–0.43, y −0.38…−0.06, yaw −40…60; socket x 0.37–0.49, y −0.44…−0.10, yaw −15…35; hand keep-out 0.06 + exact home-collision check; settled-pose certification), then Stage 2 at full reach. Two optional JSON proposals (move the cable edge waypoint; lower the fixture post) need the user's approval and are not needed for Stages 1–2.
+- Iteration 1 code started early (Sonnet, worktree): Stage 1 in `scene_bank.py`, in parallel with baseline B.
+- **Stage 1 coded** (worktree branch, commit c14119c, not merged yet so the baseline stays clean).
+  - `V2_STAGE1` ranges apply to `workspace_v2*` only; v1 is unchanged (tested).
+  - New checks: `_home_collision_check` (exact open-hand vs socket/fixture contact at the home posture, scratch data, ~3 ms), and settled-pose certification (pick check + noise sweep on the plug pose after the reset settle; drift recorded in the diag).
+  - New reject reasons: `socket_home_collision`, `settled_pick_infeasible:*`, `settled_noise_margin:*`, `settled_pose_unavailable`. Tests 54/54.
+  - **Smoke test** (rows 6000–6011): 7.0 draws/scene. Accepted spans: plug x 0.338–0.428, y −0.348…−0.082; socket x 0.404–0.489, y −0.390…−0.110. Settle drift 0.2–8.1 mm, −7…+12°. One noisy rollout succeeded.
+
+### PAUSED (2026-10-10, at the user's request): state for resuming
+Scratch dir: `C:\Users\Psukj\AppData\Local\Temp\claude\c--C-robotic-Capstone\eca5e112-cad1-4b10-b17a-f06854798ffd\scratchpad\loop` (LOOP).
+- **Baseline (current code, noisy, rows 5000–5031):** 30/32 finished, **23 success (77%)**; rows 5030 and 5031 not run (the tester was stopped). Per-row JSONs are in `LOOP/iter0_baseline/rows/`, failure traces in `LOOP/iter0_baseline/failures/`.
+  - **Failures:**
+    - 5006 `plan_seated_unreachable`
+    - 5008, 5025 `plan_insert_line_infeasible`
+    - 5010, 5013, 5027 `force_limit_abort`
+    - 5023 `grasp_lost`
+  - **Resume:** `LOOP/run_rows.py --rows 5030,5031 --out LOOP/iter0_baseline_rest`, then merge with the existing rows to write the report (`run_rows.py` has the merge step).
+- **Test harness:** `LOOP/run_rows.py` (`--rows`, `--shards`, `--repo` to test a worktree, `--detector`). Max 3 sims in parallel (RAM).
+- **Reach map:** `LOOP/iter0_reach_map.md` + PNGs (done).
+- **Merged:** `--start-row`, commit a653bba on `automation_new_environment`.
+- **Stage 1 sampler:** done but NOT merged. Worktree `.claude/worktrees/agent-a11955fff299b3681`, branch `worktree-agent-a11955fff299b3681`, commit c14119c, tests 54/54. That worktree holds a real *copy* of `third_party` (not a junction).
+- **Next steps:**
+  1. Finish baseline rows 5030–5031 and write the report.
+  2. Merge c14119c.
+  3. Test Stage 1 on fresh rows (e.g. 6100–6131, noisy).
+  4. Opus plans iteration 1 from both reports.
+
+  Stop criterion: ≥ 90% noisy on 32 fresh rows, confirmed on 48.
+
+### Iteration 1 (resumed 2026-10-13; the user authorized iteration 1 only)
+- **Baseline complete** (old code a653bba, noisy, rows 5000–5031): **25/32 = 78.1%** (Wilson 95% [61%, 89%]).
+  - **Failures:**
+    - 5006 `plan_seated_unreachable`
+    - 5008, 5025 `plan_insert_line_infeasible`
+    - 5010, 5013, 5027 `force_limit_abort` at 14.5–15.0 mm depth
+    - 5023 `grasp_lost` (drift 1.02 mm in insert)
+  - **Spans:** plug x 0.337–0.379, y −0.295…−0.134, yaw −10…54; socket x 0.395–0.460, y −0.359…−0.243, yaw −9…24.
+  - **Sampler:** 9.2 draws/scene; `cable_taut_on_lift` caused 142 of 262 rejects.
+  - **Timing:** scene generation 54 s, rollout 943 s mean (3 in parallel).
+- Stage 1 merged (fast-forward to c14119c); tests 54/54.
+- The Opus planner is analysing the baseline failures on top of Stage 1, output `LOOP/iter1_plan.md`.
+- **Opus plan** (`LOOP/iter1_plan.md`; reproductions matched the baseline exactly).
+  - **Planning failures (5006, 5008, 5025):** `plan_grasp` picks the least-tilted grasp whose insertion plan only just clears the 0.05 rad joint margin (joint 7). The pick-time check uses the noisy socket and the nominal grasp, the runtime uses the true socket and the measured grasp, so marginal plans flip. Tilt −15 grasps: 3/9 success vs tilt −30: 20/21. Stage 1's settled-pose check does not close this gap.
+  - **Insertion failures (5010, 5013, 5027 force abort; 5023 grasp_lost):** during the leaf push the arm's compliance stores ~18 mm axial + 5–6 mm lateral + 4.4° pitch offset. The cross-coupled stiffness turns that into lateral finger force that pins the blades on the walls, so the wall force spikes to 31–44 N when the leaf load drops at 14.5–15 mm. A lateral force admittance (1e-4 m/N, branched from first leaf contact) turned all 4 into successes at 19 mm, peak wall force 3–7 N.
+- **Coders A/B/C launched in parallel** (worktrees with copied `third_party`):
+  - A: robust insertion margin (`plan_grasp` prefers margin ≥ 0.10; sampler requires 0.09 in `V2_STAGE1`).
+  - B: lateral force admittance in the insert branch of `PlaceInsert.action`.
+  - C: runtime planning retry at 0.03 margin.
+- **A done** (commit 8803ab6). `insert_feasible` returns the minimum joint margin; `plan_grasp` prefers insert margin ≥ 0.10 (falls back to the best available); the sampler floor is `pick_insert_margin_rad` = 0.09 (exact and settled pick checks only). Tests 57/57.
+  - Kinematics scan: 5006, 5008, 5025, 5004, 5016 all switch from tilt −15 (margin 0.056–0.072) to tilt −30 (margin 0.10–0.17 at the detected and true socket).
+  - Rows 6200–6207: 5.9 draws/scene; `insert_margin_low` caused 2 of 40 rejects.
+  - One rollout (row 6200) failed with `expert_grasp_misaligned` in the pick (38° plug error, never reached insertion). Not investigated yet; watch for it in the test.
+- **C done** (commit 7d6ca83). `plan_insertion(min_margin=0.05)` by default; `PlaceInsert.start` retries once at `FALLBACK_JOINT_MARGIN_RAD` = 0.03 and records `insert_plan_fallback` and `insert_plan_margin_rad`. The screens stay strict. Tests 55.
+  - With the old tilt −15 grasps: 5006 and 5008 become plannable (margin ~0.044); 5025 stays infeasible (a continuity limit).
+  - Full rollouts on the baseline scenes: 5008 succeeded **using the fallback** (margin 0.0437, 18.9 mm); 5006 succeeded too (fallback use not confirmed).
+- **B done** (commit f9654b0). Lateral finger-force admittance when the leaves are engaged (`LATERAL_ADMIT_M_PER_N` = 1e-4, cap 25 mm, attitude still servoed to the socket; stat `peak_finger_lateral_n`).
+  - Full noisy rollouts, all success at 18.9–19.0 mm: 5027, 5013, 5023 and 5004 (no regression).
+  - Peak wall force 3.1–3.5 N (baseline failures: 31–44 N).
+  - 5023 is still marginal on grasp drift (0.983 mm vs the 1.0 mm limit).
+- **Merged** A, B, C by cherry-pick onto the branch (fb6f6cd, 7be098f, bc72ba3); tests **58/58**.
+- **Iteration 1 test launched:** `run_rows.py --detector noisy --rows 6100-6131 --shards 3 --out LOOP/iter1_test` (fresh rows, Stage 1 ranges + A/B/C).
+- **Iteration 1 result** (HEAD bc72ba3, noisy, fresh rows 6100–6131, Stage 1 ranges; `LOOP/iter1_test/summary.md`): **30/32 = 93.8%** (Wilson 95% [79.9%, 98.3%]) vs baseline 25/32 = 78.1% [61.2%, 89.0%]. The sets are different rows at wider ranges, so the confidence intervals overlap.
+  - **Gone:** none of the baseline families recurred (0 planning failures, 0 `force_limit_abort`, 0 `grasp_lost`, 0 `grasp_misaligned`).
+  - **Remaining failures:** 2× `insert_stalled` (6113 at 4.7 mm, 6123 at 9.0 mm). In both, the axial push saturates at the ~19.5 N cap while the leaf load is 21.6–24.5 N, only one leaf compresses, and the socket yaw is near the top of the range (30.9°, 27.1°). This is a one-sided leaf load at high socket yaw.
+  - **Per-row:**
+    - All rows chose tilt −30; the 0.03 fallback fired 0/32.
+    - Pick-plan insert margin min 0.069. 3 rows are below the sampler's 0.09 floor yet succeeded: the runtime plans on the noisy detection, the sampler on the exact pose.
+    - Peak wall force in successes ≤ 11.8 N; finger lateral force 5.5–14.7 N.
+    - Grasp drift > 0.8 mm in 2 successes (0.95 and 0.84 mm; limit 1.0).
+  - **Variance** (span, baseline in brackets):
+    - plug x 0.095 m [0.042], y 0.300 m [0.161], yaw 82° [64];
+    - socket x 0.112 m [0.064], y 0.322 m [0.116], yaw 46° [33].
+
+    That is 1.3×–2.8× wider.
+  - **Sampler:** 6.6 draws/scene (baseline 9.2); scene generation 36 s mean.
+  - **Rollout time:** 713 s mean; total 2.25 h with 3 shards.
+- **Status:** iteration 1 is done and the loop is **stopped at the user's request** (no iteration 2).
+  - The loop's stop criterion is not fully met yet: Stage 1 is not the widest range set (Stage 2 = full reach), and the ≥ 90% result still needs confirmation on a fresh 48-row set.
+  - Obvious next target: high-socket-yaw one-sided leaf stalls (6113, 6123).
+  - Docker image not rebuilt; it still has the older collector code.
+
+## 2026-10-14/15: recovery demonstrations (injected faults)
+
+**Request.** Episodes in which the robot makes a mistake and then recovers and completes the
+task:
+- the gripper closes before reaching the plug;
+- it grips the plug in the wrong place;
+- it puts the plug off the socket hole.
+
+Only collection changes; the training-side masking is out of scope. Design and results are in
+`docs/DATA_COLLECTION.md` ("Recovery demonstrations").
+
+- **Code.** New `controllers/faults.py`. Fault phases and per-step `label` in `PickInsertExpert`.
+  `PlaceInsert(probe_offset_m=(y, z))`. `collect_random.py --faults`. `step_label` in
+  `save_episode` / `validate_episode`. 6 new tests; suite 64/64. No `envs/` or manifest-hashed
+  file changed.
+- **Clean mode unchanged.** Row 6100 without `--faults` gives a bit-identical qpos trace
+  (1981×148) and the same phases and diagnostics keys as HEAD bc72ba3.
+- **Smoke runs** (preflight + video; rows 7000–7004 premature_close, 7100–7102 and 7150–7156
+  wrong_grasp, 7200–7203 misaligned_insert):
+  - premature_close: 4/5. Closed 34–42 mm above the table with no contact; detected in 2.6 s;
+    recovered in 3.0–3.3 s.
+  - misaligned_insert: 4/4. Face contact detected at 4.9–5.2 N (wall abort 20 N).
+  - wrong_grasp: the first three rows used the original code.
+    - **Bug (row 7101):** a shift toward the cable end put the hand on the cable, which the
+      planner ignores (5.3 N), and the expert ended `close_tracking_timeout`. **Fix:** shift toward
+      the pin end only, and treat an arrive timeout during the fault as detection.
+    - With the fix: 4/7.
+  - **Range change:** row 7201 drew a 3.41 mm aim error and measured 3.78 mm lateral, against
+    PlaceInsert's 4 mm off-axis abort. The cap went from 3.5 to 3 mm.
+- **Recorded sets.** `data/openarm_v2_recovery_smoke_a` (rows 7300–7303) and `_b` (7400–7403),
+  `--faults all`:
+  - 6 recorded in 8 attempts;
+  - all pass `validate_episode` and all have `trace_matches_preflight`;
+  - strict replay (`replay_pilot.py`) passes for all 6 with **0.0** max qpos/qvel error (`replay_report.json` in each set).
+- **Totals with the final code:** 24 faulted attempts; the fault was detected and recovered in
+  **24/24**; the task then succeeded in **18/24**.
+- **Failures after the recovery:**
+  - 7000, 7151, 7301 `insert_stalled` (known leaf-stall family, not re-run clean);
+  - 7154 and 7155 also fail clean on the same scene;
+  - 7102 (original code) also fails clean;
+  - **7401 is attributable to the recovery:** the re-survey's fresh detection (5.1 mm error vs
+    3.9 mm on the first look) gave an off-centre re-grasp and `plan_seated_collision`; the same
+    scene succeeds clean. A possible fix, not applied: average several detections in the
+    re-survey. That reduces the noise part of the error, not the per-episode bias.
+- **Open:**
+  - the training loaders must mask `step_label == "fault"` before any BC;
+  - a shift-only wrong grasp is hard to see from `scene_rgb` (visible in `wrist_rgb`);
+  - the Docker image does not have this code.

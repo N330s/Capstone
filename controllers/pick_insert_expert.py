@@ -98,6 +98,15 @@ STANDOFF_M = 0.055            # pre-insert distance back along the mating axis
 
 PHASE_TIMEOUT_S = {"survey": 1.5}
 
+# ---- injected faults (controllers/faults.py; recovery demonstrations only) ---
+FAULT_PHASES = ("fault_close", "reopen", "rise", "resurvey")
+PREMATURE_CLOSE_CLEARANCE_M = 0.005   # closed fingertips at least this far above the housing top
+EMPTY_CLOSE_DETECT_S = 0.2            # fingers at the closed command, nothing between them
+EMPTY_CLOSE_TIMEOUT_S = 2.0           # after the close command finished, detect regardless
+REOPEN_TOLERANCE_M = 0.001
+REOPEN_TIMEOUT_S = 1.5
+RESURVEY_S = PHASE_TIMEOUT_S["survey"] * 0.6
+
 
 def euler_xyz(deg):
     rx, ry, rz = np.radians(deg)
@@ -636,7 +645,7 @@ class PickInsertExpert:
 
     def __init__(self, env, *, rng=None, detector_mode="noisy",
                  probe_offset_y_m=0.0, max_retries=2, max_regrasps=1,
-                 grasp_pose_source="top_down"):
+                 grasp_pose_source="top_down", fault=None):
         if grasp_pose_source != "top_down":
             raise ValueError("the table pick plans top-down grasps only; the side-on "
                              "plug_grasp_frame pose belongs to the grasped-mode scene")
@@ -664,6 +673,22 @@ class PickInsertExpert:
         self.start_plug_z = float(env.data.xpos[env.plug][2])
         self.lift_drift, self.lift_angle, self.peak_support_n = 0., 0., 0.
         self.place = None             # controllers.place_insert.PlaceInsert, after the lift
+        # Injected fault (controllers/faults.py). fault_state: None (clean run) -> pending ->
+        # active (the mistake) -> recovering -> done. ``label`` describes the action action()
+        # just returned: "fault" whenever the step touches the active state, so no injected
+        # command is ever labelled expert/recovery.
+        self.fault = fault
+        self.fault_state = None if fault is None else "pending"
+        self.fault_events, self.fault_info = {}, {}
+        self.label, self.steps = "expert", 0
+        self._empty_close_s = 0.
+        if fault is not None and fault.kind == "wrong_grasp":
+            self.max_regrasps += 1    # the injected regrasp must not use up the genuine budget
+        if fault is not None and fault.kind == "misaligned_insert":
+            self.max_retries += 1     # same for the injected insert retry
+        if fault is not None and fault.kind == "premature_close":
+            from connector.spec import ConnectorSpec
+            self.housing_height_m = float(ConnectorSpec.from_model(env.model).derived()["housing_height_m"])
 
     # ---------------------------------------------------------------- helpers
     def _goto(self, phase):
@@ -715,6 +740,44 @@ class PickInsertExpert:
     def _pick_timed_out(self):
         return self.phase_time > PICK_TIMEOUT_S[self.phase]
 
+    # ----------------------------------------------------------- fault helpers
+    def _fault_is(self, kind, state="pending"):
+        return self.fault is not None and self.fault.kind == kind and self.fault_state == state
+
+    def _fault_to(self, state, event):
+        self.fault_state = state
+        self.fault_events[event] = {"step": self.steps, "time_s": round(float(self.env.data.time), 3),
+                                    "phase": self.phase}
+
+    def _believed_plug(self, wrong_scale=0.):
+        """Plug pose the pick is planned on: the latched detection plus the one-sided-contact
+        correction. ``wrong_scale`` > 0 (wrong_grasp fault) moves the planned grasp point along the
+        plug's long axis and yaws the hand about it, by that fraction of the drawn error."""
+        pos = self.detection["plug_pos"] + self.grasp_correction_m
+        mat = self.detection["plug_mat"]
+        if not wrong_scale:
+            return pos, mat
+        p = self.fault.params
+        point = np.asarray(self.geom.grasp_point_m)
+        grasp = pos + mat @ point + mat @ np.array([p["shift_m"] * wrong_scale, 0., 0.])
+        wrong_mat = yaw_mat(np.radians(p["yaw_deg"] * wrong_scale)) @ mat
+        return grasp - wrong_mat @ point, wrong_mat
+
+    def _premature_close_index(self):
+        """Descend waypoints executed before the premature close: the drawn fraction, lowered
+        until the closed fingertips clear the housing top (so the close is empty)."""
+        descend = self.plan["descend"]
+        k = int(np.clip(round(self.fault.params["descend_frac"] * len(descend)), 1, len(descend) - 1))
+        need = self.housing_height_m + PREMATURE_CLOSE_CLEARANCE_M
+        self.planner.set_state(self.env.data.qpos)
+        clear = lambda i: self.planner.distal_clearance(descend[i - 1], self.geom.close_travel_m,
+                                                        self.planner.finger_geoms)
+        while k > 1 and clear(k) < need:
+            k -= 1
+        self.fault_info.update(close_waypoint=k, descend_waypoints=len(descend),
+                               closed_finger_table_clearance_m=round(clear(k), 4))
+        return k
+
     # ------------------------------------------------------------ pick helpers
     def _q_now(self):
         return self.env.target[:7].copy()
@@ -722,12 +785,19 @@ class PickInsertExpert:
     def _plan_pick(self):
         """Plan grasp + transit from the latched detection. Sets self.plan."""
         e = self.env
-        plug_pos, plug_mat = flat_plug_pose(self.detection["plug_pos"] + self.grasp_correction_m,
-                                            self.detection["plug_mat"], self.table_z, self.geom.rest_z_m)
         insert = (self.detection["socket_pos"], upright_insert_frame(self.detection["socket_mat"],
                                                                      self.geom.half_turn_symmetric))
-        plan, reason, log = plan_table_pick(self.planner, e.data.qpos, plug_pos, plug_mat, self._q_now(),
-                                            insert=insert, require_insert=True)
+        # wrong_grasp fault: plan the first pick on a wrong plug pose (full drawn error, then half).
+        # That grasp is released before the lift, so it need not reach the socket.
+        wrong = self._fault_is("wrong_grasp")
+        for scale in ((1.0, 0.5) if wrong else (0.,)):
+            plug_pos, plug_mat = flat_plug_pose(*self._believed_plug(scale), self.table_z, self.geom.rest_z_m)
+            plan, reason, log = plan_table_pick(self.planner, e.data.qpos, plug_pos, plug_mat, self._q_now(),
+                                                insert=insert, require_insert=not wrong)
+            if plan is not None:
+                break
+        if wrong:
+            self.fault_info["wrong_grasp_scale"] = scale if plan is not None else None
         summary = {"attempt": self.regrasps, "result": reason, "candidates": log}
         if plan is not None:
             summary.update(flip=plan["flip"], tilt_deg=plan["tilt_deg"],
@@ -747,9 +817,14 @@ class PickInsertExpert:
 
     def _begin_pick(self):
         plan, reason = self._plan_pick()
+        if plan is None and self._fault_is("wrong_grasp"):
+            self._fail("fault_not_injectable", f"wrong_grasp: {reason}")
+            return
         if plan is None:
             self._fail("ik_infeasible" if reason.startswith("ik_infeasible") else reason, reason)
             return
+        if self._fault_is("wrong_grasp"):
+            self._fault_to("active", "fault_start")
         self.grip = self.geom.preshape_travel_m
         self._start_path("transit_pick", plan["transit"], speed=TRANSIT_SPEED_RAD_S,
                          min_duration=2.0, hold=0.3)
@@ -802,9 +877,20 @@ class PickInsertExpert:
             hold = self.path.goal.copy()
             if self._tracking_error() < ARRIVE_JOINT_ERROR_RAD:
                 self._enter(self.arrive_next)
+            elif self._pick_timed_out() and self.fault_state == "active":
+                # wrong_grasp: the hand is blocked on the way to the wrong spot -- that is the
+                # mistake showing; back off like after the close instead of aborting.
+                self.fault_info.update(close_result="blocked_before_close",
+                                       arrive_tracking_error_rad=round(self._tracking_error(), 4))
+                self._fault_to("recovering", "detected")
+                self.grip = self.geom.preshape_travel_m
+                self._goto("regrasp")
             elif self._pick_timed_out():
                 self._fail(f"{self.arrive_next}_tracking_timeout")
             return np.r_[hold, self.grip]
+
+        if self.phase == "close" and self.fault_state == "active":
+            return self._wrong_grasp_close()
 
         if self.phase == "close":
             contacts = int(info.get("plug_finger_contacts", 0))
@@ -864,7 +950,87 @@ class PickInsertExpert:
             return np.r_[self._q_now(), self.grip]
         raise RuntimeError(f"unknown pick phase {self.phase}")
 
+    def _wrong_grasp_close(self):
+        """Close on the wrong spot (wrong_grasp fault). Whatever ends the close -- a latched grasp,
+        a one-sided shove, or the timeout -- is the detection: open and back off (regrasp), then
+        re-survey. The one-sided correction is not updated: the miss was injected, not a
+        detection error."""
+        e, info = self.env, self.env.info
+        contacts = int(info.get("plug_finger_contacts", 0))
+        self.one_sided_s = self.one_sided_s + e.dt if contacts == 1 else 0.
+        self.grip = max(self.geom.close_travel_m, self.grip - FINGER_CLOSE_RATE_M_S * e.dt)
+        closed_for = self.phase_time - (self.geom.preshape_travel_m - self.geom.close_travel_m) / FINGER_CLOSE_RATE_M_S
+        result = ("one_sided" if contacts == 1 and (self.one_sided_s > ONE_SIDED_CLOSE_GRACE_S or
+                                                    info.get("grasp_penetration_m", 0.) > GRASP_PENETRATION_BACKOFF_M)
+                  else "grasped" if self.grip <= self.geom.close_travel_m and closed_for > 0.2
+                  and info["grasp_established"]
+                  else "timeout" if self._pick_timed_out() else None)
+        if result:
+            self.fault_info.update(close_result=result, close_contacts=contacts,
+                                   close_grip_travel_m=round(float(info["grip_travel_m"]), 5))
+            self._fault_to("recovering", "detected")
+            self.grip = self.geom.preshape_travel_m
+            self._goto("regrasp")
+        return np.r_[self.plan["q_grasp"], self.grip]
+
+    def _fault_action(self):
+        """premature_close (fault_close -> reopen -> rise) and the wrong_grasp re-survey."""
+        e, info = self.env, self.env.info
+        if self.phase == "fault_close":
+            # Hold the arm part-way down and close the fingers on nothing.
+            self.grip = max(self.geom.close_travel_m, self.grip - FINGER_CLOSE_RATE_M_S * e.dt)
+            closed = self.grip <= self.geom.close_travel_m
+            settled = closed and abs(float(info["grip_travel_m"]) - self.grip) < REOPEN_TOLERANCE_M
+            self._empty_close_s = self._empty_close_s + e.dt if settled else 0.
+            ramp_s = (self.geom.preshape_travel_m - self.geom.close_travel_m) / FINGER_CLOSE_RATE_M_S
+            self.fault_info["close_contacts_max"] = max(self.fault_info.get("close_contacts_max", 0),
+                                                        int(info.get("plug_finger_contacts", 0)))
+            if self._empty_close_s >= EMPTY_CLOSE_DETECT_S or self.phase_time > ramp_s + EMPTY_CLOSE_TIMEOUT_S:
+                # Detected from robot-side telemetry only: fingers at the closed command, no pad on the plug.
+                self.fault_info["empty_close_detected_by"] = ("settled" if self._empty_close_s >= EMPTY_CLOSE_DETECT_S
+                                                              else "timeout")
+                self._fault_to("recovering", "detected")
+                self.grip = self.geom.preshape_travel_m
+                self._goto("reopen")
+            return np.r_[self.path.goal, self.grip]
+
+        if self.phase == "reopen":
+            self.grip = self.geom.preshape_travel_m
+            if (abs(float(info["grip_travel_m"]) - self.grip) < REOPEN_TOLERANCE_M
+                    or self.phase_time > REOPEN_TIMEOUT_S):
+                self._start_path("rise", [self.plan["q_pregrasp"]], speed=DESCEND_SPEED_RAD_S,
+                                 min_duration=1.5, hold=0.3)
+            return np.r_[self.path.goal, self.grip]
+
+        if self.phase == "rise":
+            q = self.path.step(e.dt)
+            if self.path.done:
+                self._fault_to("done", "recovered")
+                self._enter("descend")         # the ordinary, full descend from the pregrasp
+            return np.r_[q, self.grip]
+
+        if self.phase == "resurvey":
+            # wrong_grasp recovery: the shove may have moved the plug, so look again before re-planning.
+            self.grip = self.geom.preshape_travel_m
+            if self.phase_time > RESURVEY_S:
+                self.detection = self.detector.sense()
+                truth = self.detector.truth()
+                self.fault_info["resurvey_detection_error_m"] = round(float(np.linalg.norm(
+                    self.detection["plug_pos"] - truth["plug_pos"])), 5)
+                self.fault_info["plug_moved_m"] = round(float(np.linalg.norm(
+                    truth["plug_pos"][:2] - self._fault_plug_xy)), 5)
+                self.start_plug_z = float(truth["plug_pos"][2])
+                self._fault_to("done", "recovered")
+                self._begin_pick()
+            return np.r_[self._q_now(), self.grip]
+        raise RuntimeError(f"unknown fault phase {self.phase}")
+
     def _path_done(self):
+        if self.phase == "descend" and self._fault_is("premature_close"):
+            self._fault_to("active", "fault_start")
+            self._empty_close_s = 0.
+            self._goto("fault_close")
+            return
         nxt = {"transit_pick": "descend", "descend": "close", "lift": "lift_check",
                "retreat": "replan"}[self.phase]
         if nxt in ("lift_check", "replan"):
@@ -876,7 +1042,10 @@ class PickInsertExpert:
     def _enter(self, phase):
         """Start a pick phase (with its side effects)."""
         if phase == "descend":
-            self._start_path("descend", self.plan["descend"], speed=DESCEND_SPEED_RAD_S,
+            waypoints = self.plan["descend"]
+            if self._fault_is("premature_close"):
+                waypoints = waypoints[:self._premature_close_index()]   # stop part-way, then close
+            self._start_path("descend", waypoints, speed=DESCEND_SPEED_RAD_S,
                              min_duration=2.5, hold=0.3)
         elif phase == "close":
             self.grip = min(self.grip, self.geom.preshape_travel_m)
@@ -895,10 +1064,22 @@ class PickInsertExpert:
             # is a measurement of how far off THAT estimate was, so it only
             # converges if each retry corrects the same estimate instead of a new
             # one with its own independent noise draw.
-            self._begin_pick()
+            if self.fault_state == "recovering":
+                self._goto("resurvey")         # wrong_grasp recovery: the plug may have been pushed
+            else:
+                self._begin_pick()
 
     # ------------------------------------------------------------------ phases
     def action(self):
+        before = self.fault_state
+        out = self._action()
+        after = self.fault_state
+        self.label = ("fault" if "active" in (before, after) else
+                      "recovery" if after == "recovering" else "expert")
+        self.steps += 1
+        return out
+
+    def _action(self):
         e, info = self.env, self.env.info
         self.phase_time += e.dt
 
@@ -913,11 +1094,14 @@ class PickInsertExpert:
                     "plug_pos_m": float(np.linalg.norm(self.detection["plug_pos"] - truth["plug_pos"])),
                     "socket_pos_m": float(np.linalg.norm(self.detection["socket_pos"] - truth["socket_pos"]))}
                 self.start_plug_z = float(truth["plug_pos"][2])
+                self._fault_plug_xy = truth["plug_pos"][:2].copy()
                 self._begin_pick()
             return np.r_[e.target[:7], self.grip]
 
         if self.phase in PICK_PATH_PHASES + ("arrive", "close", "regrasp"):
             return self._pick_action()
+        if self.phase in FAULT_PHASES:
+            return self._fault_action()
 
         # ---- post-lift: transport + insertion (controllers/place_insert.py).
         if self.phase in PLACE_PHASES:
@@ -933,8 +1117,10 @@ class PickInsertExpert:
         moves. The socket pose is the simulator's (privileged, like the contact
         phases of the original insertion expert): a detection error would only
         make the finger/socket clearance checks spuriously fail."""
+        probe = (self.fault.params["offset_m"] if self._fault_is("misaligned_insert")
+                 else None)            # misaligned_insert: aim the first attempt off the holes
         self.place = PlaceInsert(self.env, max_retries=self.max_retries,
-                                 probe_offset_y_m=self.probe_offset_y_m)
+                                 probe_offset_y_m=self.probe_offset_y_m, probe_offset_m=probe)
         self._goto(self.place.phase)
         reason = self.place.start()
         if reason:
@@ -945,9 +1131,25 @@ class PickInsertExpert:
         if self.place.phase != self.phase:
             self._goto(self.place.phase)      # mirror phases into phase_log / recorded phase
         self.retries = self.place.retries
+        self._track_insert_fault()
         if self.place.failure:
             self._fail(self.place.failure, self.place.failure_detail)
         return action
+
+    def _track_insert_fault(self):
+        """misaligned_insert labels from PlaceInsert's own state: the first (offset) align/insert is
+        the fault; the force/stall retry's withdraw + re-align is the recovery; the insert after it
+        is ordinary expert behaviour."""
+        if self.fault is None or self.fault.kind != "misaligned_insert" or self.fault_state == "done":
+            return
+        p = self.place
+        if self.fault_state == "pending" and p.retries == 0 and p.phase in ("align", "insert"):
+            self._fault_to("active", "fault_start")
+        elif self.fault_state == "active" and p.retries >= 1:
+            self.fault_info["retry_reason"] = (p.stats.get("retry_reasons") or [None])[0]
+            self._fault_to("recovering", "detected")
+        if self.fault_state == "recovering" and p.phase in ("insert", "hold"):
+            self._fault_to("done", "recovered")
 
     def diagnostics(self):
         place = self.place.diagnostics() if self.place is not None else None
@@ -959,5 +1161,8 @@ class PickInsertExpert:
                 "detection_error": self.detection_error,
                 "pick_plans": [{k: v for k, v in s.items() if k != "candidates"} for s in self.plan_summaries],
                 "pick_report": self.pick_report, "pick_failures": self.pick_failures,
+                **({} if self.fault is None else
+                   {"fault": self.fault.to_json(), "fault_state": self.fault_state,
+                    "fault_events": self.fault_events, "fault_info": self.fault_info}),
                 "phase_log": self.phase_log + [{"phase": self.phase,
                                                 "duration_s": round(self.phase_time, 3)}]}

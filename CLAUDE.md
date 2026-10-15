@@ -26,12 +26,12 @@ trained yet; the roadmap is in `plan.md`, current status in `docs/*.md`.
 ## Commands
 
 ```powershell
-python -m unittest discover -s tests -v          # all tests (40); needs third_party assets
+python -m unittest discover -s tests -v          # all tests (64); needs third_party assets
 python -m unittest tests.test_connector -v       # holder-only tests, no robot assets needed
 python -m unittest tests.test_openarm.OpenArmTests.test_v1_bimanual_and_no_weld  # single test
 ```
 
-Only `tests/test_connector.py`, `tests/test_workspace.py` and `tests/test_vla_adapter.py` run without `third_party/`;
+Only `tests/test_connector.py`, `tests/test_workspace.py`, `tests/test_vla_adapter.py` and `tests/test_faults.py` run without `third_party/`;
 `test_openarm`, `test_table_pickup`, `test_carry_path`, `test_collection` build the robot scene
 (slow: each `OpenArmInsertEnv()` compiles the model and settles 1 s of physics at 2 kHz).
 
@@ -91,7 +91,11 @@ Layers, bottom to top (each imports only from below):
    **`configs/workspace_v2_cable30.json`** = v2 with a 30-segment cable (~3.8x faster physics), the
    v2 scene for automated collection (`collect_random.py --workspace ... [--eval-scenes N]`;
    per scene: preflight, then record on success; `progress.json` + `--resume` redo only the
-   interrupted stage).
+   interrupted stage). `--faults all|premature_close,wrong_grasp,misaligned_insert` makes
+   **recovery demonstrations** (`controllers/faults.py`): one injected mistake per scene, then
+   recovery; episodes gain `step_label` (expert/fault/recovery). Fault steps must be masked before
+   BC and the current VLA loaders do not do this yet; keep these in their own `--output`.
+   See `docs/DATA_COLLECTION.md`.
    A slim collection-only Docker image is `docker/collect.Dockerfile` (+ whitelist `.dockerignore`);
    usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),

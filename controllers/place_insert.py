@@ -621,13 +621,17 @@ class PlaceInsert:
     """
 
     def __init__(self, env, *, kin=None, socket_estimate=None, max_retries=1, probe_offset_y_m=0.,
-                 max_recoveries=MAX_RECOVERIES):
+                 probe_offset_m=None, max_recoveries=MAX_RECOVERIES):
         self.env = env
         self.kin = kin if kin is not None else ArmKinematics(env.model)
         self.geom = plug_geometry(env.model, getattr(env, "workspace", None))
         self.socket_estimate = socket_estimate
         self.max_retries, self.retries = max_retries, 0
         self.probe_offset_y_m = probe_offset_y_m
+        # First-attempt aim error in the socket frame (y, z): a deliberate miss that the insert
+        # retry recovers from (validation probe; injected misaligned_insert fault).
+        self.probe_offset = np.array(probe_offset_m if probe_offset_m is not None
+                                     else (probe_offset_y_m, 0.), dtype=float)
         self.phase, self.phase_time = "transit_place", 0.
         self.failure = self.failure_detail = None
         self.grip = float(env.target[7])
@@ -826,8 +830,8 @@ class PlaceInsert:
 
         if self.phase == "align":
             desired = entry - axis * self.geom.place_standoff_m + self._bias_offset(basis)
-            if self.retries == 0 and self.probe_offset_y_m:
-                desired = desired + basis[:, 1] * self.probe_offset_y_m
+            if self.retries == 0 and self.probe_offset.any():
+                desired = desired + self._probe(basis)
             action = self._servo(desired, basis)
             err, ang = self._plug_error(desired, basis)
             if self.phase_time >= ALIGN_S[0] and err < ALIGN_POS_TOL_M and ang < ALIGN_ANGLE_TOL_DEG:
@@ -856,8 +860,8 @@ class PlaceInsert:
             else:
                 self.forward = min(SEAT_X_M, self.forward + INSERT_SPEED_M_S * e.dt)
             desired = entry + axis * self.forward + self._bias_offset(basis)
-            if self.retries == 0 and self.probe_offset_y_m:
-                desired = desired + basis[:, 1] * self.probe_offset_y_m
+            if self.retries == 0 and self.probe_offset.any():
+                desired = desired + self._probe(basis)
             if self.engaged and self.recoveries and DITHER_HZ:
                 desired = desired + self._dither(basis)
             depth = float(info.get("insertion_depth_m", -1.))
@@ -976,6 +980,10 @@ class PlaceInsert:
         ph = 2. * np.pi * DITHER_HZ * self._dither_t
         return (basis[:, 0] * DITHER_AX_M * np.sin(ph) + basis[:, 1] * DITHER_LAT_M * np.sin(ph)
                 + basis[:, 2] * DITHER_LAT_M * np.cos(ph))
+
+    def _probe(self, basis):
+        y, z = self.probe_offset
+        return basis[:, 1] * y if not z else basis[:, 1] * y + basis[:, 2] * z
 
     def _bias_offset(self, basis):
         return basis[:, 1] * self.bias[0] + basis[:, 2] * self.bias[1]

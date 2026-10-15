@@ -6,6 +6,9 @@ from pathlib import Path
 import numpy as np
 
 SCHEMA = "openarm-pilot-v1"
+# Optional per-step label of injected-fault recovery episodes (controllers/faults.py). Absent in
+# ordinary episodes. "fault" steps are injected bad commands: mask them before BC.
+STEP_LABELS = ("expert", "fault", "recovery")
 
 
 def clean_info(info):
@@ -36,7 +39,8 @@ def export_camera_frames(path, observations, folders=CAMERA_FOLDERS, quality=95)
 
 
 def save_episode(path, observations, requested, applied, states, velocities,
-                 rewards, terminated, truncated, durations, phases, infos, manifest):
+                 rewards, terminated, truncated, durations, phases, infos, manifest,
+                 labels=None, fault=None):
     path = Path(path)
     path.mkdir(parents=True,exist_ok=False)
     arrays = {
@@ -49,6 +53,8 @@ def save_episode(path, observations, requested, applied, states, velocities,
         "truncated":np.array(truncated,dtype=bool), "executed_dt_s":np.array(durations),
         "phase":np.array(phases),
     }
+    if labels is not None:
+        arrays["step_label"]=np.array(labels)
     for camera in observations[0]["images"]:
         arrays[f"image_{camera}"]=np.stack([o["images"][camera] for o in observations])
     np.savez_compressed(path/"episode.npz",**arrays)
@@ -59,6 +65,10 @@ def save_episode(path, observations, requested, applied, states, velocities,
                 "data_sha256":hashlib.sha256((path/"episode.npz").read_bytes()).hexdigest(),
                 "outcome":infos[-1]["outcome"],
                 "timing":"observation[i] precedes action[i]; observation[i+1] follows its executed interval"}
+    if labels is not None:
+        metadata.update(fault=fault, label_counts={k:int(sum(1 for v in labels if v==k)) for k in STEP_LABELS},
+                        step_label_note="step_label[i] describes action[i]; 'fault' actions are injected "
+                                        "mistakes and must be masked before behaviour cloning")
     (path/"metadata.json").write_text(json.dumps(metadata,indent=2),encoding="utf-8")
     (path/"diagnostics.json").write_text(json.dumps([clean_info(i) for i in infos],indent=2),encoding="utf-8")
     validate_episode(path)
@@ -91,7 +101,23 @@ def validate_episode(path):
             raise ValueError("Terminal and truncation flags overlap")
         if meta.get("action_source") != "human_manual" and meta["outcome"] != "success":
             raise ValueError("Pilot BC export accepts successful expert episodes only")
+        if "step_label" in a.files:
+            validate_step_labels(a["step_label"], t)
     return meta
+
+
+def validate_step_labels(labels, steps):
+    """Injected-fault episodes: one label per action, a recovery after any fault, never ending on one."""
+    labels=np.asarray(labels)
+    if labels.shape!=(steps,):
+        raise ValueError("step_label shape mismatch")
+    unknown=set(labels.tolist())-set(STEP_LABELS)
+    if unknown:
+        raise ValueError(f"Unknown step_label values {sorted(unknown)}")
+    if (labels=="fault").any() and not (labels=="recovery").any():
+        raise ValueError("Fault episode without recovery steps")
+    if steps and labels[-1]=="fault":
+        raise ValueError("Episode ends on an injected fault step")
 
 
 def action_chunk(path, index, horizon):

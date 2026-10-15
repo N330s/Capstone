@@ -35,6 +35,17 @@ Watching and reviewing:
         slow motion, keep video of successes too
 
     python scripts/replay_episode.py data/<out>/failed_preflight/train_00003.npz
+
+Recovery demonstrations (--faults, controllers/faults.py): every scene gets one injected
+mistake -- premature_close, wrong_grasp or misaligned_insert, cycled with the seed -- that
+the expert then recovers from. Episodes carry a per-step step_label (expert / fault /
+recovery); fault steps are injected bad commands and must be masked before behaviour
+cloning (the current VLA loaders do not). A faulted rollout that succeeds without
+exercising its fault is rejected as fault_not_exercised. Keep these runs in their own
+--output directory:
+
+    python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json \\
+        --faults all --episodes 6 --record --headless --output data/openarm_v2_recovery
 """
 import argparse
 import hashlib
@@ -50,6 +61,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import numpy as np
 
 from controllers.pick_insert_expert import PickInsertExpert
+from controllers import faults as fault_lib
 from data_pipeline.scene_bank import (collection_bank, evaluation_bank, as_reset_options,
                                       workspace_for_env, COLLECTION_SEED_BASE, EVALUATION_SEED_BASE,
                                       SEED_NAMESPACE_WIDTH,
@@ -59,6 +71,7 @@ from envs.openarm_insert import OpenArmInsertEnv
 from rollout_viewer import LiveViewer, VideoRecorder, ViewerClosed
 
 MAX_STEPS = 6000
+FAULT_MAX_STEPS = 9000   # 180 s: room for the recovery, still inside the env's 240 s tabletop limit
 # Rows are drawn in blocks of this size; the validation split is the tail of each block.
 BATCH = 64
 
@@ -84,7 +97,7 @@ def sha256(path):
 
 
 def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0.0,
-            viewer=None, recorder=None):
+            viewer=None, recorder=None, faults=()):
     obs, info = env.reset(seed=row["seed"], options=as_reset_options(row["options"]))
     start_info = clean_info(info)
     if viewer is not None:
@@ -95,18 +108,21 @@ def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0
     qpos, qvel = [env.data.qpos.copy()], [env.data.qvel.copy()]
     requested, applied, rewards, terms, truncs, durations, phases = [], [], [], [], [], [], []
     # Always kept, recording or not, so a preflight failure is still replayable.
-    trace_qpos, trace_phase = [env.data.qpos.copy()], []
+    trace_qpos, trace_phase, trace_label = [env.data.qpos.copy()], [], []
+    fault = fault_lib.draw_fault(row["seed"], faults) if faults else None
     expert = PickInsertExpert(env, rng=np.random.default_rng(row["seed"]),
                               detector_mode=detector_mode,
-                              probe_offset_y_m=probe_offset_y_m)
+                              probe_offset_y_m=probe_offset_y_m, fault=fault)
+    max_steps = FAULT_MAX_STEPS if fault else MAX_STEPS
     steps = 0
-    while env.outcome is None and expert.failure is None and steps < MAX_STEPS:
+    while env.outcome is None and expert.failure is None and steps < max_steps:
         action = expert.action()
         phase = expert.phase
         obs, reward, term, trunc, info = env.step(action)
         steps += 1
         trace_qpos.append(env.data.qpos.copy())
         trace_phase.append(phase)
+        trace_label.append(expert.label)
         if viewer is not None:
             viewer.sync()
         if recorder is not None:
@@ -120,6 +136,9 @@ def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0
     outcome = env.outcome
     if outcome is None:
         outcome = f"expert_{expert.failure}" if expert.failure else "step_budget_exhausted"
+    if fault is not None and outcome == "success" and expert.fault_state != "done":
+        # Succeeded without the mistake and its recovery happening: not a recovery demonstration.
+        outcome = "fault_not_exercised"
     summary = {**{k: v for k, v in row.items() if k != "sampler"},
                "outcome": outcome, "steps": steps,
                "expert": expert.diagnostics(),
@@ -127,6 +146,10 @@ def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0
     payload = (observations, requested, applied, qpos, qvel,
                rewards, terms, truncs, durations, phases, infos)
     trace = {"qpos": np.asarray(trace_qpos), "phase": np.asarray(trace_phase)}
+    if fault is not None:
+        summary["fault"] = fault.to_json()
+        summary["label_counts"] = fault_lib.label_counts(trace_label)
+        trace["label"] = np.asarray(trace_label)
     return summary, payload, trace
 
 
@@ -134,6 +157,8 @@ def save_failure(directory, row_id, summary, trace, recorder=None, payload=None)
     directory.mkdir(parents=True, exist_ok=True)
     write_json(directory / (row_id + ".json"), summary)
     arrays = {"qpos": trace["qpos"], "phase": trace["phase"]}
+    if "label" in trace:
+        arrays["step_label"] = trace["label"]
     if payload is not None:
         arrays.update(action_requested=np.asarray(payload[1]), action_applied=np.asarray(payload[2]),
                       qvel=np.asarray(payload[4]))
@@ -190,7 +215,7 @@ def preflight_pass(args, out, ws):
                 trace = None
                 try:
                     result, _, trace = rollout(env, row, detector_mode=args.detector,
-                                               viewer=viewer, recorder=recorder)
+                                               viewer=viewer, recorder=recorder, faults=fault_kinds(args))
                 except ViewerClosed:
                     raise SystemExit("Viewer closed; stopping. Rerun with --headless to collect.")
                 except (ValueError, RuntimeError) as error:
@@ -226,26 +251,53 @@ def preflight_pass(args, out, ws):
         env.close()
     write_json(out / "preflight_accepted.json", accepted)
     write_json(out / "rejected_scenes.json", rejected)
+    write_json(out / "preflight_stats.json",
+               {"requested": args.episodes, "accepted": len(accepted),
+                "attempted": cursor, "attempt_budget": budget,
+                "acceptance_rate": len(accepted) / max(cursor, 1),
+                "failure_reasons": failure_reasons(rejected), "wall_seconds": round(time.time() - started, 1),
+                "detector_mode": args.detector, "start_row": args.start_row,
+                **fault_stats(args, accepted, rejected)})
+    return accepted, cursor
+
+
+def fault_kinds(args):
+    """Injected fault kinds of a --faults run; () for ordinary runs (and args built without it)."""
+    return tuple(getattr(args, "faults", None) or ())
+
+
+def failure_reasons(rejected):
     reasons = {}
     for r in rejected:
         key = r["outcome"]
         if key.startswith("expert_"):
             key = f"{key} ({(r.get('expert') or {}).get('phase')})"
         reasons[key] = reasons.get(key, 0) + 1
-    write_json(out / "preflight_stats.json",
-               {"requested": args.episodes, "accepted": len(accepted),
-                "attempted": cursor, "attempt_budget": budget,
-                "acceptance_rate": len(accepted) / max(cursor, 1),
-                "failure_reasons": reasons, "wall_seconds": round(time.time() - started, 1),
-                "detector_mode": args.detector, "start_row": args.start_row})
-    return accepted, cursor
+    return reasons
+
+
+def fault_stats(args, accepted, rejected):
+    """--faults runs: acceptance and failure reasons per fault kind (empty for ordinary runs)."""
+    if not fault_kinds(args):
+        return {}
+    per_kind = {}
+    for kind in fault_kinds(args):
+        ok = [r for r in accepted if (r.get("fault") or {}).get("kind") == kind]
+        bad = [r for r in rejected if (r.get("fault") or {}).get("kind") == kind]
+        per_kind[kind] = {"accepted": len(ok), "rejected": len(bad),
+                          "acceptance_rate": len(ok) / max(len(ok) + len(bad), 1),
+                          "failure_reasons": failure_reasons(bad)}
+    return {"faults": list(fault_kinds(args)), "per_fault": per_kind}
 
 
 def run_signature(args):
     """What decides which scenes a run draws; --resume refuses to continue under different values."""
-    return {"workspace": args.workspace.as_posix() if args.workspace else None,
-            "detector": args.detector, "validation_fraction": args.validation_fraction,
-            "start_row": args.start_row}
+    signature = {"workspace": args.workspace.as_posix() if args.workspace else None,
+                 "detector": args.detector, "validation_fraction": args.validation_fraction,
+                 "start_row": args.start_row}
+    if fault_kinds(args):                   # only for --faults runs, so older progress.json still resume
+        signature["faults"] = list(fault_kinds(args))
+    return signature
 
 
 def row_artifacts(directory, row_id):
@@ -296,7 +348,7 @@ def collect_pass(args, out, ws, state):
         env.images = True
         try:
             result, payload, trace = rollout(env, row, record=True, detector_mode=args.detector,
-                                             viewer=viewer, recorder=recorder)
+                                             viewer=viewer, recorder=recorder, faults=fault_kinds(args))
         except ViewerClosed:
             raise SystemExit("Viewer closed; stopping. Rerun with --resume --headless.")
         finally:
@@ -316,13 +368,17 @@ def collect_pass(args, out, ws, state):
         else:
             if recorder is not None and args.video == "all":
                 recorder.save(out / "video" / row["id"], metadata={"outcome": "success"})
-            meta = save_episode(out / row["id"], *payload, env.manifest())
+            labels = ({"labels": trace["label"].tolist(), "fault": result["fault"]}
+                      if "label" in trace else {})
+            meta = save_episode(out / row["id"], *payload, env.manifest(), **labels)
             records.append({"episode": row["id"], "seed": row["seed"], "split": row["split"],
                             "steps": meta["steps"], "data_sha256": meta["data_sha256"],
                             "retries": result["expert"]["retries"],
                             "regrasps": result["expert"]["regrasps"],
                             "detection_error": result["expert"]["detection_error"],
-                            "trace_matches_preflight": matches})
+                            "trace_matches_preflight": matches,
+                            **({"fault": result["fault"], "label_counts": result["label_counts"]}
+                               if labels else {})})
             print("recorded", row["id"], meta["steps"],
                   f"({len(records)}/{args.episodes} recorded)", flush=True)
         state["pending_record"] = None
@@ -354,7 +410,7 @@ def collect_pass(args, out, ws, state):
                 trace = None
                 try:
                     result, _, trace = rollout(env, row, detector_mode=args.detector,
-                                               viewer=viewer, recorder=recorder)
+                                               viewer=viewer, recorder=recorder, faults=fault_kinds(args))
                 except ViewerClosed:
                     raise SystemExit("Viewer closed; stopping. Rerun with --resume --headless.")
                 except (ValueError, RuntimeError) as error:
@@ -388,24 +444,38 @@ def collect_pass(args, out, ws, state):
         if viewer is not None:
             viewer.close()
         env.close()
-    reasons = {}
-    for r in rejected:
-        key = r["outcome"]
-        if key.startswith("expert_"):
-            key = f"{key} ({(r.get('expert') or {}).get('phase')})"
-        reasons[key] = reasons.get(key, 0) + 1
     write_json(out / "preflight_stats.json",
                {"requested": args.episodes, "accepted": len(accepted), "recorded": len(records),
                 "attempted": state["cursor"], "attempt_budget": budget,
                 "acceptance_rate": len(accepted) / max(state["cursor"], 1),
-                "failure_reasons": reasons,
+                "failure_reasons": failure_reasons(rejected),
                 "wall_seconds_this_session": round(time.time() - started, 1),
-                "detector_mode": args.detector, "start_row": args.start_row})
+                "detector_mode": args.detector, "start_row": args.start_row,
+                **fault_stats(args, accepted, rejected)})
     save_progress()
     return records, failures
 
 
 def build_manifest(args, out, env, records, failures, complete):
+    manifest = _base_manifest(args, out, env, records, failures, complete)
+    if fault_kinds(args):
+        manifest.update(
+            purpose="randomized table-top pick-and-insert with one injected fault per scene, then recovery",
+            collection_mode="per scene: preflight, then record on success (resumable); "
+                            "injected-fault recovery demonstrations; step_label marks fault steps",
+            fault_injection={
+                "kinds": list(fault_kinds(args)), "module": "controllers/faults.py",
+                "module_sha256": sha256(fault_lib.__file__),
+                "ranges": {"premature_close_descend_frac": list(fault_lib.PREMATURE_CLOSE_FRAC),
+                           "wrong_grasp_shift_m": list(fault_lib.WRONG_GRASP_SHIFT_M),
+                           "wrong_grasp_yaw_deg": list(fault_lib.WRONG_GRASP_YAW_DEG),
+                           "misaligned_insert_offset_m": list(fault_lib.MISALIGN_OFFSET_M)},
+                "labels": list(fault_lib.LABELS)},
+            training_note="mask step_label == 'fault' before BC; current loaders do not")
+    return manifest
+
+
+def _base_manifest(args, out, env, records, failures, complete):
     return {"schema": SCHEMA,
             "episodes": records,
             "failed_recordings": failures,
@@ -460,9 +530,17 @@ def main():
     p.add_argument("--eval-scenes", type=int, default=0,
                    help="size of the reserved evaluation bank written first (default 100; use a few "
                         "for quick tests, a smaller bank is a prefix of the full one)")
+    p.add_argument("--faults", default=None,
+                   help="recovery demonstrations: one injected fault per scene, then recovery. "
+                        "'all' or a comma list of " + ",".join(fault_lib.FAULT_KINDS)
+                        + " (kind cycles with the seed). Use a separate --output.")
     args = p.parse_args()
     if args.start_row < 0:
         p.error("--start-row must be >= 0")
+    try:
+        args.faults = fault_lib.parse_kinds(args.faults)
+    except ValueError as error:
+        p.error(str(error))
     budget = int(args.episodes * args.attempt_ratio)
     if args.start_row + budget > SEED_NAMESPACE_WIDTH:
         raise SystemExit(f"--start-row {args.start_row} + attempt budget {budget} exceeds the "
