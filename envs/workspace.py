@@ -213,6 +213,8 @@ def add_cameras(world, hand, ws):
         c = cams[name]
         ET.SubElement(world, "camera", name=name, pos=vec(c["position_m"]),
                       xyaxes=vec(c["xyaxes"]), fovy=f(c["fovy_deg"]))
+    if "chest_rgbd" in cams:
+        add_chest_camera(world, cams["chest_rgbd"])
     w = cams["wrist_rgb"]
     xy = camera_frame(w["position_m"], w["target_local_m"])
     ET.SubElement(hand, "camera", name="wrist_rgb", pos=vec(w["position_m"]),
@@ -235,6 +237,37 @@ def add_cameras(world, hand, ws):
     ET.SubElement(hand, "geom", name="wrist_cam_bracket", type="capsule",
                   fromto=vec(np.r_[back, mount["bracket_hand_point_m"]]),
                   size=f(mount["bracket_radius_m"]), rgba=vec(mount["rgba_bracket"]), **visual)
+
+
+def level_camera_frame(position, target):
+    """Look-at xyaxes with no roll: image right stays horizontal (for forward-looking cameras;
+    ``camera_frame`` keeps image right along -Y, which rolls a camera that is turned sideways)."""
+    position, target = np.asarray(position, float), np.asarray(target, float)
+    z = position - target
+    z /= np.linalg.norm(z)
+    x = np.cross([0., 0., 1.], z)
+    x /= np.linalg.norm(x)
+    y = np.cross(z, x)
+    return np.r_[x, y]
+
+
+def add_chest_camera(world, c):
+    """Chest RGB-D camera (``cameras.chest_rgbd``, a RealSense D435 on the torso) plus its visual
+    module. Position and target are in the parent body's frame; depth is rendered from this same
+    camera, i.e. aligned to the RGB stream."""
+    parent = world.find(f".//body[@name='{c['parent_body']}']")
+    if parent is None:
+        raise ValueError(f"chest camera parent body {c['parent_body']!r} not in the robot model")
+    xy = level_camera_frame(c["position_m"], c["target_m"])
+    ET.SubElement(parent, "camera", name=c["camera_name"], pos=vec(c["position_m"]),
+                  xyaxes=vec(xy), fovy=f(c["fovy_deg"]))
+    mount = c.get("visual_mount")
+    if mount:
+        z = np.cross(xy[:3], xy[3:])           # camera +Z points backward, out of the lens
+        pos = np.asarray(c["position_m"], float) + z * mount["housing_offset_z_m"]
+        ET.SubElement(parent, "geom", name="chest_cam_housing", type="box", pos=vec(pos), xyaxes=vec(xy),
+                      size=vec(mount["housing_half_m"]), rgba=vec(mount["rgba_housing"]),
+                      contype="0", conaffinity="0", group="2", mass="0")
 
 
 # ---------------------------------------------------------------- socket spring leaves

@@ -66,7 +66,7 @@ training run has shown that they help yet.
 | Fault | Mistake | Detected by | Recovery |
 |---|---|---|---|
 | `premature_close` | fingers close part-way down the descend, 20–60% of the way, above the housing | fingers at the closed command with no pad on the plug for 0.2 s (robot-side signals only) | reopen, rise back to the pregrasp, normal descend |
-| `wrong_grasp` | the first pick is planned 6–12 mm toward the pin end and/or with 10–25° yaw, so the pads close on the wrong part of the housing | the close ends; or the hand is blocked before the close | open, retreat 8 cm, re-survey (new detection), re-plan the nominal grasp |
+| `wrong_grasp` | **misses the plug entirely** (since 2026-10-15): the first pick goes to empty table 6.5–9.5 cm from the housing grasp point, past the pin tips or to either side (never toward the cable), and closes on nothing. The open fingers are checked to stay ≥ 10 mm from the true plug and the cable all the way down. | fingers at the closed command with no pad on the plug for 0.2 s (as premature_close); or the hand is blocked before the close | open, retreat 8 cm, re-plan the nominal grasp from the same detection (the plug was not touched) |
 | `misaligned_insert` | the first align/insert aims 2–3 mm off the socket holes in the socket (y, z) plane | the existing socket-force (5 N) / stall rule | withdraw, re-align on the holes, insert |
 
 - **One fault per scene.** The kind cycles with the seed, so `--faults all` is balanced across the
@@ -95,7 +95,9 @@ python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json -
 python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json --faults premature_close --episodes 4 --video all --headless --output data/recovery_smoke_new   # preflight + video only
 ```
 
-**First runs (2026-10-14/15, `workspace_v2_cable30`, noisy detector, fresh rows 7000–7403).**
+**First runs (2026-10-14/15, `workspace_v2_cable30`, noisy detector, fresh rows 7000–7403).** The
+wrong_grasp numbers and frames here are for the earlier *off-centre pinch* version (shift/yaw),
+replaced by the miss on 2026-10-15; see below.
 - **24 faulted attempts with the final code: the injected fault was detected and recovered in
   24/24**, and the whole task then succeeded in 18/24:
   - premature_close 6/8;
@@ -119,10 +121,47 @@ python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json -
     cable, which the planner ignores (row 7101).
   - The insert aim error is capped at 3 mm, since 3.41 mm reached 3.78 mm lateral, close to
     PlaceInsert's 4 mm off-axis abort.
-- **Visibility:** a shift-only wrong grasp is hard to see from `scene_rgb` because the hand hides
-  the plug; it is visible in `wrist_rgb`.
+- **Visibility (old version):** a shift-only off-centre pinch was hard to see from `scene_rgb`
+  because the hand hid the plug. That is why wrong_grasp became a clear miss.
 - wrong_grasp masks the whole approach to the wrong spot, about 11–13 s, or about a quarter of
   the episode.
+
+**2026-10-15: chest RGB-D camera, joint torque, wrong_grasp = miss.**
+- **New arrays.** Episodes recorded in `workspace_v2_cable30` now also contain:
+
+  | Array | Shape | Contents |
+  |---|---|---|
+  | `image_chest_rgb` | (T+1, 240, 424, 3) | chest RealSense D435-like RGB |
+  | `depth_chest_mm` | (T+1, 240, 424) uint16 | depth aligned to that RGB, mm, 0 = no data |
+
+  See `docs/WORKSPACE.md` for the camera and the depth model.
+- **Joint torque in every new episode from any workspace.** `joint_torque_applied_nm`,
+  `joint_torque_applied_peak_nm`, `joint_torque_gravity_nm` and `joint_torque_constraint_nm`, each
+  (T, 14) in N m:
+  - order: left joint1..7, then right joint1..7;
+  - row i covers action i's interval;
+  - mean over the 40 physics substeps (the peak array is the max |·|);
+  - the same values are in `diagnostics.json`.
+- **Torque is not a policy input.** The 16-d state is unchanged.
+- **Strict replay of earlier datasets is lost.** The chest camera and the torque logging changed
+  `envs/workspace.py` and `envs/openarm_insert.py`, which `env.manifest()` hashes, so
+  `replay_pilot.py` refuses **every dataset recorded before 2026-10-15**, including the six recovery
+  episodes above.
+- **Physics did not change.** A clean row-6100 rollout reproduces the pre-change qpos trace
+  bit-for-bit (1981×148 qpos and phases, compared with the trace recorded at HEAD bc72ba3).
+- Recollect if strict replay of the old data is needed.
+- **Cost:** with the chest camera an episode is about 2.5–2.9× larger on disk (404–585 MB, 0.21–0.24 MB/step, against 0.084 MB/step before).
+  Recording one is verified end-to-end (4 kinds, strict replay 0.0 error; `docs/AUTOMATED_COLLECTION_LOG.md`).
+- **Miss smoke runs.** Preflight + video, not recorded; rows 7500–7501, 7550–7551, 7600–7601;
+  noisy detector.
+  - **6/6 succeeded.** Every miss closed on empty table: 0 plug contacts, detected as an empty close.
+  - **Clearance:** 7.1–8.7 cm from the housing grasp point, with the open fingers 13–42 mm from
+    the plug and the cable.
+  - **Timing:** the fault lasted 12.7–14.3 s (the trip to the miss point, then the close); the
+    recovery 2.4–3.0 s.
+  - **Direction fallback:** "left" was drawn twice and both times fell back to another direction,
+    because no clear "left" miss existed in those scenes.
+  - **Visible in `scene_rgb`:** the hand closes well away from where it later grasps the plug.
 
 ## Next collection/training gate
 

@@ -467,8 +467,9 @@ def build_manifest(args, out, env, records, failures, complete):
                 "kinds": list(fault_kinds(args)), "module": "controllers/faults.py",
                 "module_sha256": sha256(fault_lib.__file__),
                 "ranges": {"premature_close_descend_frac": list(fault_lib.PREMATURE_CLOSE_FRAC),
-                           "wrong_grasp_shift_m": list(fault_lib.WRONG_GRASP_SHIFT_M),
-                           "wrong_grasp_yaw_deg": list(fault_lib.WRONG_GRASP_YAW_DEG),
+                           "wrong_grasp_directions": {k: list(v) for k, v in
+                                                      fault_lib.WRONG_GRASP_DIRECTIONS.items()},
+                           "wrong_grasp_distance_m": list(fault_lib.WRONG_GRASP_DISTANCE_M),
                            "misaligned_insert_offset_m": list(fault_lib.MISALIGN_OFFSET_M)},
                 "labels": list(fault_lib.LABELS)},
             training_note="mask step_label == 'fault' before BC; current loaders do not")

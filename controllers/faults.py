@@ -6,9 +6,10 @@ finishes the task:
   premature_close    the fingers close part-way down the descend, above the plug;
                      an empty close is detected, the hand reopens, rises back to the
                      pregrasp and descends again.
-  wrong_grasp        the first pick is planned on a shifted / yawed plug pose, so the
-                     pads close on the wrong part of the housing; the hand opens,
-                     retreats, re-surveys and re-plans the nominal grasp.
+  wrong_grasp        the first pick goes to empty table 6.5-9.5 cm away from the plug
+                     (past the pin tips, or beside it) and closes on nothing; the empty
+                     close is detected, the hand opens, retreats and re-plans the nominal
+                     grasp. Never toward the cable end.
   misaligned_insert  the first align/insert aims a few mm off the socket holes, so the
                      pins hit the socket face; the existing force/stall rule withdraws,
                      re-aligns on the holes and inserts.
@@ -30,9 +31,11 @@ LABELS = ("expert", "fault", "recovery")
 
 # Parameter ranges (magnitudes; signs and directions are drawn separately).
 PREMATURE_CLOSE_FRAC = (0.2, 0.6)        # fraction of the descend waypoints done before the close
-WRONG_GRASP_SHIFT_M = (0.006, 0.012)     # grasp point shift along the plug long axis, toward the pins
-WRONG_GRASP_YAW_DEG = (10., 25.)         # hand yaw error about the vertical
-WRONG_GRASP_MODES = ("shift", "yaw", "both")
+# wrong_grasp misses the plug: the grasp point moves this far (from the housing grasp point) along a
+# plug-frame direction. Toward the cable end (-x) the hand lands on the cable, which the pick planner
+# ignores (smoke row 7101), so that direction is never used.
+WRONG_GRASP_DIRECTIONS = {"past_pins": (1., 0.), "left": (0., 1.), "right": (0., -1.)}
+WRONG_GRASP_DISTANCE_M = (0.065, 0.095)
 # Socket-frame (y, z) aim error. Type O pins (4.8 mm) in 5.1 mm holes: >= ~1.5 mm lands on the face.
 # Kept below PlaceInsert's 4 mm off-axis abort (TRACK_ERROR_LIMIT_M), which applies while approaching:
 # smoke row 7201 drew 3.41 mm and measured 3.78 mm lateral at contact, so the cap is 3 mm.
@@ -72,14 +75,9 @@ def draw_fault(seed, kinds=FAULT_KINDS):
     if kind == "premature_close":
         params = {"descend_frac": float(rng.uniform(*PREMATURE_CLOSE_FRAC))}
     elif kind == "wrong_grasp":
-        mode = WRONG_GRASP_MODES[int(rng.integers(len(WRONG_GRASP_MODES)))]
-        # Shift toward the pin end only: toward the cable end the hand lands on the cable, which the
-        # pick planner ignores (smoke row 7101: 5.3 N on the cable, arm never settled).
-        shift = float(rng.uniform(*WRONG_GRASP_SHIFT_M))
-        yaw = float(rng.uniform(*WRONG_GRASP_YAW_DEG)) * float(rng.choice((-1., 1.)))
-        params = {"mode": mode,
-                  "shift_m": shift if mode in ("shift", "both") else 0.,
-                  "yaw_deg": yaw if mode in ("yaw", "both") else 0.}
+        names = tuple(WRONG_GRASP_DIRECTIONS)
+        params = {"direction": names[int(rng.integers(len(names)))],
+                  "distance_m": float(rng.uniform(*WRONG_GRASP_DISTANCE_M))}
     elif kind == "misaligned_insert":
         magnitude = float(rng.uniform(*MISALIGN_OFFSET_M))
         angle = float(rng.uniform(0., 2. * np.pi))

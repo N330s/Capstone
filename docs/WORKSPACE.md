@@ -104,6 +104,33 @@ the cable; `place_plug` raises otherwise.
 | `scene_rgb` | world | (0.12, −0.21, 0.98), overhead mount 0.66 m above the table top | xyaxes (0, −1, 0, 0.9114, 0, 0.4116): looks at (0.40, −0.21, 0.36), 24° from vertical, image-up = +X | 48° |
 | `inspection` | world | (0.56, −0.32, 0.59) | xyaxes (0.75, 0.66, 0, −0.35, 0.4, 0.847) | 45° |
 | `wrist_rgb` | `openarm_right_hand` | hand-local (0.05, −0.04, 0.01) | hand-local (0, 0.006, 0.123) | 55° |
+| `chest_rgb` (`workspace_v2_cable30` only) | `openarm_body_link0` | (0.095, 0, 0.64), in front of the torso below the shoulder/head block | looks at (0.42, −0.25, 0.36), level (no roll), turned about 38° right | 42° (424×240, about 69° horizontal) |
+
+**Chest camera (2026-10-15, `workspace_v2_cable30` only, `cameras.chest_rgbd`).**
+- **What it models:** the RealSense D435 chest camera of OpenArm 01 Release No.2. It streams RGB
+  plus depth aligned to that RGB.
+- **Depth:** rendered z-depth degraded by `envs/d435.py` into a z16 frame (uint16 mm, 0 = no data):
+  - Intel's RMS noise z²·0.08/(447 px·0.05 m), about 1 mm at 0.5 m;
+  - no data outside 0.28–3 m;
+  - holes at depth jumps over 2 cm (1 px dilation);
+  - 0.3% random dropout.
+
+  The noise stream is seeded by (reset seed, observation index), so recordings are reproducible.
+- **Not modelled:** IR failures on dark or shiny surfaces, the colour imager's lateral offset, and
+  on-camera filters.
+- **Mount is estimated, not from CAD.** The position comes from the v1 torso mesh (front face
+  x ≤ 0.06 at z 0.62–0.66).
+- **The aim deviates from the stock forward-facing mount (user decision).** Facing forward, the
+  socket was out of view in 18/18 smoke scenes and the plug in 6/18. Aimed at the right-arm
+  workspace, both are in view in 18/18.
+- **Visual-only module:** a massless 90×25×25 mm box without collision (`chest_cam_housing`). The
+  torso has an explicit inertial, so the physics is unchanged.
+- **Right arm at home:** it sits closer than the 0.28 m minimum range, so it reads as no-data, as on
+  a real D435.
+- **Saved data:** `image_chest_rgb`, `depth_chest_mm`, plus `cameras/chest/` (JPEG) and
+  `cameras/chest_depth/` (16-bit PNG).
+- **Calibration:** intrinsics and depth-model parameters are in `manifest["chest_rgbd"]`.
+- **Not moved by visual randomization:** the camera is robot-mounted.
 
 `scene_rgb` was moved on 2026-10-02 from the former corner view, (0.85, −0.90, 0.85) with xyaxes
 (0.8, 0.6, 0, −0.25, 0.333, 0.91), to the overhead mount in all workspace files. It keeps the plug

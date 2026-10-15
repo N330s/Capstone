@@ -9,6 +9,9 @@ SCHEMA = "openarm-pilot-v1"
 # Optional per-step label of injected-fault recovery episodes (controllers/faults.py). Absent in
 # ordinary episodes. "fault" steps are injected bad commands: mask them before BC.
 STEP_LABELS = ("expert", "fault", "recovery")
+# Per-joint torque over each action interval (env info, left joint1..7 then right joint1..7, N m).
+TORQUE_KEYS = ("joint_torque_applied_nm", "joint_torque_applied_peak_nm", "joint_torque_gravity_nm",
+               "joint_torque_constraint_nm")
 
 
 def clean_info(info):
@@ -16,7 +19,7 @@ def clean_info(info):
 
 
 # Rendered camera -> folder under <episode>/cameras/ for the per-frame JPEG export.
-CAMERA_FOLDERS = {"scene_rgb":"head", "wrist_rgb":"wrist"}
+CAMERA_FOLDERS = {"scene_rgb":"head", "wrist_rgb":"wrist", "chest_rgb":"chest"}
 
 
 def export_camera_frames(path, observations, folders=CAMERA_FOLDERS, quality=95):
@@ -34,8 +37,17 @@ def export_camera_frames(path, observations, folders=CAMERA_FOLDERS, quality=95)
         for i, o in enumerate(observations,1):
             Image.fromarray(o["images"][camera]).save(out/f"{i}.jpeg",quality=quality)
         written[folder] = camera
+    depth = {}
+    for name in observations[0].get("depth",{}):
+        # Depth frames as lossless 16-bit PNG (mm, 0 = no data), same numbering as the JPEGs.
+        out = Path(path)/"cameras"/f"{name}_depth"
+        out.mkdir(parents=True,exist_ok=False)
+        for i, o in enumerate(observations,1):
+            Image.fromarray(o["depth"][name]).save(out/f"{i}.png")
+        depth[f"{name}_depth"] = f"depth_{name}_mm"
     return {"folders":written,"format":"jpeg","quality":quality,"first_index":1,
-            "count":len(observations),"frame_index":"file i = observation i-1"}
+            "count":len(observations),"frame_index":"file i = observation i-1",
+            **({"depth_folders":depth,"depth_format":"png uint16 mm, 0 = no data"} if depth else {})}
 
 
 def save_episode(path, observations, requested, applied, states, velocities,
@@ -57,6 +69,13 @@ def save_episode(path, observations, requested, applied, states, velocities,
         arrays["step_label"]=np.array(labels)
     for camera in observations[0]["images"]:
         arrays[f"image_{camera}"]=np.stack([o["images"][camera] for o in observations])
+    for name in observations[0].get("depth",{}):
+        arrays[f"depth_{name}_mm"]=np.stack([o["depth"][name] for o in observations])
+    steps=len(requested)
+    if all(k in infos[-1] for k in TORQUE_KEYS):
+        # infos[0] is the reset; info i+1 closes the interval of action i.
+        arrays.update({k:np.stack([np.asarray(i[k],dtype=np.float64) for i in infos[len(infos)-steps:]])
+                       for k in TORQUE_KEYS})
     np.savez_compressed(path/"episode.npz",**arrays)
     frames = export_camera_frames(path, observations)
     metadata = {**manifest,"dataset_schema":SCHEMA,"action_source":"privileged_scripted_expert",
@@ -65,6 +84,12 @@ def save_episode(path, observations, requested, applied, states, velocities,
                 "data_sha256":hashlib.sha256((path/"episode.npz").read_bytes()).hexdigest(),
                 "outcome":infos[-1]["outcome"],
                 "timing":"observation[i] precedes action[i]; observation[i+1] follows its executed interval"}
+    if TORQUE_KEYS[0] in arrays:
+        metadata["joint_torque"]={"arrays":list(TORQUE_KEYS),"units":"N m","shape":"(T, 14)",
+            "order":"left joint1..7, right joint1..7","row":"row i = mean (peak: max |.|) over the "
+            "physics substeps of action[i]'s interval","parts":"applied = motor torque after the "
+            "actuator limits; gravity = qfrc_bias (gravity + Coriolis); constraint = qfrc_constraint "
+            "(contacts + joint limits)"}
     if labels is not None:
         metadata.update(fault=fault, label_counts={k:int(sum(1 for v in labels if v==k)) for k in STEP_LABELS},
                         step_label_note="step_label[i] describes action[i]; 'fault' actions are injected "
@@ -94,6 +119,19 @@ def validate_episode(path):
         for key in ("image_scene_rgb","image_wrist_rgb"):
             if a[key].shape!=(t+1,meta["robot_config"]["image_height"],meta["robot_config"]["image_width"],3) or a[key].dtype!=np.uint8:
                 raise ValueError(f"Image schema mismatch: {key}")
+        for key in a.files:
+            if key.startswith("image_") and key not in ("image_scene_rgb","image_wrist_rgb"):
+                if a[key].ndim!=4 or a[key].shape[0]!=t+1 or a[key].shape[3]!=3 or a[key].dtype!=np.uint8:
+                    raise ValueError(f"Image schema mismatch: {key}")
+            elif key.startswith("depth_"):
+                rgb="image_"+key[len("depth_"):-len("_mm")]+"_rgb"
+                image=a[rgb] if rgb in a.files else None
+                if (a[key].dtype!=np.uint16 or a[key].ndim!=3 or a[key].shape[0]!=t+1
+                        or (image is not None and a[key].shape[1:]!=image.shape[1:3])):
+                    raise ValueError(f"Depth schema mismatch: {key}")
+            elif key in TORQUE_KEYS:
+                if a[key].shape!=(t,14) or not np.isfinite(a[key]).all():
+                    raise ValueError(f"Joint torque schema mismatch: {key}")
         done=a["terminated"]|a["truncated"]
         if done[:-1].any() or not done[-1]:
             raise ValueError("Episode boundary mismatch")

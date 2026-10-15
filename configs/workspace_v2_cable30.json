@@ -320,6 +320,35 @@
       ],
       "fovy_deg": 45
     },
+    "chest_rgbd": {
+      "description": "Chest RealSense D435 like the OpenArm 01 Release No.2 chest mount (RGB + depth aligned to RGB). Position ESTIMATED from the v1 torso mesh (front face below the shoulder/head block, x <= 0.06 at z 0.62-0.66), not from CAD. DEVIATION from the stock forward-facing mount (user decision 2026-10-15): turned ~38 deg toward the right-arm workspace and aimed at (0.42, -0.25, 0.36), because facing forward the socket was out of view in 18/18 smoke scenes (plug 12/18); aimed here both are in view in 18/18. Optical centre of the RGB stream; the real colour imager sits slightly off the module centre.",
+      "camera_name": "chest_rgb",
+      "parent_body": "openarm_body_link0",
+      "position_m": [0.095, 0.0, 0.64],
+      "target_m": [0.42, -0.25, 0.36],
+      "fovy_deg": 42,
+      "width": 424,
+      "height": 240,
+      "depth": {
+        "description": "Rendered z-depth (aligned to RGB) degraded like a D435 z16 stream: RMS noise z^2*subpixel/(fx*baseline) (Intel), 0 outside [min, max] range, holes at depth jumps, random dropout, 1 mm units",
+        "units_m": 0.001,
+        "baseline_m": 0.050,
+        "subpixel": 0.08,
+        "depth_fx_px": 447.0,
+        "depth_fx_note": "focal length of the D435 depth imagers at 848x480 (87 deg HFOV): 424 / tan(43.5 deg)",
+        "min_range_m": 0.28,
+        "max_range_m": 3.0,
+        "edge_jump_m": 0.02,
+        "edge_dilate_px": 1,
+        "dropout_rate": 0.003
+      },
+      "visual_mount": {
+        "description": "D435 module 90 x 25 x 25 mm behind the optical centre; visual only, no mass, no collision",
+        "housing_half_m": [0.045, 0.0125, 0.0125],
+        "housing_offset_z_m": 0.0125,
+        "rgba_housing": [0.72, 0.72, 0.74, 1]
+      }
+    },
     "wrist_rgb": {
       "parent_body": "openarm_right_hand",
       "position_m": [

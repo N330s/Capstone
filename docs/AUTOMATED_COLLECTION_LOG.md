@@ -815,3 +815,87 @@ Only collection changes; the training-side masking is out of scope. Design and r
   - the training loaders must mask `step_label == "fault"` before any BC;
   - a shift-only wrong grasp is hard to see from `scene_rgb` (visible in `wrist_rgb`);
   - the Docker image does not have this code.
+
+## 2026-10-15: wrong_grasp = miss, chest D435 RGB-D camera, joint torque in collected data
+
+**Request.**
+1. wrong_grasp should grip in a totally wrong place. The user chose: miss the plug entirely.
+2. Add a chest camera like the real OpenArm v1, stereo depth type. The official OpenArm 01
+   Release No.2 chest camera is a RealSense **D435**. The user chose rendered depth with D435
+   noise, in `workspace_v2_cable30` only.
+3. Store joint torque in future data collection.
+
+Working rules from the user:
+- keep `claude_progress.md` (task checklist);
+- run tests in parallel;
+- no recording for tests;
+- logs and results stay as temp files in the session scratchpad.
+
+- **Miss.**
+  - **Planner:** `plan_table_pick(grasp_offset=...)` moves only the grasp point. The default is
+    unchanged, so the sampler is unaffected.
+  - **Fault:** the expert plans 6.5–9.5 cm past the pins or to either side (never toward the
+    cable), with fallbacks in direction and distance. The open fingers must stay ≥ 10 mm from the
+    true plug and the live cable along the whole descend, checked with `mj_geomDistance` on
+    scratch data.
+  - **Detection and recovery:** empty-close detection, as premature_close. Then
+    open → retreat → re-plan from the same detection. The re-survey is removed, along with the
+    row-7401 failure mode it caused.
+- **Chest camera.**
+  - **Geometry:** `cameras.chest_rgbd` with a massless visual module on `openarm_body_link0`, at
+    (0.095, 0, 0.64) estimated from the torso mesh. 42° vertical FOV, 424×240.
+  - **Depth:** `envs/d435.py` degrades rendered z-depth to uint16 mm with Intel's RMS noise, range
+    limits, edge holes and dropout.
+  - **Aim:** facing forward, the socket was in view 0/18 and the plug 12/18. The user chose to aim
+    it at the workspace, (0.42, −0.25, 0.36), giving 18/18 for both.
+  - **Fix:** the first aimed render had a rolled horizon (`camera_frame` assumes downward
+    cameras). Fixed with `level_camera_frame`.
+- **Torque.** `info["joint_torque_{applied,applied_peak,gravity,constraint}_nm"]` (14 values), saved
+  by `save_episode` as (T, 14) arrays.
+- **Tests:** 76/76 (+12):
+  - `test_d435`: units, range, determinism, the noise formula, holes, intrinsics;
+  - `test_faults`: miss parameters, saving and validating the sensor arrays;
+  - `test_sensors`: chest RGB-D shapes, depth vs geometry, reproducibility, torque ≈ gravity at
+    rest and within limits, v1 unchanged, the planner offset.
+
+  One existing test mocked `_candidate` with the old signature; the offset is now passed only when
+  set.
+- **Physics unchanged.** Clean row 6100 is bit-identical to the pre-change trace (1981×148).
+  The hashed sources changed, so **datasets recorded before this no longer pass strict replay**;
+  documented.
+- **Miss smoke:** 6/6 succeeded (rows 7500/7501/7550/7551/7600/7601), 0 plug contacts, clearance
+  13–42 mm, recovery 2.4–3.0 s.
+- **Not done:** no episode was recorded with the new arrays (by instruction); saving is covered by
+  synthetic-episode tests. Docker not rebuilt.
+
+### End-to-end test (2026-10-15, recorded episodes; moved to `data/openarm_v2_e2e_sensors_test/` at the user's request:
+`A_clean`, `B2_premature`, `C2_misaligned`, `D_miss` + `e2e_report.json` and `sheet_*.png`; logs stayed in the scratchpad)
+- **Bug found and fixed.** `collect_random.py --faults ... --record` crashed in `build_manifest`
+  before the first recording: it still referenced the removed `WRONG_GRASP_SHIFT_M`/`_YAW_DEG`.
+  - Missed earlier because the unit tests never built a fault manifest and the miss smoke runs were
+    preflight-only.
+  - Fixed: the manifest lists `wrong_grasp_directions` and `wrong_grasp_distance_m`.
+  - Regression test `FaultManifestTests`: fails on the old code, passes on the fix. Suite 77/77.
+- **Recorded:** one episode each, rows 7700 clean, 7720 premature_close, 7740 misaligned_insert and
+  7760 wrong_grasp miss. **All 4 succeeded.** For every episode:
+  - `validate_episode` passes and `trace_matches_preflight` is true;
+  - strict `replay_pilot.py` gives 0.0 qpos/qvel error.
+- **Data checks:**
+  - **Shapes:** chest RGB (T+1, 240, 424, 3) uint8; depth (T+1, 240, 424) uint16; torque
+    (T, 14) ×4.
+  - **Depth:** 66–75% valid, median 487–528 mm.
+  - **Exported frames:** chest JPEG and chest_depth PNG counts equal T+1.
+  - **Labels** line up with the phases.
+- **Torque:**
+  - right-arm peaks ≤ 11.5 N m (limits 40/27/7);
+  - at rest applied − gravity = 0.000;
+  - contact part about 0.11 N m in free motion (including carrying the plug) vs about 0.36 N m in
+    insert/hold;
+  - the parked left arm is constant.
+- **Depth at the plug's pixel vs geometry:** −21 to −57 mm when the plug's top or the hand is in
+  front. At the home pose the right arm can hide the plug from the chest camera entirely (row 7760:
+  −274 mm, i.e. the arm). That is real occlusion, not a bug.
+- **Cost:**
+  - 404–585 MB per episode (0.21–0.24 MB/step) against 184 MB (0.084 MB/step) without the chest
+    camera, so about 2.5–2.9×;
+  - wall time 1000–1875 s per scene (preflight + record) with 3 runs in parallel.

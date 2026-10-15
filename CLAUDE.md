@@ -26,12 +26,12 @@ trained yet; the roadmap is in `plan.md`, current status in `docs/*.md`.
 ## Commands
 
 ```powershell
-python -m unittest discover -s tests -v          # all tests (64); needs third_party assets
+python -m unittest discover -s tests -v          # all tests (77); needs third_party assets
 python -m unittest tests.test_connector -v       # holder-only tests, no robot assets needed
 python -m unittest tests.test_openarm.OpenArmTests.test_v1_bimanual_and_no_weld  # single test
 ```
 
-Only `tests/test_connector.py`, `tests/test_workspace.py`, `tests/test_vla_adapter.py` and `tests/test_faults.py` run without `third_party/`;
+Only `tests/test_connector.py`, `tests/test_workspace.py`, `tests/test_vla_adapter.py`, `tests/test_faults.py` and `tests/test_d435.py` run without `third_party/`;
 `test_openarm`, `test_table_pickup`, `test_carry_path`, `test_collection` build the robot scene
 (slow: each `OpenArmInsertEnv()` compiles the model and settles 1 s of physics at 2 kHz).
 
@@ -95,7 +95,11 @@ Layers, bottom to top (each imports only from below):
    **recovery demonstrations** (`controllers/faults.py`): one injected mistake per scene, then
    recovery; episodes gain `step_label` (expert/fault/recovery). Fault steps must be masked before
    BC and the current VLA loaders do not do this yet; keep these in their own `--output`.
-   See `docs/DATA_COLLECTION.md`.
+   wrong_grasp = a planned miss on empty table beside the plug. See `docs/DATA_COLLECTION.md`.
+   v2_cable30 also has a **chest RealSense D435-like camera** (`cameras.chest_rgbd`, built by
+   `envs/workspace.py add_chest_camera`): obs gain `images["chest_rgb"]` (240x424) and
+   `depth["chest"]` (uint16 mm aligned to it, degraded by `envs/d435.py`); mount estimated, aimed at
+   the right-arm workspace (deviation from the stock forward mount; `docs/WORKSPACE.md`).
    A slim collection-only Docker image is `docker/collect.Dockerfile` (+ whitelist `.dockerignore`);
    usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),
@@ -139,6 +143,9 @@ target advances only below `push_force_cap_n`). It is a scripted probe, not yet 
   `qpos/qvel` are untouched.
 - Frames: socket +X is insertion, Y separates blades, Z is blade width; roll/pitch/yaw =
   Rz(yaw)·Ry(pitch)·Rx(roll). CLI angles are degrees and offsets mm; internals are SI.
+- `info["joint_torque_*_nm"]` (14: left joint1..7, right joint1..7; applied mean/peak, gravity,
+  constraint over the 40 substeps) is logged every step and saved as (T, 14) arrays by
+  `save_episode`; read-only, not part of the 16-d state.
 - Every `step` calls `mj_forward` at the command boundary; replay must reproduce this exactly
   (a replay audit once failed by omitting it). Strict replay tolerance is 1e-8 qpos / 1e-7 qvel.
 

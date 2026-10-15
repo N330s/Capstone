@@ -10,6 +10,7 @@ import numpy as np
 from connector.simulation import ConnectorMetrics, CONFIG_PATH, ROOT, rotation_vector
 from connector.spec import ConnectorSpec
 from envs.scene import build_model, source_manifest, scene_xml
+from envs import d435
 from envs import workspace as wsp
 
 ROBOT_CONFIG = ROOT / "configs/openarm_v1.json"
@@ -81,12 +82,20 @@ class OpenArmInsertEnv:
         self.ik_data = mujoco.MjData(self.model)
         self.images = images
         self.renderer = None
+        # Chest RGB-D camera (workspace cameras.chest_rgbd: a D435-like RGB + aligned z16 depth,
+        # envs/d435.py), rendered only when the workspace defines it.
+        self.chest = self.workspace["cameras"].get("chest_rgbd")
+        self.chest_renderer = None
+        self._obs_index = 0
         self.joints = {side: [self.model.joint(f"openarm_{side}_joint{i}").id for i in range(1, 8)]
                        for side in ("left", "right")}
         self.qa = {side: np.array([self.model.jnt_qposadr[j] for j in ids]) for side, ids in self.joints.items()}
         self.va = {side: np.array([self.model.jnt_dofadr[j] for j in ids]) for side, ids in self.joints.items()}
         self.act = {side: np.array([self.model.actuator(f"{side}_joint{i}_ctrl").id for i in range(1,8)])
                     for side in ("left","right")}
+        # Joint torque logging (read-only): left joint1..7 then right joint1..7, the state order.
+        self.torque_act = np.r_[self.act["left"], self.act["right"]]
+        self.torque_dof = np.r_[self.va["left"], self.va["right"]]
         self.fqa = {side: np.array([self.model.jnt_qposadr[self.model.joint(f"openarm_{side}_finger_joint{i}").id]
                                    for i in (1,2)]) for side in ("left","right")}
         self.fva = {side: np.array([self.model.jnt_dofadr[self.model.joint(f"openarm_{side}_finger_joint{i}").id]
@@ -291,6 +300,7 @@ class OpenArmInsertEnv:
                 raise ValueError(f"{key} must be finite")
         self.mode = mode
         self.seed, self.reset_options = int(seed), options
+        self._obs_index = 0               # depth-noise stream index (one per observation)
         self._restore_scene()
         mujoco.mj_resetData(self.model,self.data)
         self.grasp_established, self.drops = False, 0
@@ -543,7 +553,29 @@ class OpenArmInsertEnv:
             for name in ("scene_rgb","wrist_rgb"):
                 self.renderer.update_scene(self.data,camera=name,scene_option=opt)
                 obs["images"][name] = self.renderer.render().copy()
+            if self.chest is not None:
+                self._observe_chest(obs, opt)
+        self._obs_index += 1
         return obs
+
+    def _observe_chest(self, obs, opt):
+        """Chest D435: RGB plus z-depth rendered from the same camera (aligned to the RGB), degraded
+        to a z16 frame (uint16 mm, 0 = no data). The noise stream is seeded by (reset seed,
+        observation index), so a recording is reproducible."""
+        c = self.chest
+        if self.chest_renderer is None:
+            self.chest_renderer = mujoco.Renderer(self.model, height=c["height"], width=c["width"])
+        r = self.chest_renderer
+        r.update_scene(self.data, camera=c["camera_name"], scene_option=opt)
+        obs["images"][c["camera_name"]] = r.render().copy()
+        r.enable_depth_rendering()
+        try:
+            r.update_scene(self.data, camera=c["camera_name"], scene_option=opt)
+            z = r.render().copy()
+        finally:
+            r.disable_depth_rendering()
+        rng = np.random.default_rng([abs(self.seed), self._obs_index])
+        obs["depth"] = {"chest": d435.degrade_depth(z, rng, c["depth"])}
 
     def step(self, action):
         if self.outcome:
@@ -564,11 +596,18 @@ class OpenArmInsertEnv:
         max_drops = self.config.get("max_drops", 2)
         count = 0
         interval_peak_force = 0.
+        torque_sum, torque_peak = np.zeros(14), np.zeros(14)
+        gravity_sum, constraint_sum = np.zeros(14), np.zeros(14)
         for _ in range(self.substeps):
             previous_time = float(self.data.time)
             self._physics_step()
             mujoco.mj_forward(self.model,self.data)
             count += 1
+            applied = self.data.actuator_force[self.torque_act]
+            torque_sum += applied
+            torque_peak = np.maximum(torque_peak, np.abs(applied))
+            gravity_sum += self.data.qfrc_bias[self.torque_dof]
+            constraint_sum += self.data.qfrc_constraint[self.torque_dof]
             info = self._info()
             interval_peak_force = max(interval_peak_force, info["contact_force_n"])
             self.elapsed += self.model.opt.timestep
@@ -623,7 +662,13 @@ class OpenArmInsertEnv:
                           "action_clipped": bool(np.any(a != self.last_action)),
                           "applied_action": self.last_action.copy(),
                           "peak_contact_force_n": self.peak_force,
-                "peak_penetration_m": self.peak_penetration})
+                "peak_penetration_m": self.peak_penetration,
+                # Per-joint torque over this command interval (left j1..7, right j1..7; N m):
+                # applied motor torque (mean, peak |.|), gravity/Coriolis and contact/limit parts.
+                "joint_torque_applied_nm": torque_sum / count,
+                "joint_torque_applied_peak_nm": torque_peak,
+                "joint_torque_gravity_nm": gravity_sum / count,
+                "joint_torque_constraint_nm": constraint_sum / count})
         self.info["robot_unwanted_contact_peak_n"] = self.peak_robot_contact
         self.info["robot_support_contact_peak_n"] = self.peak_support_contact
         terminated = self.outcome not in (None,"timeout","numerical_failure")
@@ -634,7 +679,7 @@ class OpenArmInsertEnv:
         canonical_xml = scene_xml(self.workspace).replace(str((ROOT/"third_party/openarm_mujoco/v1/meshes").resolve()), "UPSTREAM_V1_MESHES")
         source_paths = ("envs/scene.py", "envs/workspace.py", "envs/openarm_insert.py", "connector/geometry.py",
                         "connector/simulation.py", "connector/spec.py", "connector/catalog.py", "connector/slab.py",
-                        "connector/builder.py", "controllers/expert.py")
+                        "connector/builder.py", "controllers/expert.py", "envs/d435.py")
         workspace = {k: v for k, v in self.workspace.items() if not k.startswith("_")}
         return {"schema": self.config["schema_version"], "robot": source_manifest(),
                 "scene_sha256": hashlib.sha256(canonical_xml.encode()).hexdigest(),
@@ -660,9 +705,17 @@ class OpenArmInsertEnv:
                     "quaternion_wxyz": self.model.cam_quat[self.model.camera(name).id].tolist(),
                     "fovy_deg": float(self.model.cam_fovy[self.model.camera(name).id]),
                     "parent_body": self.model.body(self.model.cam_bodyid[self.model.camera(name).id]).name}
-                    for name in ("scene_rgb","wrist_rgb")}}
+                    for name in ("scene_rgb","wrist_rgb") + ((self.chest["camera_name"],) if self.chest else ())},
+                "chest_rgbd": None if self.chest is None else {
+                    "camera": self.chest["camera_name"],
+                    "intrinsics": d435.intrinsics(self.chest["width"], self.chest["height"], self.chest["fovy_deg"]),
+                    "depth_model": self.chest["depth"], "depth_aligned_to": self.chest["camera_name"]},
+                "joint_torque_order": [f"openarm_{s}_joint{i}" for s in ("left", "right") for i in range(1, 8)]}
 
     def close(self):
         if self.renderer:
             self.renderer.close()
             self.renderer = None
+        if self.chest_renderer:
+            self.chest_renderer.close()
+            self.chest_renderer = None

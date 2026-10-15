@@ -61,6 +61,7 @@ import numpy as np
 import mujoco
 from connector.simulation import rotation_vector
 from controllers.place_insert import PlaceInsert, PLACE_PHASES, LEGACY_PLUG, plug_geometry
+from controllers.faults import WRONG_GRASP_DIRECTIONS
 
 # ---- table pick (tabletop mode only) --------------------------------------
 PLUG_HALF_HEIGHT_M = 0.008            # housing half-height: plug centre above the table
@@ -99,13 +100,14 @@ STANDOFF_M = 0.055            # pre-insert distance back along the mating axis
 PHASE_TIMEOUT_S = {"survey": 1.5}
 
 # ---- injected faults (controllers/faults.py; recovery demonstrations only) ---
-FAULT_PHASES = ("fault_close", "reopen", "rise", "resurvey")
+FAULT_PHASES = ("fault_close", "reopen", "rise")
 PREMATURE_CLOSE_CLEARANCE_M = 0.005   # closed fingertips at least this far above the housing top
 EMPTY_CLOSE_DETECT_S = 0.2            # fingers at the closed command, nothing between them
 EMPTY_CLOSE_TIMEOUT_S = 2.0           # after the close command finished, detect regardless
 REOPEN_TOLERANCE_M = 0.001
 REOPEN_TIMEOUT_S = 1.5
-RESURVEY_S = PHASE_TIMEOUT_S["survey"] * 0.6
+MISS_CLEARANCE_M = 0.010             # wrong_grasp miss: open fingers this far from the plug and the cable
+MISS_EXTRA_DISTANCE_M = 0.02         # second try per direction, this much further out
 
 
 def euler_xyz(deg):
@@ -426,7 +428,8 @@ class GraspPlanner:
                                              np.cos(np.arctan2(z[1], z[0]) - np.radians(15.)))))
         return sorted((0, 1), key=heading)
 
-    def plan_grasp(self, plug_pos, plug_mat, q_now=None, *, insert=None, require_insert=False):
+    def plan_grasp(self, plug_pos, plug_mat, q_now=None, *, insert=None, require_insert=False,
+                   grasp_offset=None):
         """Best grasp plan for a plug lying flat, or None. Returns (plan, log).
 
         Tilt levels are tried least-tilted first and the search stops at the
@@ -435,7 +438,8 @@ class GraspPlanner:
         log, plans = [], []
         for tilt in GRASP_TILTS_DEG:
             for flip in self._flip_order(plug_mat, tilt):
-                plan, why = self._candidate(plug_pos, plug_mat, flip, tilt, q_now)
+                plan, why = (self._candidate(plug_pos, plug_mat, flip, tilt, q_now) if grasp_offset is None
+                             else self._candidate(plug_pos, plug_mat, flip, tilt, q_now, grasp_offset))
                 entry = {"flip": flip, "tilt_deg": tilt, "result": why}
                 if plan is not None:
                     margin = (self.insert_feasible(flip, tilt, insert, plan["q_grasp"],
@@ -460,10 +464,12 @@ class GraspPlanner:
                                          min(p["insert_margin"] or 0.0, INSERT_ROBUST_MARGIN_RAD),
                                          p["score"])), log
 
-    def _candidate(self, plug_pos, plug_mat, flip, tilt, q_now):
+    def _candidate(self, plug_pos, plug_mat, flip, tilt, q_now, grasp_offset=None):
         R = plug_mat @ grasp_rotation_in_plug(flip, tilt)
         approach = R[:, 0]
         grasp = plug_pos + plug_mat @ np.asarray(self.geom.grasp_point_m) + np.array([0., 0., GRASP_HEIGHT_OFFSET_M])
+        if grasp_offset is not None:
+            grasp = grasp + np.asarray(grasp_offset, dtype=float)   # wrong_grasp fault: close beside the plug
         qg = self.solve(grasp, R, ([q_now] if q_now is not None else []) + self.seeds)
         if qg is None:
             return None, "grasp_ik"
@@ -518,12 +524,15 @@ class GraspPlanner:
 
 
 def plan_table_pick(planner, qpos, plug_pos, plug_mat, q_now, *, insert=None, require_insert=False,
-                    travel=None):
-    """Shared by the expert and the scene sampler. Returns (plan or None, reason, log)."""
+                    travel=None, grasp_offset=None):
+    """Shared by the expert and the scene sampler. Returns (plan or None, reason, log).
+
+    ``grasp_offset`` (world, m) moves only the grasp point; the plug stays where it is for the
+    contact checks (wrong_grasp fault: a planned miss beside the plug)."""
     planner.set_state(qpos)
     planner.place_plug(plug_pos, plug_mat)
     plan, log = planner.plan_grasp(plug_pos, plug_mat, q_now, insert=insert,
-                                   require_insert=require_insert)
+                                   require_insert=require_insert, grasp_offset=grasp_offset)
     if plan is None:
         reasons = sorted({entry["result"] for entry in log if entry["result"] != "ok"})
         return None, "ik_infeasible:" + ",".join(reasons or ["no_insert_consistent_grasp"]), log
@@ -749,19 +758,48 @@ class PickInsertExpert:
         self.fault_events[event] = {"step": self.steps, "time_s": round(float(self.env.data.time), 3),
                                     "phase": self.phase}
 
-    def _believed_plug(self, wrong_scale=0.):
-        """Plug pose the pick is planned on: the latched detection plus the one-sided-contact
-        correction. ``wrong_scale`` > 0 (wrong_grasp fault) moves the planned grasp point along the
-        plug's long axis and yaws the hand about it, by that fraction of the drawn error."""
-        pos = self.detection["plug_pos"] + self.grasp_correction_m
-        mat = self.detection["plug_mat"]
-        if not wrong_scale:
-            return pos, mat
-        p = self.fault.params
-        point = np.asarray(self.geom.grasp_point_m)
-        grasp = pos + mat @ point + mat @ np.array([p["shift_m"] * wrong_scale, 0., 0.])
-        wrong_mat = yaw_mat(np.radians(p["yaw_deg"] * wrong_scale)) @ mat
-        return grasp - wrong_mat @ point, wrong_mat
+    def _plan_miss(self, plug_pos, plug_mat):
+        """wrong_grasp fault: plan a grasp on empty table beside the plug (the drawn direction and
+        distance first, then further out, then the other directions). Planned on the detection like
+        any pick; accepted only if the open fingers stay MISS_CLEARANCE_M from the true plug and the
+        cable all the way down (privileged check: it only keeps the injected miss from touching)."""
+        e, p = self.env, self.fault.params
+        names = [p["direction"]] + [n for n in WRONG_GRASP_DIRECTIONS if n != p["direction"]]
+        tried, log = [], []
+        for name in names:
+            for distance in (p["distance_m"], p["distance_m"] + MISS_EXTRA_DISTANCE_M):
+                dx, dy = WRONG_GRASP_DIRECTIONS[name]
+                offset = plug_mat @ np.array([dx, dy, 0.]) * distance
+                offset[2] = 0.
+                plan, reason, log = plan_table_pick(self.planner, e.data.qpos, plug_pos, plug_mat,
+                                                    self._q_now(), grasp_offset=offset)
+                clearance = self._miss_clearance(plan) if plan is not None else None
+                ok = clearance is not None and clearance >= MISS_CLEARANCE_M
+                tried.append(f"{name}@{distance:.3f}:" + (reason if plan is None else f"clear={clearance:.4f}"))
+                if ok:
+                    self.fault_info.update(miss_direction=name, miss_distance_m=round(distance, 4),
+                                           miss_finger_clearance_m=round(clearance, 4), miss_tries=tried)
+                    return plan, "ok", log
+        self.fault_info["miss_tries"] = tried
+        return None, "no_clear_miss", log
+
+    def _miss_clearance(self, plan):
+        """Smallest distance from the open fingers (descend line and grasp pose) to the true plug and
+        the live cable, on the planner's scratch data."""
+        e, pl = self.env, self.planner
+        m = pl.m
+        pl.set_state(e.data.qpos)                    # true plug and current cable pose (read-only copy)
+        mujoco.mj_kinematics(m, pl.d)
+        others = [g for g in range(m.ngeom)
+                  if (int(m.geom_bodyid[g]) == pl.plug or int(m.geom_bodyid[g]) in pl.cable_bodies)
+                  and (m.geom_contype[g] or m.geom_conaffinity[g])]
+        best = np.inf
+        for q in plan["descend"] + [plan["q_grasp"]]:
+            pl.fk(q, self.geom.preshape_travel_m)
+            for f in pl.finger_geoms:
+                for g in others:
+                    best = min(best, float(mujoco.mj_geomDistance(m, pl.d, f, g, 0.05, None)))
+        return best
 
     def _premature_close_index(self):
         """Descend waypoints executed before the premature close: the drawn fraction, lowered
@@ -785,19 +823,16 @@ class PickInsertExpert:
     def _plan_pick(self):
         """Plan grasp + transit from the latched detection. Sets self.plan."""
         e = self.env
-        insert = (self.detection["socket_pos"], upright_insert_frame(self.detection["socket_mat"],
-                                                                     self.geom.half_turn_symmetric))
-        # wrong_grasp fault: plan the first pick on a wrong plug pose (full drawn error, then half).
-        # That grasp is released before the lift, so it need not reach the socket.
-        wrong = self._fault_is("wrong_grasp")
-        for scale in ((1.0, 0.5) if wrong else (0.,)):
-            plug_pos, plug_mat = flat_plug_pose(*self._believed_plug(scale), self.table_z, self.geom.rest_z_m)
+        plug_pos, plug_mat = flat_plug_pose(self.detection["plug_pos"] + self.grasp_correction_m,
+                                            self.detection["plug_mat"], self.table_z, self.geom.rest_z_m)
+        if self._fault_is("wrong_grasp"):
+            # Injected miss: released before any lift, so it need not reach the socket.
+            plan, reason, log = self._plan_miss(plug_pos, plug_mat)
+        else:
+            insert = (self.detection["socket_pos"], upright_insert_frame(self.detection["socket_mat"],
+                                                                         self.geom.half_turn_symmetric))
             plan, reason, log = plan_table_pick(self.planner, e.data.qpos, plug_pos, plug_mat, self._q_now(),
-                                                insert=insert, require_insert=not wrong)
-            if plan is not None:
-                break
-        if wrong:
-            self.fault_info["wrong_grasp_scale"] = scale if plan is not None else None
+                                                insert=insert, require_insert=True)
         summary = {"attempt": self.regrasps, "result": reason, "candidates": log}
         if plan is not None:
             summary.update(flip=plan["flip"], tilt_deg=plan["tilt_deg"],
@@ -890,7 +925,7 @@ class PickInsertExpert:
             return np.r_[hold, self.grip]
 
         if self.phase == "close" and self.fault_state == "active":
-            return self._wrong_grasp_close()
+            return self._miss_close()
 
         if self.phase == "close":
             contacts = int(info.get("plug_finger_contacts", 0))
@@ -950,21 +985,20 @@ class PickInsertExpert:
             return np.r_[self._q_now(), self.grip]
         raise RuntimeError(f"unknown pick phase {self.phase}")
 
-    def _wrong_grasp_close(self):
-        """Close on the wrong spot (wrong_grasp fault). Whatever ends the close -- a latched grasp,
-        a one-sided shove, or the timeout -- is the detection: open and back off (regrasp), then
-        re-survey. The one-sided correction is not updated: the miss was injected, not a
-        detection error."""
+    def _miss_close(self):
+        """Close on empty table (wrong_grasp fault). Detected from robot-side signals only, as for
+        premature_close: the fingers settle at the closed command with no pad on the plug. Then open
+        and back off (regrasp -> retreat -> re-plan). The one-sided correction is not touched."""
         e, info = self.env, self.env.info
         contacts = int(info.get("plug_finger_contacts", 0))
-        self.one_sided_s = self.one_sided_s + e.dt if contacts == 1 else 0.
         self.grip = max(self.geom.close_travel_m, self.grip - FINGER_CLOSE_RATE_M_S * e.dt)
-        closed_for = self.phase_time - (self.geom.preshape_travel_m - self.geom.close_travel_m) / FINGER_CLOSE_RATE_M_S
-        result = ("one_sided" if contacts == 1 and (self.one_sided_s > ONE_SIDED_CLOSE_GRACE_S or
-                                                    info.get("grasp_penetration_m", 0.) > GRASP_PENETRATION_BACKOFF_M)
-                  else "grasped" if self.grip <= self.geom.close_travel_m and closed_for > 0.2
-                  and info["grasp_established"]
-                  else "timeout" if self._pick_timed_out() else None)
+        settled = (self.grip <= self.geom.close_travel_m
+                   and abs(float(info["grip_travel_m"]) - self.grip) < REOPEN_TOLERANCE_M)
+        self._empty_close_s = self._empty_close_s + e.dt if settled and contacts == 0 else 0.
+        ramp_s = (self.geom.preshape_travel_m - self.geom.close_travel_m) / FINGER_CLOSE_RATE_M_S
+        result = ("empty" if self._empty_close_s >= EMPTY_CLOSE_DETECT_S
+                  else "touched_plug" if contacts > 0
+                  else "timeout" if self.phase_time > ramp_s + EMPTY_CLOSE_TIMEOUT_S else None)
         if result:
             self.fault_info.update(close_result=result, close_contacts=contacts,
                                    close_grip_travel_m=round(float(info["grip_travel_m"]), 5))
@@ -974,7 +1008,7 @@ class PickInsertExpert:
         return np.r_[self.plan["q_grasp"], self.grip]
 
     def _fault_action(self):
-        """premature_close (fault_close -> reopen -> rise) and the wrong_grasp re-survey."""
+        """premature_close: fault_close -> reopen -> rise."""
         e, info = self.env, self.env.info
         if self.phase == "fault_close":
             # Hold the arm part-way down and close the fingers on nothing.
@@ -1009,20 +1043,6 @@ class PickInsertExpert:
                 self._enter("descend")         # the ordinary, full descend from the pregrasp
             return np.r_[q, self.grip]
 
-        if self.phase == "resurvey":
-            # wrong_grasp recovery: the shove may have moved the plug, so look again before re-planning.
-            self.grip = self.geom.preshape_travel_m
-            if self.phase_time > RESURVEY_S:
-                self.detection = self.detector.sense()
-                truth = self.detector.truth()
-                self.fault_info["resurvey_detection_error_m"] = round(float(np.linalg.norm(
-                    self.detection["plug_pos"] - truth["plug_pos"])), 5)
-                self.fault_info["plug_moved_m"] = round(float(np.linalg.norm(
-                    truth["plug_pos"][:2] - self._fault_plug_xy)), 5)
-                self.start_plug_z = float(truth["plug_pos"][2])
-                self._fault_to("done", "recovered")
-                self._begin_pick()
-            return np.r_[self._q_now(), self.grip]
         raise RuntimeError(f"unknown fault phase {self.phase}")
 
     def _path_done(self):
@@ -1049,6 +1069,7 @@ class PickInsertExpert:
                              min_duration=2.5, hold=0.3)
         elif phase == "close":
             self.grip = min(self.grip, self.geom.preshape_travel_m)
+            self._empty_close_s = 0.
             self.one_sided_s = 0.0
             self.one_sided_snapshot = None
             self._goto("close")
@@ -1065,9 +1086,10 @@ class PickInsertExpert:
             # converges if each retry corrects the same estimate instead of a new
             # one with its own independent noise draw.
             if self.fault_state == "recovering":
-                self._goto("resurvey")         # wrong_grasp recovery: the plug may have been pushed
-            else:
-                self._begin_pick()
+                # wrong_grasp recovery: the miss never touched the plug, so the latched detection
+                # still holds; from here on it is the ordinary pick.
+                self._fault_to("done", "recovered")
+            self._begin_pick()
 
     # ------------------------------------------------------------------ phases
     def action(self):
@@ -1094,7 +1116,6 @@ class PickInsertExpert:
                     "plug_pos_m": float(np.linalg.norm(self.detection["plug_pos"] - truth["plug_pos"])),
                     "socket_pos_m": float(np.linalg.norm(self.detection["socket_pos"] - truth["socket_pos"]))}
                 self.start_plug_z = float(truth["plug_pos"][2])
-                self._fault_plug_xy = truth["plug_pos"][:2].copy()
                 self._begin_pick()
             return np.r_[e.target[:7], self.grip]
 

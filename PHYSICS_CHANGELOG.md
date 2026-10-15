@@ -291,3 +291,15 @@ machine: 60 segments (nv 207) 70.9 s wall per simulated second, 30 segments (nv 
 Effect on physics: segments are twice as long with the same per-joint stiffness, so the cable is
 effectively stiffer in bending. This is the scene chosen for automated v2 data collection.
 Validation of the task in this scene is in progress (`collect_random.py`, not yet recorded here).
+
+# Chest D435 camera and joint torque logging: no physics change (2026-10-15)
+
+`workspace_v2_cable30.json` gains `cameras.chest_rgbd`: a `chest_rgb` camera and a massless,
+non-colliding 90x25x25 mm visual box (`chest_cam_housing`) on `openarm_body_link0`, which has an
+explicit `<inertial>`. `OpenArmInsertEnv.step` now also reads `actuator_force`, `qfrc_bias` and
+`qfrc_constraint` after each substep (`info["joint_torque_*_nm"]`). Both are read-only.
+
+Measured: a clean `collect_random` rollout of row 6100 in `workspace_v2_cable30` reproduces the
+qpos trace recorded before the change (HEAD bc72ba3) bit-for-bit (1981 x 148, same phases).
+The hashed sources changed (`envs/workspace.py`, `envs/openarm_insert.py`, new `envs/d435.py`), so
+`replay_pilot.py` refuses datasets recorded earlier even though their physics is unchanged.
