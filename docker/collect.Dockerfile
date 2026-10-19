@@ -20,10 +20,29 @@ RUN apt-get update \
 # Same versions as the development venv, so recordings are reproducible.
 RUN pip install --no-cache-dir mujoco==3.11.0 numpy==2.5.3 Pillow==12.3.0
 
+# GPU build only: GLVND's EGL vendor file for the NVIDIA driver. Older NVIDIA Container Toolkit
+# versions inject libEGL_nvidia.so.0 but not this file, and with Mesa's vendor file removed above
+# EGL would then find no vendor at all. A toolkit that does mount its own copy simply replaces it.
+# A plain COPY cannot be conditional, so it is staged and moved only when CPU_RENDER != 1; the
+# :cpu image keeps Mesa as its only EGL vendor.
+COPY docker/10_nvidia.json /tmp/10_nvidia.json
+RUN if [ "$CPU_RENDER" != "1" ]; then \
+      mkdir -p /usr/share/glvnd/egl_vendor.d \
+      && mv /tmp/10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json \
+      && chmod 0644 /usr/share/glvnd/egl_vendor.d/10_nvidia.json; \
+    else \
+      rm -f /tmp/10_nvidia.json; \
+    fi
+
 # PYOPENGL_PLATFORM is deliberately unset: mujoco sets it from MUJOCO_GL. A fixed value here
 # would make -e MUJOCO_GL=osmesa fail, and mujoco then silently drops mujoco.Renderer.
+# NVIDIA_DRIVER_CAPABILITIES must contain "graphics": that is what makes the toolkit inject the
+# driver's EGL library (compute alone, e.g. Docker Desktop on WSL2, gives CUDA but no EGL).
+# XDG_CACHE_HOME: a --user container has HOME=/, which is not writable; Mesa and the NVIDIA
+# driver would otherwise warn about (or silently skip) their shader cache there.
 ENV MUJOCO_GL=egl \
     NVIDIA_DRIVER_CAPABILITIES=graphics,compute,utility \
+    XDG_CACHE_HOME=/tmp/.cache \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
@@ -39,10 +58,14 @@ COPY connector connector
 COPY envs envs
 COPY controllers controllers
 COPY data_pipeline data_pipeline
-COPY scripts/collect_random.py scripts/rollout_viewer.py scripts/replay_pilot.py scripts/
+COPY scripts/collect_random.py scripts/rollout_viewer.py scripts/replay_pilot.py scripts/docker_selfcheck.py scripts/
 COPY tests tests
 
-# Collected episodes and the scene cache (data/.scene_cache) live on the host.
+# Collected episodes and the scene cache (data/.scene_cache) live on the host. The directory is
+# created here, world-writable with the sticky bit (like /tmp), so that a container started with
+# --user $(id -u):$(id -g) can write to an anonymous or fresh named volume (which inherits these
+# permissions). A host bind mount keeps the host folder's own owner: create it first (mkdir -p data).
+RUN mkdir -p /app/data && chmod 1777 /app/data
 VOLUME /app/data
 
 ENTRYPOINT ["python"]

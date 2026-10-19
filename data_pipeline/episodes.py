@@ -39,12 +39,14 @@ def export_camera_frames(path, observations, folders=CAMERA_FOLDERS, quality=95)
         written[folder] = camera
     depth = {}
     for name in observations[0].get("depth",{}):
-        # Depth frames as lossless 16-bit PNG (mm, 0 = no data), same numbering as the JPEGs.
-        out = Path(path)/"cameras"/f"{name}_depth"
+        # Depth frames as lossless 16-bit PNG (mm, 0 = no data), same numbering as the JPEGs, in
+        # <RGB folder>_depth (scene -> head_depth, wrist -> wrist_depth, chest -> chest_depth).
+        folder = f"{folders.get(f'{name}_rgb', name)}_depth"
+        out = Path(path)/"cameras"/folder
         out.mkdir(parents=True,exist_ok=False)
         for i, o in enumerate(observations,1):
             Image.fromarray(o["depth"][name]).save(out/f"{i}.png")
-        depth[f"{name}_depth"] = f"depth_{name}_mm"
+        depth[folder] = f"depth_{name}_mm"
     return {"folders":written,"format":"jpeg","quality":quality,"first_index":1,
             "count":len(observations),"frame_index":"file i = observation i-1",
             **({"depth_folders":depth,"depth_format":"png uint16 mm, 0 = no data"} if depth else {})}
@@ -125,10 +127,9 @@ def validate_episode(path):
                     raise ValueError(f"Image schema mismatch: {key}")
             elif key.startswith("depth_"):
                 rgb="image_"+key[len("depth_"):-len("_mm")]+"_rgb"
-                image=a[rgb] if rgb in a.files else None
-                if (a[key].dtype!=np.uint16 or a[key].ndim!=3 or a[key].shape[0]!=t+1
-                        or (image is not None and a[key].shape[1:]!=image.shape[1:3])):
-                    raise ValueError(f"Depth schema mismatch: {key}")
+                if (rgb not in a.files or a[key].dtype!=np.uint16 or a[key].ndim!=3
+                        or a[key].shape[0]!=t+1 or a[key].shape[1:]!=a[rgb].shape[1:3]):
+                    raise ValueError(f"Depth schema mismatch: {key} (needs {rgb} of the same size)")
             elif key in TORQUE_KEYS:
                 if a[key].shape!=(t,14) or not np.isfinite(a[key]).all():
                     raise ValueError(f"Joint torque schema mismatch: {key}")

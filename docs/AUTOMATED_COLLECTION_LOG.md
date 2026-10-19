@@ -899,3 +899,98 @@ Working rules from the user:
   - 404–585 MB per episode (0.21–0.24 MB/step) against 184 MB (0.084 MB/step) without the chest
     camera, so about 2.5–2.9×;
   - wall time 1000–1875 s per scene (preflight + record) with 3 runs in parallel.
+
+## 2026-10-15: Docker image rebuilt for recovery demos, chest RGB-D and torque
+
+**Request:** "fix the docker".
+- **Dockerfile unchanged.** It copies whole folders, so the new code (`controllers/faults.py`,
+  `envs/d435.py`, the `workspace_v2_cable30.json` chest camera) is picked up on rebuild.
+- **`.dockerignore` changed.** The new `tests/test_faults.py`, `tests/test_d435.py` and
+  `tests/test_sensors.py` are now whitelisted.
+- **Rebuilt.** `openarm-collect` is 507 MB (GPU/EGL), `openarm-collect:cpu` is 796 MB (OSMesa).
+- **`:cpu` container (`MUJOCO_GL=osmesa`):**
+  - in-image test suite **69/69 OK**, including `test_sensors`, which renders the chest RGB + z16 depth
+    under OSMesa;
+  - `--faults` preflight smokes, not recorded, on `workspace_v2_cable30`: premature_close (row 7800),
+    wrong_grasp miss (7820) and misaligned_insert (7840) **all succeeded**, each with
+    `fault_state` done.
+  - **Memory:** a preflight peaked at 2.4 GiB. Three in parallel on the 7.6 GiB Docker VM:
+    one was killed with exit 137. That was my over-parallelisation; the rerun of that row succeeded.
+- **GPU image on this Windows PC (RTX 4050, Docker Desktop/WSL2):** EGL fails with
+  `Cannot initialize a EGL device display`, while `nvidia-smi` works in the container. WSL2 passes the
+  GPU through for compute only and injects no NVIDIA EGL. Use `:cpu` on Windows; the GPU image is for
+  native Linux + NVIDIA toolkit (still unverified there).
+- **Docs:** `docs/DOCKER_COLLECTION.md` updated:
+  - test count;
+  - the `--faults` / chest / torque section;
+  - the Windows GPU note;
+  - RAM: about 4.5 GB per recording container with the chest camera (estimate);
+  - disk: 0.4–0.6 GB per episode with the chest camera.
+- **Not done:** no in-container *recording* (testing rule); no `docker save`.
+
+## 2026-10-16: depth on every camera, and the Docker image for a Linux NVIDIA PC
+
+**Request:**
+- every camera gets depth;
+- the Docker image must run on Linux;
+- test that it works flawlessly.
+
+The work ran as a multi-agent flow: an Opus supervisor plus Sonnet workers. The user's decisions:
+- **depth models:** wrist D405, overhead D435;
+- **scope:** `workspace_v2_cable30` only;
+- **target:** a Linux PC with an NVIDIA GPU;
+- **testing:** only in Docker on this Windows machine.
+
+**Depth.**
+- **New streams.** `depth["scene"]` (D435) and `depth["wrist"]` (D405, 0.07–1 m), both 240×320
+  aligned to their RGB, join `depth["chest"]`.
+  - Episode arrays: `depth_scene_mm`, `depth_wrist_mm`.
+  - Folders: `cameras/head_depth`, `cameras/wrist_depth`.
+  - `manifest()["depth_cameras"]` holds the intrinsics and models.
+  - Details are in `docs/WORKSPACE.md` and `docs/DATA_COLLECTION.md`.
+- **Windows suite:** **83/83 OK.**
+- **Unchanged outputs:**
+  - chest depth and qpos identical to the HEAD baseline (row 6100, reset + 20 steps);
+  - v1 and v2 have no depth;
+  - RGB is within the Windows GL renderer's own noise, ≤ 1 grey level on ≤ 14 px. Renders of the same
+    state are not bit-reproducible on this machine.
+- **Full expert rollout** with depth (row 6100, success, 1980 steps, nothing saved): while grasping, the
+  wrist depth at the plug was about 91 mm with 0.96–1.00 valid, within 0.8 mm of `mj_ray`.
+- **Fault preflight smoke** (wrong_grasp): success. The fault was detected at step 724 and recovered at
+  step 882.
+
+**Docker.**
+- **Image changes:**
+  - the GPU image ships GLVND's `10_nvidia.json` EGL vendor file;
+  - `/app/data` is mode 1777, for `--user` runs;
+  - `XDG_CACHE_HOME=/tmp/.cache`;
+  - new `scripts/docker_selfcheck.py`.
+- **Rebuilt:** `openarm-collect` 507 MB, `:cpu` 796 MB.
+- **Source hashes:** all identical between the container and Windows. The scene XML hash differs only by
+  2 cable-quaternion tokens at the 1e-19 level, as before.
+- **`:cpu` checks:**
+  - in-image suite **75/75 OK as root and as `--user 1000:1000`**;
+  - self-check **PASS** under OSMesa and under **EGL through Mesa**, the proxy for the GLVND → EGL →
+    MuJoCo path;
+  - fault preflight as uid 1000 into a bind mount: success, peak 2.9 GiB with `--video none`.
+- **GPU image checks:**
+  - vendor file valid;
+  - non-render tests 41/41 OK;
+  - physics-only preflight: success;
+  - `--gpus all` self-check: FAIL, exit 1, with the right diagnosis. Docker Desktop/WSL2 gives no NVIDIA
+    EGL.
+  - **NVIDIA EGL on native Linux is still not verified.** Run the self-check on the Linux PC first.
+- **Root-owned bind mount:** the self-check gives a clear `/app/data is not writable` FAIL with its fix.
+
+**Findings.**
+- **Recording RAM:**
+  - Saving a synthetic 2700-step cable30 episode peaked at **8.0 GiB working set (9.7 GiB commit)**,
+    because `save_episode` stacks the held observations. The default video adds about 1.2 GiB.
+  - The earlier 4.5 GB estimate was wrong. **The 7.6 GiB Docker Desktop VM can't record a full-length
+    cable30 episode**; plan on about 10 GB per recording container.
+- **Default video:** `--video failures` renders and buffers a review video even in preflight. In `:cpu`
+  this OOM-killed a 4 GiB container; use `--video none` for smokes.
+- **Parallel suites:** two full in-image suites in parallel (4.3–4.5 GiB each) wedged the Docker VM. A
+  worker restarted Docker Desktop; both images survived.
+- **OSMesa speed:** `observe()` takes 2.1–4.7 s under OSMesa, against 62 ms on the host GPU.
+- **Help text:** `collect_random.py --eval-scenes` says "default 100", but the default is 0. Not changed.

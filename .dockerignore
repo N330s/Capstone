@@ -6,6 +6,7 @@
 !third_party/openarm_mujoco/v1/meshes
 !assets/connector
 !configs
+!docker/10_nvidia.json
 !connector
 !envs
 !controllers
@@ -13,11 +14,15 @@
 !scripts/collect_random.py
 !scripts/rollout_viewer.py
 !scripts/replay_pilot.py
+!scripts/docker_selfcheck.py
 !tests/test_workspace.py
 !tests/test_place_insert.py
 !tests/test_openarm.py
 !tests/test_carry_path.py
 !tests/test_connector.py
 !tests/test_collection.py
+!tests/test_faults.py
+!tests/test_d435.py
+!tests/test_sensors.py
 **/__pycache__
 envs/openarm_insert_temp.py

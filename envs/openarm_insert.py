@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import zlib
 from pathlib import Path
 
 import mujoco
@@ -84,8 +85,16 @@ class OpenArmInsertEnv:
         self.renderer = None
         # Chest RGB-D camera (workspace cameras.chest_rgbd: a D435-like RGB + aligned z16 depth,
         # envs/d435.py), rendered only when the workspace defines it.
-        self.chest = self.workspace["cameras"].get("chest_rgbd")
+        cams = self.workspace["cameras"]
+        self.chest = cams.get("chest_rgbd")
         self.chest_renderer = None
+        # Depth streams: every observed camera whose workspace entry has a "depth" block adds
+        # obs["depth"][short], short = camera name without "_rgb" (pairs depth_<short>_mm with
+        # image_<short>_rgb in the episode files): short -> (model camera, depth model params).
+        self.depth_cameras = {c[:-4]: (c, cams[c]["depth"]) for c in ("scene_rgb", "wrist_rgb")
+                              if "depth" in cams[c]}
+        if self.chest is not None and "depth" in self.chest:
+            self.depth_cameras["chest"] = (self.chest["camera_name"], self.chest["depth"])
         self._obs_index = 0
         self.joints = {side: [self.model.joint(f"openarm_{side}_joint{i}").id for i in range(1, 8)]
                        for side in ("left", "right")}
@@ -555,27 +564,36 @@ class OpenArmInsertEnv:
                 obs["images"][name] = self.renderer.render().copy()
             if self.chest is not None:
                 self._observe_chest(obs, opt)
+            if self.depth_cameras:               # after every RGB frame, so the RGB pixels are unchanged
+                self._observe_depth(obs, opt)
         self._obs_index += 1
         return obs
 
     def _observe_chest(self, obs, opt):
-        """Chest D435: RGB plus z-depth rendered from the same camera (aligned to the RGB), degraded
-        to a z16 frame (uint16 mm, 0 = no data). The noise stream is seeded by (reset seed,
-        observation index), so a recording is reproducible."""
+        """Chest RGB frame (its depth is rendered with the other depth streams, _observe_depth)."""
         c = self.chest
         if self.chest_renderer is None:
             self.chest_renderer = mujoco.Renderer(self.model, height=c["height"], width=c["width"])
-        r = self.chest_renderer
-        r.update_scene(self.data, camera=c["camera_name"], scene_option=opt)
-        obs["images"][c["camera_name"]] = r.render().copy()
-        r.enable_depth_rendering()
-        try:
-            r.update_scene(self.data, camera=c["camera_name"], scene_option=opt)
-            z = r.render().copy()
-        finally:
-            r.disable_depth_rendering()
-        rng = np.random.default_rng([abs(self.seed), self._obs_index])
-        obs["depth"] = {"chest": d435.degrade_depth(z, rng, c["depth"])}
+        self.chest_renderer.update_scene(self.data, camera=c["camera_name"], scene_option=opt)
+        obs["images"][c["camera_name"]] = self.chest_renderer.render().copy()
+
+    def _observe_depth(self, obs, opt):
+        """z-depth rendered from each depth camera (aligned to its RGB, same renderer size), degraded
+        to a z16 frame (uint16 mm, 0 = no data) by the camera's sensor model (envs/d435.py). The
+        noise stream is seeded by (reset seed, observation index [, camera]), so a recording is
+        reproducible."""
+        obs["depth"] = {}
+        for short, (cam, params) in self.depth_cameras.items():
+            r = self.chest_renderer if short == "chest" else self.renderer
+            r.enable_depth_rendering()
+            try:
+                r.update_scene(self.data, camera=cam, scene_option=opt)
+                z = r.render().copy()
+            finally:
+                r.disable_depth_rendering()
+            # the chest stream keeps its original (seed, index) seeding so earlier recordings stay comparable
+            stream = [abs(self.seed), self._obs_index] + ([] if short == "chest" else [zlib.crc32(cam.encode())])
+            obs["depth"][short] = d435.degrade_depth(z, np.random.default_rng(stream), params)
 
     def step(self, action):
         if self.outcome:
@@ -710,6 +728,14 @@ class OpenArmInsertEnv:
                     "camera": self.chest["camera_name"],
                     "intrinsics": d435.intrinsics(self.chest["width"], self.chest["height"], self.chest["fovy_deg"]),
                     "depth_model": self.chest["depth"], "depth_aligned_to": self.chest["camera_name"]},
+                "depth_cameras": None if not self.depth_cameras else {
+                    short: {"camera": cam, "sensor": params.get("sensor"),
+                            "intrinsics": d435.intrinsics(
+                                *((self.chest["width"], self.chest["height"]) if short == "chest" else
+                                  (self.config["image_width"], self.config["image_height"])),
+                                float(self.model.cam_fovy[self.model.camera(cam).id])),
+                            "depth_model": params, "depth_aligned_to": cam}
+                    for short, (cam, params) in self.depth_cameras.items()},
                 "joint_torque_order": [f"openarm_{s}_joint{i}" for s in ("left", "right") for i in range(1, 8)]}
 
     def close(self):

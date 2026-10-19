@@ -163,6 +163,45 @@ replaced by the miss on 2026-10-15; see below.
     because no clear "left" miss existed in those scenes.
   - **Visible in `scene_rgb`:** the hand closes well away from where it later grasps the plug.
 
+**2026-10-16: depth on the overhead and wrist cameras.**
+- **New arrays.** Episodes recorded in `workspace_v2_cable30` now also contain:
+
+  | Array | Shape | Contents |
+  |---|---|---|
+  | `depth_scene_mm` | (T+1, 240, 320) uint16 | overhead depth (D435 model) aligned to `image_scene_rgb`, mm, 0 = no data |
+  | `depth_wrist_mm` | (T+1, 240, 320) uint16 | wrist depth (RealSense D405 model, 7 cm-1 m) aligned to `image_wrist_rgb`, mm, 0 = no data |
+
+  `depth_chest_mm` is unchanged and its noise stream is too. Every depth array pairs with the
+  `image_<name>_rgb` of the same size: `validate_episode` rejects a `depth_<name>_mm` without it.
+  Other workspaces (v1, v2, v1_leaf5n) add no depth.
+- **New folders.** 16-bit PNGs in `cameras/head_depth/` (`scene`), `cameras/wrist_depth/` and
+  `cameras/chest_depth/`, T+1 each, numbered like the JPEGs. The metadata `depth_folders` maps
+  folder to array name, and `depth_cameras` in the metadata holds the intrinsics and depth model.
+- **Strict replay of earlier datasets is lost, again.** The depth streams changed
+  `envs/openarm_insert.py`, `envs/d435.py` and the workspace JSON, which `env.manifest()` hashes, so
+  `replay_pilot.py` refuses **every dataset recorded before 2026-10-16**, including
+  `data/openarm_v2_e2e_sensors_test`. Physics is unchanged: the replayed states do not depend on
+  rendering (qpos identical to the pre-change trace over reset + 20 hold steps; chest depth identical).
+- **RGB is unchanged, but not bit-for-bit comparable.** The Windows GL renderer is not
+  deterministic: two renders of the same state in one process differ by 1 grey level on up to about
+  20 pixels per frame. Old-versus-new code differs no more than that (≤ 1 grey level, ≤ 14 px, over
+  reset + 20 steps of row 6100).
+- **Checked against ground truth** in a full expert rollout (row 6100, success, 1980 steps, nothing
+  saved):
+  - while grasping, the wrist sees the plug face at about 91 mm, with 0.96–1.00 of the plug patch valid;
+  - `mj_ray` ground truth through those pixels agrees within 0.8 mm;
+  - the overhead stream is about 0.9 valid throughout;
+  - the wrist minimum is the D405's 70 mm cut-off, which the fingers sit at.
+- **Cost (measured on 30-step `save_episode` slices, 2026-10-16):**
+  - **Disk:** 0.37–0.38 MB/step on disk (was 0.21–0.24), so a 2000-step episode is about 0.75 GB
+    and a 2700-step fault episode is about 1 GB.
+  - **RAM while recording:** one observation is 1.22 MiB in memory (+32 %), and a recording keeps
+    them all until the save. Saving a synthetic 2700-step episode peaked at 8.0 GiB working set
+    (9.7 GiB commit), so plan on about 10 GB per recording process (`docs/DOCKER_COLLECTION.md`).
+  - **Speed:** `observe()` is about 9 ms slower by median (12 → 21 ms; two extra 320×240 depth
+    renders).
+- The real-sensor limits (for example, the D405 has no IR projector) are in `docs/WORKSPACE.md`.
+
 ## Next collection/training gate
 
 1. Inspect a physically plausible close oblique external camera alongside the

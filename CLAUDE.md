@@ -26,7 +26,7 @@ trained yet; the roadmap is in `plan.md`, current status in `docs/*.md`.
 ## Commands
 
 ```powershell
-python -m unittest discover -s tests -v          # all tests (77); needs third_party assets
+python -m unittest discover -s tests -v          # all tests (83); needs third_party assets
 python -m unittest tests.test_connector -v       # holder-only tests, no robot assets needed
 python -m unittest tests.test_openarm.OpenArmTests.test_v1_bimanual_and_no_weld  # single test
 ```
@@ -100,8 +100,16 @@ Layers, bottom to top (each imports only from below):
    `envs/workspace.py add_chest_camera`): obs gain `images["chest_rgb"]` (240x424) and
    `depth["chest"]` (uint16 mm aligned to it, degraded by `envs/d435.py`); mount estimated, aimed at
    the right-arm workspace (deviation from the stock forward mount; `docs/WORKSPACE.md`).
+   In v2_cable30 **every observed camera has depth** (a `depth` block in its workspace camera entry):
+   `depth["scene"]` (overhead, D435 model) and `depth["wrist"]` (RealSense D405 model, 0.07-1 m), both
+   240x320 and aligned to their RGB, saved as `depth_<name>_mm` + `cameras/<rgb folder>_depth/` PNGs;
+   `manifest()["depth_cameras"]` holds intrinsics/models. Other workspaces have no depth. Windows GL RGB
+   renders are not bit-reproducible (±1 grey level on a few px), so compare RGB with a tolerance.
    A slim collection-only Docker image is `docker/collect.Dockerfile` (+ whitelist `.dockerignore`);
-   usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes.
+   usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes. On a new Linux host run
+   `scripts/docker_selfcheck.py` in the container first (GPU/EGL, `/app/data` permissions, all camera
+   streams); the NVIDIA EGL path is still unverified on native Linux. New scripts/tests used in the
+   image must be whitelisted in `.dockerignore`.
 3. **`controllers/`** — `expert.py` (privileged held-plug insertion expert with jam retry),
    `table_pickup.py` (`PickupProbe`: downward-rest → raise → approach → descend → close → lift),
    `carry_path.py` (`plan_carry`: bidirectional RRT with a rigid carried-plug proxy on scratch

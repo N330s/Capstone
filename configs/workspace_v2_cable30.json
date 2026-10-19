@@ -303,7 +303,21 @@
     ]
   },
   "cameras": {
-    "scene_rgb": {"description": "Overhead mount: above and behind the right hand, 0.66 m over the table top, aimed at (0.40, -0.21, 0.36) so the plug spawn area, the gripper and the socket face are all in view (24 deg from vertical)", "position_m": [0.12, -0.21, 0.98], "xyaxes": [0.0, -1.0, 0.0, 0.9114, 0.0, 0.4116], "fovy_deg": 48},
+    "scene_rgb": {"description": "Overhead mount: above and behind the right hand, 0.66 m over the table top, aimed at (0.40, -0.21, 0.36) so the plug spawn area, the gripper and the socket face are all in view (24 deg from vertical)", "position_m": [0.12, -0.21, 0.98], "xyaxes": [0.0, -1.0, 0.0, 0.9114, 0.0, 0.4116], "fovy_deg": 48,
+      "depth": {
+        "sensor": "D435",
+        "description": "Overhead depth stream (obs depth/scene, 240x320 aligned to scene_rgb), modelled as a D435 exactly like the chest camera: rendered z-depth degraded with Intel's RMS noise, range limits, edge holes and dropout, 1 mm units",
+        "units_m": 0.001,
+        "baseline_m": 0.050,
+        "subpixel": 0.08,
+        "depth_fx_px": 447.0,
+        "depth_fx_note": "focal length of the D435 depth imagers at 848x480 (87 deg HFOV): 424 / tan(43.5 deg)",
+        "min_range_m": 0.28,
+        "max_range_m": 3.0,
+        "edge_jump_m": 0.02,
+        "edge_dilate_px": 1,
+        "dropout_rate": 0.003
+      }},
     "inspection": {
       "position_m": [
         0.56,
@@ -330,6 +344,7 @@
       "width": 424,
       "height": 240,
       "depth": {
+        "sensor": "D435",
         "description": "Rendered z-depth (aligned to RGB) degraded like a D435 z16 stream: RMS noise z^2*subpixel/(fx*baseline) (Intel), 0 outside [min, max] range, holes at depth jumps, random dropout, 1 mm units",
         "units_m": 0.001,
         "baseline_m": 0.050,
@@ -362,6 +377,20 @@
         0.123
       ],
       "fovy_deg": 55,
+      "depth": {
+        "sensor": "D405",
+        "description": "Wrist depth stream (obs depth/wrist, 240x320 aligned to wrist_rgb), modelled as a RealSense D405: a short-range stereo module (ideal range 7-50 cm) whose depth comes from the same imager as its RGB, so it is aligned. Rendered z-depth degraded with Intel's RMS noise (short baseline, finer subpixel error), 0 below 7 cm / above 1 m, edge holes, dropout, 1 mm units. The D405 has NO IR projector, so untextured surfaces would give more holes on real hardware; this is not modelled. The action-camera visual housing below is kept unchanged so the RGB pixels do not change.",
+        "units_m": 0.001,
+        "baseline_m": 0.018,
+        "subpixel": 0.08,
+        "depth_fx_px": 447.0,
+        "depth_fx_note": "assumed 87 deg HFOV at 848x480, like the D435: 424 / tan(43.5 deg)",
+        "min_range_m": 0.07,
+        "max_range_m": 1.0,
+        "edge_jump_m": 0.02,
+        "edge_dilate_px": 1,
+        "dropout_rate": 0.003
+      },
       "visual_mount": {
         "description": "Action-camera style housing behind the optical centre; visual only, no mass, no collision",
         "housing_half_m": [

@@ -1,4 +1,10 @@
-"""RealSense D435-like depth stream from rendered z-depth (chest camera, ``cameras.chest_rgbd``).
+"""RealSense-like depth stream from rendered z-depth, for the D435 and D405 cameras.
+
+Used by every camera whose workspace entry has a ``depth`` block (``configs/workspace_v2_cable30.json``):
+the chest ``cameras.chest_rgbd`` and the overhead ``cameras.scene_rgb`` (D435: 50 mm baseline, 0.28-3 m),
+and the wrist ``cameras.wrist_rgb`` (D405: 18 mm baseline, 0.07-1 m). The model is the same RMS
+formula for both; only the parameters differ. The D405 is a short-range stereo module whose depth comes
+from the same imager as its RGB; it has no IR projector (not modelled, see the wrist ``depth`` block).
 
 A real D435 computes depth on board by active stereo (two IR imagers 50 mm apart and an IR dot
 projector) and streams z16: uint16 z-depth in millimetres, 0 = no data, aligned here to the RGB

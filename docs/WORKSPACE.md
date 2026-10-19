@@ -132,6 +132,41 @@ the cable; `place_plug` raises otherwise.
 - **Calibration:** intrinsics and depth-model parameters are in `manifest["chest_rgbd"]`.
 - **Not moved by visual randomization:** the camera is robot-mounted.
 
+**Depth on every observed camera (2026-10-16, `workspace_v2_cable30` only).** The overhead
+`scene_rgb` and the wrist `wrist_rgb` now stream depth too, each aligned to its RGB, from the same
+renderer and `envs/d435.py` model as the chest camera. A camera streams depth when its workspace
+entry has a `depth` block; v1, v2 and v1_leaf5n have none and their observations are unchanged (no
+`depth` key).
+
+| Camera | Sensor model | Resolution | fovy | fx (px) | Depth range | Baseline | RMS noise at a typical distance |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `scene_rgb` (overhead) | D435 | 320×240 | 48° | 269.5 | 0.28–3 m | 50 mm | 1.75 mm at 0.7 m |
+| `wrist_rgb` | D405 | 320×240 | 55° | 230.5 | 0.07–1 m | 18 mm | 0.14 mm at 0.12 m |
+| `chest_rgb` | D435 | 424×240 | 42° | 312.6 | 0.28–3 m | 50 mm | 1.08 mm at 0.55 m |
+
+fx is the rendered RGB stream's (`d435.intrinsics`); the noise formula uses its own
+`depth_fx_px` = 447 (87° at 848×480) for all three. Noise is `d435.noise_sigma_m`, i.e.
+z²·0.08/(447 px·baseline); all three also have 2 cm edge holes (1 px dilation), 0.3% dropout and
+1 mm units.
+- **Why a D405 on the wrist:** the plug is 6–15 cm from the wrist camera, below a D435's 0.28 m
+  minimum. The D405 is a short-range stereo module (ideal range 7–50 cm), and its depth comes from
+  the same imager as its RGB, so the two are aligned.
+- **D405 limitations, not modelled:** it has no IR projector, so untextured surfaces would give more
+  holes on real hardware than the 0.3% dropout here. The simulated wrist FOV is the existing 55°
+  vertical (about 70° horizontal), not the 87° of a real D405, and `depth_fx_px` is an assumed 87°
+  figure like the D435's; the D405's real noise and range have not been measured.
+- **Wrist housing unchanged:** the action-camera visual body described below is kept, so the wrist
+  RGB pixels do not change.
+- **Noise streams:** the chest stream keeps its original seed (reset seed, observation index), so
+  its depth is the same as before this change for the same state; the scene and wrist streams add a
+  CRC-32 of the camera name. Reproducible per seed.
+- **Saved data:** `depth_scene_mm`, `depth_wrist_mm`, `depth_chest_mm`, plus `cameras/head_depth/`,
+  `cameras/wrist_depth/` and `cameras/chest_depth/` (16-bit PNG). Calibration is in
+  `manifest["depth_cameras"]` (camera, sensor, intrinsics, depth model).
+- **Checked:** `tests/test_sensors.py` compares scene and wrist depth with `mj_ray` ground truth on
+  smooth surfaces (worst patch median error 2.8 mm); it checks shape, range and reproducibility.
+  This is a rendering model, not a calibration against a real D435 or D405.
+
 `scene_rgb` was moved on 2026-10-02 from the former corner view, (0.85, −0.90, 0.85) with xyaxes
 (0.8, 0.6, 0, −0.25, 0.333, 0.91), to the overhead mount in all workspace files. It keeps the plug
 spawn area, the gripper and the socket face in view. This changes the workspace JSON hash, so datasets
