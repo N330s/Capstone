@@ -51,14 +51,19 @@ def main():
     config.device = "cuda"
     config.push_to_hub = False
     policy = make_policy(config, ds_meta=ds.meta)
+    from learning.vla.training_precision import restore_checkpoint_trainable_dtypes
+    restore_checkpoint_trainable_dtypes(policy, args.checkpoint)
     pre, post = make_pre_post_processors(policy.config, dataset_stats=ds.meta.stats)
     # Mid-episode sample and terminal sample exercise real video decoding and padding.
     index = receipt["datasets"]["train"]["episodes"][0]["steps"] // 2
     batch = pre(default_collate([ds[index]]))
     terminal = pre(default_collate([ds[receipt["datasets"]["train"]["episodes"][0]["steps"] - 1]]))
+    from learning.vla.training_precision import promote_trainable_fp32, assert_fp32_optimizer
+    promote_trainable_fp32(policy)
     trainable = [p for p in policy.parameters() if p.requires_grad]
     trainable_count = sum(p.numel() for p in trainable)
     optimizer = torch.optim.AdamW(trainable, lr=1e-5)
+    assert_fp32_optimizer(policy, optimizer)
     probe = trainable[0].detach().clone()
     losses = []
     # Fix noise/time for a plumbing fit comparison; not a generalization experiment.
@@ -100,6 +105,7 @@ def main():
     gc.collect()
     torch.cuda.empty_cache()
     restored = SmolVLAPolicy.from_pretrained(str(bundle))
+    restore_checkpoint_trainable_dtypes(restored, bundle)
     for key, value in restored.state_dict().items():
         if not torch.equal(value.detach().cpu(), expected[key]):
             raise AssertionError(f"Reload mismatch: {key}")

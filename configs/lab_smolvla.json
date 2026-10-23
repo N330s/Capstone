@@ -1,0 +1,19 @@
+{
+  "export": "/datasets/export_all_v1",
+  "collection": "/raw/merged_all_v1",
+  "base": "/models/smolvla_base",
+  "checkpoint": "/models/full81_step012243",
+  "backbone": "/models/smolvlm_backbone",
+  "snapshot": "/assets/capstone_automateData",
+  "runs": "/runs",
+  "export_sha256": "cd3f7b7b02947f85dfbef4b46d218a932d753aa65bc1aa28412d3d5b819db63f",
+  "stats_sha256": "25d523119da18ed7cb63e3eb67ed855631dfcbcbab0a645d055d9885dfd20e58",
+  "base_sha256": "7cd549ac2351fb069c0ddb3c34ad2d09cfc92b56a15dccdfc2e41467aaca01eb",
+  "checkpoint_sha256": "0cefdc6ffc0c634f17fe35a94d3940b7f15de2833c8e3142837b5a1a5e7df1de",
+  "batch_size": 8,
+  "num_workers": 0,
+  "additional_steps": 6195,
+  "wall_seconds": 14400,
+  "save_freq": 2000,
+  "seed": 1000
+}

@@ -3,9 +3,38 @@ import copy
 from pathlib import Path
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 from learning.vla.smolvla_data import sha256
 from scripts.rollout_smolvla import verify_snapshot
+from learning.vla.smolvla_policy import validate_openarm_features
+
+
+class PolicyFeatureTests(unittest.TestCase):
+    def config(self):
+        feature = lambda shape: SimpleNamespace(shape=shape)
+        return SimpleNamespace(chunk_size=50,
+            input_features={"observation.state": feature((16,)),
+                "observation.images.camera1": feature((3, 240, 320)),
+                "observation.images.camera2": feature((3, 240, 320))},
+            output_features={"action": feature((8,))})
+
+    def test_adapted_config_accepts_exact_contract(self):
+        validate_openarm_features(self.config())
+
+    def test_unadapted_base_and_missing_camera_rejected(self):
+        for changes in ("state", "action", "camera", "chunk"):
+            config = self.config()
+            if changes == "state":
+                config.input_features["observation.state"].shape = (6,)
+            elif changes == "action":
+                config.output_features["action"].shape = (6,)
+            elif changes == "camera":
+                del config.input_features["observation.images.camera2"]
+            else:
+                config.chunk_size = 25
+            with self.assertRaisesRegex(ValueError, "base-export"):
+                validate_openarm_features(config)
 
 
 class RolloutProvenanceTests(unittest.TestCase):

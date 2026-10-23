@@ -27,6 +27,14 @@ applied. The evaluator executes five targets then observes again through the
 existing environment bounds/rate limits and abort guards. No expert fallback,
 phase-dependent controller switching, plug attachment or in-flight qpos writes.
 
+For an untouched base-model comparison, explicitly pass `--base-export` pointing
+to the qualified LeRobot export. The original base model is configured for a
+different 6-action robot; this option adapts its task features and train-only
+normalization exactly as SFT does, without changing its weights. Never use it
+with an already-adapted checkpoint, which must use its saved processors. Missing
+adaptation fails the feature contract before inference, rather than relaxing the
+finite 50x8 action check. Rollout reports include processor-source provenance.
+
 | Check | Trained policy | Recorded expert control |
 | --- | --- | --- |
 | Commands executed | 12 / 0.235 s | 100 / 2.0 s |
@@ -90,6 +98,13 @@ source/workspace path escapes; all 42 repository tests pass. These are separate
 from the actual GPU/simulator runs above.
 
 ## Next
+
+2026-10-21 update: see [CADENCE_DIAGNOSIS.md](CADENCE_DIAGNOSIS.md) for the
+current baseline direction. New policy runs save exact initial raw actor inputs
+in `first_actor_input.npz` and per-inference raw state/RGB/instruction hashes
+in `chunks.json`; `report.json` binds the first-input file/helper hashes.
+These are observation-only evidence writes, never substitutions for live inputs.
+Exact simulator reset state alone does not prove that rendered RGB is identical.
 
 Qualify the upstream supervised trainer with full-frame coverage, held-out loss,
 process-level resume and bounded checkpoints. Then improve the baseline with

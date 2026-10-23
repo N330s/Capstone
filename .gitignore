@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 .venv/
 .venv-smolvla/
+.venv-download/
 third_party/openarm_mujoco/
 third_party/openpi/
 third_party/capstone_automateData/
@@ -13,3 +14,9 @@ test_collection_new_env/
 # Superseded / incomplete presentation drafts; publish the reviewed v3 only.
 results/dataset_visualization_v1/
 results/dataset_visualization_v2/
+
+# Generated experiments and dataset-derived evidence stay local.
+# Already-tracked baseline evidence is unaffected by ignore rules.
+/results/*
+!/results/README.md
+/docs/evidence/

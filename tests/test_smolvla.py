@@ -104,6 +104,16 @@ class SmolVLATests(unittest.TestCase):
         with self.assertRaises(ValueError):
             SmolVLASource(self.root)
 
+    def test_mixed_workspace_or_contact_release_rejected(self):
+        meta_path = self.root / "episode_1/metadata.json"
+        original = json.loads(meta_path.read_text())
+        for key in ("workspace", "contact_config", "command_interval_s", "mujoco_version"):
+            changed = {**original, key: "changed"}
+            meta_path.write_text(json.dumps(changed))
+            with self.assertRaisesRegex(ValueError, "Mixed scene/controller"):
+                SmolVLASource(self.root)
+        meta_path.write_text(json.dumps(original))
+
     def test_path_escape_rejected(self):
         self.manifest["episodes"][0]["episode"] = "../outside"
         self.rewrite_manifest()

@@ -60,6 +60,8 @@ class SmolVLASource:
     this schema or add a separately validated reader; traces alone are not data.
     """
 
+    supports_recovery_labels = False
+
     def __init__(self, root, selection=None):
         self.root = Path(root).resolve()
         self.manifest = json.loads((self.root / "manifest.json").read_text(encoding="utf-8"))
@@ -123,12 +125,17 @@ class SmolVLASource:
                     raise ValueError("Unexpected v3 action/state ordering")
             # Fail closed on mixed scene/controller releases until deliberately reviewed.
             current = json.dumps({k: meta[k] for k in ("robot", "robot_config", "scene_sha256",
-                                                       "source_hashes", "physics_timestep_s")}, sort_keys=True)
+                                                       "source_hashes", "physics_timestep_s")} |
+                                 {k: meta.get(k) for k in ("workspace", "contact_config", "command_interval_s",
+                                                         "mujoco_version")}, sort_keys=True)
             if fingerprint is not None and current != fingerprint:
                 raise ValueError("Mixed scene/controller versions require a separate dataset release")
             fingerprint = current
             self.metadata[name] = meta
             with np.load(path / "episode.npz", allow_pickle=False) as arrays:
+                if ("step_label" in arrays.files or meta.get("fault") is not None
+                        or record.get("fault") is not None) and not self.supports_recovery_labels:
+                    raise ValueError("Recovery recordings require RecoveryVLASource; legacy reader must not train fault actions")
                 t = record["steps"]
                 if len(arrays["action_applied"]) != t:
                     raise ValueError("Recorded step count differs from arrays")

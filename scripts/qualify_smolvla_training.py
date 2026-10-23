@@ -47,6 +47,7 @@ def main():
     from learning.vla.smolvla_compat import masked_forward
     from learning.vla.smolvla_data import LEROBOT_VERSION, sha256
     from learning.vla.training_state import capture_rng, restore_rng, assert_state_equal, cpu_state
+    from learning.vla.training_precision import promote_trainable_fp32, restore_checkpoint_trainable_dtypes, assert_fp32_optimizer
     from importlib.metadata import version
 
     if version("lerobot") != LEROBOT_VERSION or not torch.cuda.is_available():
@@ -76,10 +77,14 @@ def main():
     config.load_vlm_weights = False
     config.device, config.push_to_hub = "cuda", False
     policy = make_policy(config, ds_meta=datasets["train"].meta)
+    restore_checkpoint_trainable_dtypes(policy, args.checkpoint)
+    promote_trainable_fp32(policy)
     pre, post = make_pre_post_processors(policy.config, dataset_stats=datasets["train"].meta.stats)
 
     def optimizer_for(model):
+        promote_trainable_fp32(model)
         optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=1e-5)
+        assert_fp32_optimizer(model, optimizer)
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=12, gamma=.95)
         return optimizer, scheduler
 
@@ -149,6 +154,7 @@ def main():
     gc.collect()
     torch.cuda.empty_cache()
     policy = SmolVLAPolicy.from_pretrained(str(bundle))
+    restore_checkpoint_trainable_dtypes(policy, bundle)
     pre, post = make_pre_post_processors(policy.config, pretrained_path=str(bundle))
     optimizer, scheduler = optimizer_for(policy)
     # This is our own local checkpoint; it includes Python/NumPy RNG objects.

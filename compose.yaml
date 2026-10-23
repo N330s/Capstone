@@ -24,6 +24,8 @@ services:
       HF_HUB_OFFLINE: "1"
       HF_DATASETS_OFFLINE: "1"
       WANDB_MODE: disabled
+      HF_DATASETS_CACHE: /cache/huggingface/datasets
+      OPENARM_SOURCE_ARCHIVE: /runs/source_archives
     deploy:
       resources:
         reservations:
