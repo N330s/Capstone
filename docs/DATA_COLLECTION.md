@@ -202,6 +202,134 @@ replaced by the miss on 2026-10-15; see below.
     renders).
 - The real-sensor limits (for example, the D405 has no IR projector) are in `docs/WORKSPACE.md`.
 
+## 2026-10-27: data requirements pass (warm-up, posture, labels, quality, replay, release)
+
+Collection-side changes so that a new `workspace_v2_cable30` dataset meets seven data requirements.
+**No dataset has been collected with them yet**. The evidence below comes from audits and two
+temporary recordings that were deleted afterwards: 5 episodes on intermediate code and 3 on the
+final code. Nothing in `learning/` or `vla_dataset.py` changed.
+
+- **Camera warm-up is in `reset`, not in the demonstration.** `configs/openarm_v1.json`
+  `warmup_s` (0.88 s = 44 command steps) runs after the settle, through the same `_advance` code
+  as `step()` (including the `mj_forward` at each boundary), plus one discarded render. Then the
+  outcome, hold, elapsed time, peaks and grasp latch are reset. Tabletop mode only.
+  - **No more still `survey` prefix.** `PickInsertExpert` latches its detection on the first
+    `action()` (same `sense()`/rng order) and returns the first `transit_pick` action. Obs 0
+    has `timestamp_s` 1.88 s.
+  - **Regression (row 6100, zero posture offset):**
+    - obs-0 state is bit-identical to the old trace's qpos[44];
+    - the rollout takes 1935 = 1980 − 45 steps, with the same phase sequence minus `survey`;
+    - final plug position differs by 0.013 mm.
+- **Right-arm start posture varies.**
+  - **Option:** the tabletop reset option `arm_offset_rad` (7 values) is added to
+    `home_arm_rad`. The env validates |each| ≤ 0.15 rad and keeps the posture ≥ 0.05 rad inside
+    the joint limits.
+  - **Sampler:** draws it uniformly within ±`arm_offset_max_rad` (0.05) from its own rng
+    stream (`POSTURE_STREAM`), so plug, socket and visual draws are unchanged for every seed.
+  - **Checks:** the open-hand home-contact check, the pick check and the noise-margin check
+    run from the perturbed posture. Up to 8 posture tries, then a zero offset; `diag["posture"]`
+    records which.
+  - **Measured on 30 audit rows:** per-joint std 0.022–0.032 rad, max 0.0498; 0 reset
+    collisions; 30/30 success.
+- **Fault commands are kept out of the expert labels** (data level). Episodes now carry
+  `action_label` (T, 8), equal to `action_applied` except NaN on `step_label == "fault"` steps,
+  and `label_mask` (T,), False exactly on those steps. Clean episodes have all-True masks.
+  `validate_episode` enforces both. **The training loaders still read `action`**: use
+  `action_label`/`label_mask` when they are updated.
+- **Control contract recorded per episode.** Metadata `pilot_contract`:
+  - cameras: `scene_rgb` + `wrist_rgb`;
+  - state 16, action 8 (7 absolute rad + finger travel m);
+  - 50 Hz, observations before actions;
+  - left arm parked;
+  - depth/torque/visibility listed as extra arrays, not policy inputs.
+
+  The terminal step may be shorter than 0.02 s, because an episode ends mid-interval on
+  success (`timing_note`; pre-existing). `tests/test_contract.py` checks a saved episode.
+- **Physical quality gate** (`data_pipeline/quality.py`). A success is rejected as:
+  - `quality_no_grasp` when there is no grasp latch;
+  - `quality_low_lift` when the plug rose < 0.03 m by the end of `lift`;
+  - `quality_drop` when a drop is counted;
+  - `quality_contact_lost` when, from the first lift to the end, a step lacks two-finger
+    contact or the latch.
+
+  Every summary, accepted or failed, has `stage_outcomes` (`pickup` / `carry` /
+  `insertion`), so a pickup-only success is distinguished from a full insertion, plus
+  `original_outcome`.
+- **Visibility gate** (`data_pipeline/visibility.py`): a success where neither pilot camera sees
+  the plug on some frame from obs 0 to the first `lift` step becomes `camera_occluded`.
+  - **Visible** means a housing sample point is in frame and its `mj_ray` first hits the plug;
+    cable bodies are excluded.
+  - **Per-frame record:** `visibility_pilot` (T+1, 2) is saved.
+  - **Overhead pose:** the `scene_rgb` camera was moved for this to a raised right-side mount
+    (`docs/WORKSPACE.md`).
+  - **Fresh audit with the final pose** (36 rows, `scripts/audit_visibility.py`):
+    - clean rows 41000–41014: 15/15 success, plug seen on 100% of pickup frames;
+    - fault rows 41100–41120 (7 per kind): 16/21 success, 99.3% of pickup frames seen, the misses
+      only in wrong_grasp miss paths;
+    - the gate would reject 1 of 31 successes (3.2%);
+    - random reset draws: 99.35% visible of 4000, with the misses at plug x 0.38–0.43 m nearest the
+      robot. Those placements are slightly under-represented in gated data.
+- **Every recorded episode is replayed in-process** (`data_pipeline/replay.py`, the same strict
+  1e-8 / 1e-7 check as `replay_pilot.py`, which now imports it). A pass is written into the
+  metadata `replay`; a mismatch moves the episode to `failed_attempts/` as `replay_mismatch`.
+  `--no-verify-replay` skips it (replay roughly doubles physics time). The run manifest gains
+  `collection_source_hashes`: the expert, place-insert, faults, sampler, quality, replay,
+  visibility, episodes, collector and `openarm_v1.json` files.
+- **Versioned release** (`scripts/make_release.py`): hard-links the episodes of one or more
+  complete runs into `data/releases/<name>-v<N>/` and writes:
+  - **`release.json`:**
+    - git commit and dirty flag;
+    - source, workspace and collection hashes;
+    - camera calibration;
+    - controller and robot config;
+    - the pilot contract;
+    - per episode: seed, reset options, checksum, fault, quality, replay and stage outcomes;
+  - **`splits.json`:** grouped by scene seed (every episode of a seed, clean or faulted, in one
+    split), with a hash rule for about 15% validation and at least one validation group;
+  - **`heldout_resets.json`:** the first N `evaluation_bank` resets, asserted disjoint;
+  - **`checksums.sha256`.**
+
+  **It refuses:**
+  - an existing output;
+  - incomplete runs;
+  - corrupt episodes;
+  - runs missing replay verification (`--replay` replays them);
+  - runs from mixed source, workspace or collection versions.
+- **Temporary-recording check (deleted afterwards):**
+  - **Episodes:** 5 episodes, 2 clean plus 1 of each fault kind.
+  - **Faults:** every fault was detected and recovered.
+  - **Labels:** NaN exactly on fault steps.
+  - **Replay:** in-process and `replay_pilot.py` replay error 0.0 / 0.0.
+  - **Release:** the test release split 3 train / 2 validation with groups kept and held-out
+    resets disjoint; 64,356 checksums verified; it refused an overwrite and an old-version run.
+  - **Final code (2026-10-27/28), 3 more episodes:**
+    - clean rows 60000–60001, plus wrong_grasp. The gate rejected wrong_grasp row 60000 as
+      `camera_occluded`, so row 60001 was recorded.
+    - All replay with 0.0 / 0.0 error in-process and in `replay_pilot.py`.
+    - Labels: NaN on exactly the 680 fault steps.
+    - Obs 0 at 1.88 s, first phase `transit_pick`; offsets ≤ 0.046 rad; no unseen pilot frame before lift.
+    - The 10 collection hashes match.
+    - A `make_release --heldout 3` test release:
+      - kept seed 1060001's clean and faulted episodes together in validation (1 train / 2 validation);
+      - its held-out seeds were disjoint;
+      - 37,236 checksums verified; it refused to overwrite.
+    - Timing on the 16 GB Windows PC, one process alone: about 35 min per scene for preflight,
+      record and in-process replay. `make_release` sampled 3 held-out resets in 262 s.
+    - The wrong_grasp `fault_events` (`fault_start` / `detected` / `recovered`, with phase) are
+      in the run's `progress.json` and `preflight_accepted.json`, not in the episode metadata.
+- **Strict replay of every earlier dataset is lost again.** That includes the 30 recovery
+  episodes and `v2c30_*`, because the env, sampler, expert and workspace changed. They also cannot
+  join a release, because they lack the replay record and the collection hashes. Recollect.
+
+```powershell
+# clean + faults from the same rows, so each seed's variants share a split; then one release.
+# --eval-scenes 100 samples the held-out bank once (about 3 min per scene) and caches it, so
+# make_release's heldout_resets.json (default 100) is then a cache hit.
+python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json --start-row 20000 --episodes 50 --eval-scenes 100 --record --headless --video none --output data/v2c30_release_clean
+python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json --start-row 20000 --episodes 30 --faults all --record --headless --video none --output data/v2c30_release_faults
+python scripts/make_release.py --runs data/v2c30_release_clean data/v2c30_release_faults --name v2c30 --version 1
+```
+
 ## Next collection/training gate
 
 1. Inspect a physically plausible close oblique external camera alongside the

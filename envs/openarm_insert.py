@@ -20,7 +20,10 @@ ROBOT_CONFIG = ROOT / "configs/openarm_v1.json"
 LEGACY_KEYS = {"offset_x_m", "offset_y_m", "offset_z_m", "roll_deg", "pitch_deg", "yaw_deg"}
 # Tabletop mode: plug lies free on the table, socket (with its fixture) is placed, gripper open.
 TABLETOP_KEYS = {"plug_pos_m", "plug_yaw_deg", "socket_pos_m", "socket_yaw_deg",
-                 "socket_tilt_deg", "table_height_m"}
+                 "socket_tilt_deg", "table_height_m", "arm_offset_rad"}
+# arm_offset_rad: optional small change of the right arm's start posture (home_arm_rad + offset).
+ARM_OFFSET_MAX_RAD = 0.15           # per joint
+ARM_OFFSET_LIMIT_MARGIN_RAD = 0.05  # the start posture stays this far inside the joint limits
 WORKSPACE_BOX = np.array([[-0.9, -0.9, -0.05], [0.9, 0.9, 0.6]])
 # Tabletop grasp latch. A table pick does not use the held-plug plug_grasp_frame pinch, so the
 # hand-to-plug pose is latched once a physical grasp exists and drift is measured against that:
@@ -296,6 +299,17 @@ class OpenArmInsertEnv:
             if key == "visual":
                 if not isinstance(value, dict):
                     raise ValueError("visual must be a dict")
+            elif key == "arm_offset_rad":
+                array = np.asarray(value, dtype=float)
+                if array.shape != (7,) or not np.isfinite(array).all():
+                    raise ValueError("arm_offset_rad must be seven finite joint offsets (rad)")
+                if (np.abs(array) > ARM_OFFSET_MAX_RAD).any():
+                    raise ValueError(f"arm_offset_rad exceeds +/-{ARM_OFFSET_MAX_RAD} rad per joint")
+                start = np.asarray(self.config["home_arm_rad"], dtype=float) + array
+                if ((start < self.lower + ARM_OFFSET_LIMIT_MARGIN_RAD).any()
+                        or (start > self.upper - ARM_OFFSET_LIMIT_MARGIN_RAD).any()):
+                    raise ValueError(f"arm_offset_rad puts the start posture within "
+                                     f"{ARM_OFFSET_LIMIT_MARGIN_RAD} rad of a joint limit")
             elif key.endswith("_pos_m"):
                 array = np.asarray(value, dtype=float)
                 if array.shape != (3,) or not np.isfinite(array).all():
@@ -308,6 +322,8 @@ class OpenArmInsertEnv:
             elif not np.isfinite(value):
                 raise ValueError(f"{key} must be finite")
         self.mode = mode
+        arm_offset = (np.asarray(options["arm_offset_rad"], dtype=float) if "arm_offset_rad" in options
+                      else np.zeros(7))
         self.seed, self.reset_options = int(seed), options
         self._obs_index = 0               # depth-noise stream index (one per observation)
         self._restore_scene()
@@ -317,8 +333,9 @@ class OpenArmInsertEnv:
         for side in ("left","right"):
             # Tabletop: both arms at the official v1 zero pose with the right hand open (as the
             # table pickup); grasped: the validated held-plug home pose.
-            self.data.qpos[self.qa[side]] = (self.config["home_arm_rad"] if side == "right" or mode == "grasped"
-                                             else np.zeros(7))
+            self.data.qpos[self.qa[side]] = (np.asarray(self.config["home_arm_rad"], dtype=float)
+                                             + (arm_offset if side == "right" and mode == "tabletop" else 0.)
+                                             if side == "right" or mode == "grasped" else np.zeros(7))
             self.data.qpos[self.fqa[side]] = (.025 if side == "left" else
                                               self._open_travel() if mode == "tabletop" else self.finger_contact_travel)
         mujoco.mj_forward(self.model,self.data)
@@ -399,6 +416,9 @@ class OpenArmInsertEnv:
         for _ in range(round(self.config["settle_s"]/self.model.opt.timestep)):
             self._physics_step()
         mujoco.mj_forward(self.model,self.data)
+        self.warmup_steps = 0
+        if self.mode == "tabletop":
+            self._warm_up()
         self.episode_start_time = float(self.data.time)
         self.initial_grasp_position, self.initial_grasp_rotation = self.grasp_pose()
         self.info = self._info()
@@ -422,6 +442,35 @@ class OpenArmInsertEnv:
         self.reset_state = self.data.qpos.copy()
         self.reset_velocity = self.data.qvel.copy()
         return self.observe(), self.info.copy()
+
+    def _warm_up(self):
+        """Tabletop reset warm-up (config ``warmup_s``, 0 disables): after the settle and before obs 0
+        the arm holds its target with the gripper open for round(warmup_s/dt) command intervals run
+        through _advance, i.e. exactly the code path of step(). This replaces the fixed hold the expert
+        used to do in its `survey` phase, so recorded episodes start with purposeful motion. Cameras
+        get one discarded frame so renderer start-up also happens outside the episode. Afterwards the
+        episode clock and every tracker restart: elapsed, hold, outcome, peaks, drops, grasp latch.
+        Simulation time (data.time, obs timestamp_s) is NOT reset: obs 0 is at settle_s + warmup_s."""
+        n = round(float(self.config.get("warmup_s", 0.)) / self.dt)
+        self.warmup_steps = n
+        if n <= 0:
+            return
+        for _ in range(n):
+            self._advance(self.target.copy())
+            if self.outcome:
+                raise RuntimeError(f"Reset warm-up failed ({self.outcome}): {self.info}")
+        if self.images:
+            if self.renderer is None:
+                self.renderer = mujoco.Renderer(self.model, height=self.config["image_height"],
+                                               width=self.config["image_width"])
+            self.renderer.update_scene(self.data, camera="scene_rgb")
+            self.renderer.render()
+        self.outcome, self.hold, self.elapsed = None, 0., 0.
+        self.peak_force = self.peak_penetration = self.peak_robot_contact = 0.
+        self.peak_support_contact = 0.
+        self.grasp_established, self.drops = False, 0
+        self._clear_tabletop_grasp()
+        self.last_action = self.target.copy()
 
     def _physics_step(self):
         m,d,c = self.model,self.data,self.config
@@ -596,6 +645,15 @@ class OpenArmInsertEnv:
             obs["depth"][short] = d435.degrade_depth(z, np.random.default_rng(stream), params)
 
     def step(self, action):
+        self._advance(action)
+        terminated = self.outcome not in (None,"timeout","numerical_failure")
+        truncated = self.outcome in ("timeout","numerical_failure")
+        return self.observe(), float(self.outcome=="success"), terminated, truncated, self.info.copy()
+
+    def _advance(self, action):
+        """One 50 Hz command interval (rate limit, target update, `substeps` physics steps with an
+        mj_forward after each, outcome checks, self.info). Shared by step() and the reset warm-up so
+        the two cannot drift apart; it does not observe."""
         if self.outcome:
             raise RuntimeError("Episode ended; call reset before stepping")
         a = np.asarray(action,dtype=float)
@@ -689,9 +747,6 @@ class OpenArmInsertEnv:
                 "joint_torque_constraint_nm": constraint_sum / count})
         self.info["robot_unwanted_contact_peak_n"] = self.peak_robot_contact
         self.info["robot_support_contact_peak_n"] = self.peak_support_contact
-        terminated = self.outcome not in (None,"timeout","numerical_failure")
-        truncated = self.outcome in ("timeout","numerical_failure")
-        return self.observe(), float(self.outcome=="success"), terminated, truncated, self.info.copy()
 
     def manifest(self):
         canonical_xml = scene_xml(self.workspace).replace(str((ROOT/"third_party/openarm_mujoco/v1/meshes").resolve()), "UPSTREAM_V1_MESHES")

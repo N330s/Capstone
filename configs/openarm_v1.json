@@ -13,6 +13,7 @@
   "finger_travel_note": "pad faces touch a housing of width W at travel (W - finger_base_gap_m)/2 + gripper_pads.face_offset_m; the insertion grip squeezes grip_squeeze_m further and the table pickup pickup_squeeze_m. For the legacy 24 mm housing this reproduces the former initial_finger_travel_m 0.0138 and grip_target_travel_m 0.008",
   "finger_servo_kp_n_m": 2000,
   "settle_s": 1.0,
+  "warmup_s": 0.88,
   "episode_limit_s": 8.0,
   "tabletop_episode_limit_s": 240.0,
   "robot_contact_abort_n": 5.0,

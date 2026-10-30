@@ -307,7 +307,7 @@ class V2Stage1SamplerTests(unittest.TestCase):
         calls = []
 
         class Fake:
-            def __call__(self, options, min_insert_margin=None):
+            def __call__(self, options, min_insert_margin=None, arm_offset=None):
                 calls.append(min_insert_margin)
 
         ws = sb.Workspace(pick_insert_margin_rad=0.09)
@@ -350,17 +350,18 @@ class V2Stage1SamplerTests(unittest.TestCase):
         ws = replace(sb.Workspace(), socket_x_range=(0.5, 0.5), socket_y_range=(-0.3, -0.3),
                      plug_x_range=(0.3, 0.3), plug_y_range=(-0.2, -0.2), plug_yaw_range_deg=(0., 0.),
                      socket_yaw_range_deg=(0., 0.), grasp_feasibility=False, certify_settled_pose=True,
-                     home_collision_check=True)
+                     home_collision_check=True,
+                     arm_offset_max_rad=0.0)   # posture variation has its own tests (test_reset_variation)
         settled = {"plug_xy_m": [0.302, -0.2], "plug_yaw_deg": 10.0}
         # draws: 1 home collision, 2 settled pick fails, 3 settled noise fails, 4 accepted
         noises = iter(["plug_yaw+:grasp_ik", None])
         homes = iter(["socket_home_collision", None, None, None])
         # _pick_check runs pre-settle then post-settle on draws 2-4 (draw 1 dies on the home check)
         picks = iter([None, "grasp_ik", None, None, None, None])
-        with mock.patch.object(sb, "_home_collision_check", lambda o, w: next(homes)), \
-                mock.patch.object(sb, "_pick_check", lambda o, w, robust=False: next(picks)), \
+        with mock.patch.object(sb, "_home_collision_check", lambda o, w, offset=None: next(homes)), \
+                mock.patch.object(sb, "_pick_check", lambda o, w, robust=False, arm_offset=None: next(picks)), \
                 mock.patch.object(sb, "_insert_check_full", lambda o, w: (None, settled)), \
-                mock.patch.object(sb, "_pick_noise_margin_check", lambda o, w: next(noises)), \
+                mock.patch.object(sb, "_pick_noise_margin_check", lambda o, w, arm_offset=None: next(noises)), \
                 mock.patch.object(sb, "_cable_check", lambda o, w: None):
             options, diag = sb.sample_scene(1, ws)
         self.assertEqual(diag["draws"], 4)

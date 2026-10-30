@@ -26,12 +26,14 @@ trained yet; the roadmap is in `plan.md`, current status in `docs/*.md`.
 ## Commands
 
 ```powershell
-python -m unittest discover -s tests -v          # all tests (83); needs third_party assets
+python -m unittest discover -s tests -v          # all tests (122); needs third_party assets
 python -m unittest tests.test_connector -v       # holder-only tests, no robot assets needed
 python -m unittest tests.test_openarm.OpenArmTests.test_v1_bimanual_and_no_weld  # single test
 ```
 
-Only `tests/test_connector.py`, `tests/test_workspace.py`, `tests/test_vla_adapter.py`, `tests/test_faults.py` and `tests/test_d435.py` run without `third_party/`;
+Only `tests/test_connector.py`, `tests/test_workspace.py`, `tests/test_vla_adapter.py`, `tests/test_faults.py`, `tests/test_d435.py`, `tests/test_quality.py` and `tests/test_release.py` run without `third_party/`
+(`tests/test_reset_variation.py` runs its sampler half; its pre-change baseline checks need
+`RESET_VARIATION_BASELINE_DIR` and skip otherwise);
 `test_openarm`, `test_table_pickup`, `test_carry_path`, `test_collection` build the robot scene
 (slow: each `OpenArmInsertEnv()` compiles the model and settles 1 s of physics at 2 kHz).
 
@@ -49,6 +51,9 @@ python scripts/collect_varied.py --record --output data/openarm_v1_varied_new  #
 python scripts/replay_pilot.py --dataset data/openarm_v1_varied_new
 python scripts/prepare_vla_data.py --dataset data/openarm_v1_varied_new
 python scripts/validate_vla_adapter.py --replay --output results/vla_adapter_new_run
+python scripts/collect_random.py --workspace configs/workspace_v2_cable30.json --start-row 20000 --episodes 50 --record --headless --video none --output data/v2c30_new   # + --faults all in a 2nd --output, same rows
+python scripts/make_release.py --runs data/v2c30_new data/v2c30_new_faults --name v2c30 --version 1   # -> data/releases/v2c30-v1
+python scripts/audit_visibility.py --kinematic 2400 --output <scratch>/kin.json   # camera coverage audit (no recording)
 python scripts/view_openarm.py [--play] [--task insertion]   # interactive viewer (Space run, R reset)
 python scripts/test_insert.py --offset-y-mm 0.5 ; python scripts/sweep_alignment.py   # holder-only
 ```
@@ -105,6 +110,23 @@ Layers, bottom to top (each imports only from below):
    240x320 and aligned to their RGB, saved as `depth_<name>_mm` + `cameras/<rgb folder>_depth/` PNGs;
    `manifest()["depth_cameras"]` holds intrinsics/models. Other workspaces have no depth. Windows GL RGB
    renders are not bit-reproducible (±1 grey level on a few px), so compare RGB with a tolerance.
+   In v2_cable30, `scene_rgb` is a **raised right-side mount** (moved 2026-10 so scene ∪ wrist see the
+   plug through pickup). A table-level pose with full ray-cast coverage was rejected as an unusable
+   view, and the residual ~1% gap is closed by the collector's `camera_occluded` gate
+   (`docs/WORKSPACE.md`).
+   **Data-requirement gates in `collect_random.py`** (2026-10-27, `docs/DATA_COLLECTION.md`):
+   - per-frame pilot visibility (`data_pipeline/visibility.py`): a success with an unseen pre-lift
+     frame becomes `camera_occluded`;
+   - the physical quality gate (`data_pipeline/quality.py`): `quality_no_grasp` / `_low_lift` /
+     `_drop` / `_contact_lost`, with `stage_outcomes` pickup/carry/insertion in every summary;
+   - an in-process strict replay of every recorded episode (`data_pipeline/replay.py`): a mismatch
+     goes to `failed_attempts/` as `replay_mismatch`; `--no-verify-replay` skips it;
+   - `manifest["collection_source_hashes"]`.
+
+   `scripts/make_release.py` packages complete runs into `data/releases/<name>-v<N>/`: hard links,
+   `release.json`, seed-grouped `splits.json`, disjoint `heldout_resets.json` and checksums. It refuses
+   to overwrite, and refuses to mix source, workspace or collection versions. `scripts/audit_visibility.py`
+   audits camera coverage (rollouts, `--reset-only`, `--kinematic N`).
    A slim collection-only Docker image is `docker/collect.Dockerfile` (+ whitelist `.dockerignore`);
    usage in `docs/DOCKER_COLLECTION.md`. Rebuild it after code/config changes. On a new Linux host run
    `scripts/docker_selfcheck.py` in the container first (GPU/EGL, `/app/data` permissions, all camera
@@ -119,7 +141,10 @@ Layers, bottom to top (each imports only from below):
 4. **`data_pipeline/`** — `episodes.py` (lossless NPZ episode + metadata/diagnostics JSON,
    `validate_episode` checks checksums), `collection_bank.py` (fixed 10-reset collection bank and a
    100-reset evaluation bank that must never be used for collection/tuning), `vla_dataset.py`
-   (train-only normalization, framework-neutral samples).
+   (train-only normalization, framework-neutral samples). `scene_bank.py` is the v2 scene sampler:
+   feasibility-checked plug/socket/visual draws, plus a start-posture offset from its own rng stream,
+   checked for collision, pick and noise margin. `quality.py`, `replay.py` and `visibility.py` are the
+   collection gates above.
 5. **`learning/vla/`** — pi0 adapter (`OpenArmCodec` owns normalization; upstream `norm_stats`
    must be `{}`), `FullWindowPilotDataset` (complete same-episode windows only), optional upstream
    transform wiring.
@@ -156,6 +181,16 @@ target advances only below `push_force_cap_n`). It is a scripted probe, not yet 
   `save_episode`; read-only, not part of the 16-d state.
 - Every `step` calls `mj_forward` at the command boundary; replay must reproduce this exactly
   (a replay audit once failed by omitting it). Strict replay tolerance is 1e-8 qpos / 1e-7 qvel.
+- **Tabletop reset includes a camera warm-up.** `configs/openarm_v1.json` `warmup_s` (0.88 s = 44
+  holds) runs after the settle through `_advance`, the same code as `step`. It then clears outcome,
+  timers, peaks and the grasp latch, so obs 0 is at 1.88 s and the expert's first action already
+  moves; there is no still `survey` prefix. `env.warmup_steps` records it, and grasped resets have
+  none.
+- **Tabletop option `arm_offset_rad`** (7 values): the right-arm start posture is home + offset, with
+  |offset| ≤ 0.15 rad and ≥ 0.05 rad inside the joint limits. The v2 sampler draws ±0.05.
+- **Labels for training are `action_label` (T, 8)**: `action_applied`, with NaN on `step_label ==
+  "fault"` steps, plus `label_mask` (T,). Metadata `pilot_contract` records the 2-camera / 16-state /
+  8-action / 50 Hz contract. Depth, torque and `visibility_pilot` are extra arrays, not policy inputs.
 
 ## Provenance and evidence conventions
 

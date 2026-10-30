@@ -15,6 +15,8 @@
 !scripts/rollout_viewer.py
 !scripts/replay_pilot.py
 !scripts/docker_selfcheck.py
+!scripts/make_release.py
+!scripts/audit_visibility.py
 !tests/test_workspace.py
 !tests/test_place_insert.py
 !tests/test_openarm.py
@@ -24,5 +26,10 @@
 !tests/test_faults.py
 !tests/test_d435.py
 !tests/test_sensors.py
+!tests/test_quality.py
+!tests/test_release.py
+!tests/test_contract.py
+!tests/test_visibility.py
+!tests/test_reset_variation.py
 **/__pycache__
 envs/openarm_insert_temp.py

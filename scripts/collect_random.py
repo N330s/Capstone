@@ -67,6 +67,8 @@ from data_pipeline.scene_bank import (collection_bank, evaluation_bank, as_reset
                                       SEED_NAMESPACE_WIDTH,
                                       iter_collection_bank)
 from data_pipeline.episodes import SCHEMA, save_episode, clean_info
+from data_pipeline.quality import quality_check
+from data_pipeline.replay import replay_episode
 from envs.openarm_insert import OpenArmInsertEnv
 from rollout_viewer import LiveViewer, VideoRecorder, ViewerClosed
 
@@ -96,6 +98,16 @@ def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def make_visibility_probe(env):
+    """Pilot-camera plug visibility probe, or None if data_pipeline/visibility.py is unavailable."""
+    try:
+        from data_pipeline.visibility import VisibilityProbe, PILOT_CAMERAS
+    except ImportError:
+        print("WARNING: data_pipeline.visibility unavailable; camera-occlusion gate disabled", flush=True)
+        return None, ()
+    return VisibilityProbe(env), tuple(PILOT_CAMERAS)
+
+
 def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0.0,
             viewer=None, recorder=None, faults=()):
     obs, info = env.reset(seed=row["seed"], options=as_reset_options(row["options"]))
@@ -115,11 +127,33 @@ def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0
                               probe_offset_y_m=probe_offset_y_m, fault=fault)
     max_steps = FAULT_MAX_STEPS if fault else MAX_STEPS
     steps = 0
+    # Quality bookkeeping (preflight and record alike) and the pilot-camera visibility gate.
+    quality_steps, plug_z0 = [], float(env.data.qpos[env.plug_qadr + 2])
+    probe, pilot_cams = make_visibility_probe(env)
+    vis_rows, occluded, lift_seen = [], [], False
+
+    def see(frame, phase_before):
+        if probe is None:
+            return
+        seen = probe.plug()
+        vis_rows.append([bool(seen[c]) for c in pilot_cams])
+        if not any(vis_rows[-1]) and not lift_seen:
+            occluded.append((frame, phase_before))
+
+    see(0, "reset")
     while env.outcome is None and expert.failure is None and steps < max_steps:
         action = expert.action()
         phase = expert.phase
+        lift_seen = lift_seen or phase == "lift"
         obs, reward, term, trunc, info = env.step(action)
         steps += 1
+        quality_steps.append({"phase": phase, "label": expert.label,
+                              "plug_finger_contacts": int(info.get("plug_finger_contacts", 0)),
+                              "grasp_established": bool(info.get("grasp_established", False)),
+                              "drops": int(info.get("drops", 0)),
+                              "plug_z": float(env.data.qpos[env.plug_qadr + 2])})
+        if record or not lift_seen:
+            see(steps, phase)
         trace_qpos.append(env.data.qpos.copy())
         trace_phase.append(phase)
         trace_label.append(expert.label)
@@ -139,13 +173,31 @@ def rollout(env, row, *, record=False, detector_mode="noisy", probe_offset_y_m=0
     if fault is not None and outcome == "success" and expert.fault_state != "done":
         # Succeeded without the mistake and its recovery happening: not a recovery demonstration.
         outcome = "fault_not_exercised"
+    original_outcome = outcome
+    first_lift = next((i for i, s in enumerate(quality_steps) if s["phase"] == "lift"), None)
+    visibility = {"probe": probe is not None, "cameras": list(pilot_cams),
+                  "frames_checked": first_lift + 1 if first_lift is not None else len(vis_rows),
+                  "first_lift_step": first_lift, "occluded_frames": len(occluded),
+                  "first_occluded_frame": occluded[0][0] if occluded else None,
+                  "first_occluded_phase": occluded[0][1] if occluded else None}
+    if outcome == "success" and occluded:
+        outcome = "camera_occluded"
+    quality = quality_check(quality_steps, original_outcome, start_z=plug_z0)
+    if outcome == "success" and not quality["ok"]:
+        outcome = quality["reasons"][0]
     summary = {**{k: v for k, v in row.items() if k != "sampler"},
                "outcome": outcome, "steps": steps,
+               "original_outcome": original_outcome, "stage_outcomes": quality["stage_outcomes"],
+               "quality": {"ok": quality["ok"], "reasons": quality["reasons"],
+                           "min_lift_m": quality["min_lift_m"]},
+               "visibility": visibility,
                "expert": expert.diagnostics(),
                "initial": start_info, "final": clean_info(info)}
     payload = (observations, requested, applied, qpos, qvel,
                rewards, terms, truncs, durations, phases, infos)
     trace = {"qpos": np.asarray(trace_qpos), "phase": np.asarray(trace_phase)}
+    if record and probe is not None:
+        trace["visibility"] = np.asarray(vis_rows, dtype=bool)
     if fault is not None:
         summary["fault"] = fault.to_json()
         summary["label_counts"] = fault_lib.label_counts(trace_label)
@@ -166,6 +218,25 @@ def save_failure(directory, row_id, summary, trace, recorder=None, payload=None)
     if recorder is not None:
         recorder.save(directory / row_id, metadata={"outcome": summary["outcome"],
                                                     "expert": summary["expert"]})
+
+
+def verify_replay(env, path):
+    """Strict replay of the episode just written, on the same env without rendering."""
+    env.images = False
+    try:
+        result = replay_episode(env, path)
+        return {"passed": True, **result}
+    except (AssertionError, ValueError, RuntimeError) as error:
+        return {"passed": False, "error": f"{type(error).__name__}: {error}"}
+
+
+def attach_replay(path, replay_result):
+    """Store the replay verdict in metadata.json (data_sha256 covers only episode.npz, so it stays valid)."""
+    meta_path = path / "metadata.json"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    meta["replay"] = replay_result
+    write_json(meta_path, meta)
+    return meta
 
 
 def make_viewer(env, args):
@@ -359,24 +430,44 @@ def collect_pass(args, out, ws, state):
                                                                           preflight_qpos))
         if matches is False:
             print("WARNING: recorded trajectory differs from its preflight", row["id"], flush=True)
-        if result["outcome"] != "success":
-            save_failure(out / "failed_attempts", row["id"], result, trace,
-                         recorder=recorder, payload=payload)
-            failures.append({"episode": row["id"], "outcome": result["outcome"],
-                             "expert": result["expert"], "trace_matches_preflight": matches})
-            print("FAILED (retained, not a BC label)", row["id"], result["outcome"], flush=True)
-        else:
+        replay_result = None
+        if result["outcome"] == "success":
             if recorder is not None and args.video == "all":
                 recorder.save(out / "video" / row["id"], metadata={"outcome": "success"})
             labels = ({"labels": trace["label"].tolist(), "fault": result["fault"]}
                       if "label" in trace else {})
-            meta = save_episode(out / row["id"], *payload, env.manifest(), **labels)
+            extra = {"quality": result["quality"], "stage_outcomes": result["stage_outcomes"]}
+            if "visibility" in trace:
+                extra["visibility"] = trace["visibility"]
+            meta = save_episode(out / row["id"], *payload, env.manifest(), **labels, **extra)
+            if args.verify_replay:
+                replay_result = verify_replay(env, out / row["id"])
+                if replay_result["passed"]:
+                    meta = attach_replay(out / row["id"], replay_result)
+                else:
+                    # Commands do not reproduce the physics: not usable data. Keep it for inspection.
+                    result = {**result, "outcome": "replay_mismatch", "replay": replay_result}
+                    dest = out / "failed_attempts" / row["id"]
+                    dest.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.move(str(out / row["id"]), str(dest))
+                    write_json(out / "failed_attempts" / (row["id"] + ".json"), result)
+        if result["outcome"] != "success":
+            if result["outcome"] != "replay_mismatch":
+                save_failure(out / "failed_attempts", row["id"], result, trace,
+                             recorder=recorder, payload=payload)
+            failures.append({"episode": row["id"], "outcome": result["outcome"],
+                             "expert": result["expert"], "trace_matches_preflight": matches,
+                             "stage_outcomes": result["stage_outcomes"],
+                             **({"replay": replay_result} if replay_result else {})})
+            print("FAILED (retained, not a BC label)", row["id"], result["outcome"], flush=True)
+        else:
             records.append({"episode": row["id"], "seed": row["seed"], "split": row["split"],
                             "steps": meta["steps"], "data_sha256": meta["data_sha256"],
                             "retries": result["expert"]["retries"],
                             "regrasps": result["expert"]["regrasps"],
                             "detection_error": result["expert"]["detection_error"],
                             "trace_matches_preflight": matches,
+                            "stage_outcomes": result["stage_outcomes"], "replay": replay_result,
                             **({"fault": result["fault"], "label_counts": result["label_counts"]}
                                if labels else {})})
             print("recorded", row["id"], meta["steps"],
@@ -476,6 +567,20 @@ def build_manifest(args, out, env, records, failures, complete):
     return manifest
 
 
+# Code that produces the demonstrations (beyond the 11 files env.manifest() hashes): a release refuses
+# to mix runs whose hashes here differ.
+COLLECTION_SOURCES = ("controllers/pick_insert_expert.py", "controllers/place_insert.py",
+                      "controllers/faults.py", "data_pipeline/scene_bank.py",
+                      "data_pipeline/quality.py", "data_pipeline/replay.py",
+                      "data_pipeline/visibility.py", "data_pipeline/episodes.py",
+                      "scripts/collect_random.py", "configs/openarm_v1.json")
+
+
+def collection_source_hashes():
+    root = Path(__file__).resolve().parents[1]
+    return {p: sha256(root / p) if (root / p).exists() else None for p in COLLECTION_SOURCES}
+
+
 def _base_manifest(args, out, env, records, failures, complete):
     return {"schema": SCHEMA,
             "episodes": records,
@@ -489,6 +594,7 @@ def _base_manifest(args, out, env, records, failures, complete):
             "robot_manifest": env.manifest(),
             "complete": complete,
             "collection_script_sha256": sha256(__file__),
+            "collection_source_hashes": collection_source_hashes(),
             "expert_sha256": sha256(sys.modules[PickInsertExpert.__module__].__file__),
             "scene_bank_module_sha256": sha256(sys.modules[collection_bank.__module__].__file__),
             "scene_bank_sha256": sha256(out / "collection_bank.json"),
@@ -515,6 +621,8 @@ def main():
     p.add_argument("--resume", action="store_true",
                    help="Continue a stopped run in the same --output (a scene that was being "
                         "recorded is recorded again; one in preflight is preflighted again)")
+    p.add_argument("--no-verify-replay", dest="verify_replay", action="store_false",
+                   help="skip the strict replay of each recorded episode (replay doubles physics time)")
     p.add_argument("--strict", action="store_true",
                    help="Stop on the first recorded rollout that fails")
     p.add_argument("--headless", action="store_true",
@@ -529,8 +637,8 @@ def main():
     p.add_argument("--workspace", type=Path, default=None,
                    help="workspace spec (default configs/workspace_v1.json)")
     p.add_argument("--eval-scenes", type=int, default=0,
-                   help="size of the reserved evaluation bank written first (default 100; use a few "
-                        "for quick tests, a smaller bank is a prefix of the full one)")
+                   help="size of the reserved evaluation bank written first (default 0 = none; "
+                        "release builds use 100; a smaller bank is a prefix of the full one)")
     p.add_argument("--faults", default=None,
                    help="recovery demonstrations: one injected fault per scene, then recovery. "
                         "'all' or a comma list of " + ",".join(fault_lib.FAULT_KINDS)

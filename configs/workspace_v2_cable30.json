@@ -303,7 +303,7 @@
     ]
   },
   "cameras": {
-    "scene_rgb": {"description": "Overhead mount: above and behind the right hand, 0.66 m over the table top, aimed at (0.40, -0.21, 0.36) so the plug spawn area, the gripper and the socket face are all in view (24 deg from vertical)", "position_m": [0.12, -0.21, 0.98], "xyaxes": [0.0, -1.0, 0.0, 0.9114, 0.0, 0.4116], "fovy_deg": 48,
+    "scene_rgb": {"description": "Right-side raised mount (moved 2026-10 for requirement 1: the plug must be seen from reset through closure). 0.48 m over the table top and 0.26 m outside its right edge, aimed at (0.29, -0.365, 0.376), 50 deg from vertical, level (no roll). Previous pose, for traceability: position (0.12, -0.21, 0.98), xyaxes (0, -1, 0, 0.9114, 0, 0.4116), fovy 48, aimed at (0.40, -0.21, 0.36) from above and behind the right hand. Measured on the 30 recorded recovery episodes (pickup frames incl. 5 random +-0.05 rad right-arm start postures per episode, per-episode camera jitter, per-episode socket placement): plug seen by overhead or wrist in 100 percent of pickup frames versus 89 percent with the previous pose (overhead alone 89 percent, wrist alone 68 percent); socket seen by this camera in transit_place/approach/align/insert/hold/withdraw 1.00/1.00/1.00/0.96/0.40/1.00 versus 0.46/0.11/0.19/0.03/0.00/0.00 with the previous pose. See docs/WORKSPACE.md.", "position_m": [0.37, -0.856, 0.8], "xyaxes": [0.987, 0.1608, 0.0, -0.1043, 0.6402, 0.7611], "fovy_deg": 45.1,
       "depth": {
         "sensor": "D435",
         "description": "Overhead depth stream (obs depth/scene, 240x320 aligned to scene_rgb), modelled as a D435 exactly like the chest camera: rendered z-depth degraded with Intel's RMS noise, range limits, edge holes and dropout, 1 mm units",

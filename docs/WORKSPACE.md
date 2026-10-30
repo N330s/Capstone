@@ -140,7 +140,7 @@ entry has a `depth` block; v1, v2 and v1_leaf5n have none and their observations
 
 | Camera | Sensor model | Resolution | fovy | fx (px) | Depth range | Baseline | RMS noise at a typical distance |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `scene_rgb` (overhead) | D435 | 320×240 | 48° | 269.5 | 0.28–3 m | 50 mm | 1.75 mm at 0.7 m |
+| `scene_rgb` (overhead) | D435 | 320×240 | 48° (`workspace_v2_cable30` since 2026-10: 45.1°) | 269.5 (v2_cable30: 288.9) | 0.28–3 m | 50 mm | 1.75 mm at 0.7 m (v2_cable30 mount: 1.5 mm at 0.65 m) |
 | `wrist_rgb` | D405 | 320×240 | 55° | 230.5 | 0.07–1 m | 18 mm | 0.14 mm at 0.12 m |
 | `chest_rgb` | D435 | 424×240 | 42° | 312.6 | 0.28–3 m | 50 mm | 1.08 mm at 0.55 m |
 
@@ -166,6 +166,60 @@ z²·0.08/(447 px·baseline); all three also have 2 cm edge holes (1 px dilation
 - **Checked:** `tests/test_sensors.py` compares scene and wrist depth with `mj_ray` ground truth on
   smooth surfaces (worst patch median error 2.8 mm); it checks shape, range and reproducibility.
   This is a rendering model, not a calibration against a real D435 or D405.
+
+**`scene_rgb` in `workspace_v2_cable30` (moved 2026-10, requirement 1: clear views throughout pickup).**
+The overhead mount above did not see the plug during part of the pickup: the arm hides it from above
+and behind, and the wrist camera sees nothing at reset. In `configs/workspace_v2_cable30.json` only
+(v1, v2 and v2 with the 60-segment cable keep the mount above) it moved to a raised right-side view.
+
+| | Original overhead | Current: right-side raised | Rejected: table level |
+| --- | --- | --- | --- |
+| Position (m) | (0.12, −0.21, 0.98) | (0.37, −0.856, 0.80): 0.48 m over the table top, 0.26 m outside its right edge | (0.415, −0.816, 0.329): 9 mm over the table top |
+| xyaxes | (0, −1, 0, 0.9114, 0, 0.4116) | (0.987, 0.1608, 0, −0.1043, 0.6402, 0.7611), level, no roll | (0.982, 0.189, 0, 0.0099, −0.0512, 0.9986) |
+| Aim / fovy | (0.40, −0.21, 0.36) / 48° | (0.29, −0.365, 0.376), 50° from vertical / 45.1° | (0.292, −0.177, 0.363), 3° above horizontal / 40.2° |
+| Plug seen by scene_rgb ∪ wrist_rgb, 30 recorded episodes, pickup frames | 0.889 | 1.000 | 1.000 |
+| Plug seen, planner-generated set (1050 placements: reset, transit, descend, grasp, wrong_grasp miss path, premature_close; 20,415 frames) | not measured | 28 of 600 uniform and 29 of 450 hole-region placements have an uncovered frame, mostly on the wrong_grasp miss path | 1.000 |
+| Plug seen at the reset pose, raw sampler draws (±0.05 rad posture, jitter, socket) | not measured | 98.92% of 2400 | 99.92% of 2400 |
+| Socket seen by `scene_rgb`: transit_place / approach / align / insert / hold / withdraw | 0.46 / 0.11 / 0.19 / 0.03 / 0.00 / 0.00 | 1.00 / 1.00 / 1.00 / 0.96 / 0.40 / 1.00 | 1.00 / 1.00 / 1.00 / 0.89 / 0.64 / 0.90 |
+| Depth valid fraction, reset (row 6100) | 0.91 | ≥ 0.6 (sensor test) | 0.18 |
+
+- **What "seen" means:** `data_pipeline/visibility.py` ray-casts from the camera to four points on the
+  plug housing (centre, top face, both ends); the plug counts as seen when any point is inside the image
+  and the first geom hit (group 3 hidden, like the renderer) belongs to the plug body (the cable does
+  not count). The socket uses its entrance point and body origin, and any socket geom counts, so a
+  socket seen from the side or behind counts too. The rule is geometric, not a pixel count.
+- **The socket must be placed per episode.** The socket pose lives in the model, not in `qpos`; a replay
+  that only sets `qpos` measures the default socket (0.91 / 0.97 / 0.92 / 0.97 / 1.00 / 0.84 for the
+  original pose) and overestimates the old view. All socket numbers above place the recorded socket pose.
+- **The remaining gap is closed by the collection gate, not the camera.** The raised view misses the
+  plug in about 1% of raw reset draws and on some wrong_grasp miss paths, all with the plug nearest the
+  robot (x 0.39–0.43 m, y −0.25 to −0.07 m), where the arm hides it and the wrist looks elsewhere.
+  `collect_random.py` rejects such a scene as `camera_occluded` (any frame from obs 0 to the first
+  `lift` unseen by both pilot cameras), so every recorded episode sees the plug on all pickup frames.
+  The first audit (30 rows, 15 clean + 15 faulted) would have rejected 1 (3.3%). Those plug positions
+  are therefore slightly under-represented in the data.
+- **Why not the table-level pose:** a search over the planner-generated set (`scripts/audit_visibility.py
+  --kinematic N` reproduces the reset numbers) found that only camera heights near the table top reach
+  full coverage; overhead poses (z ≥ 0.55 m) either lost socket coverage or kept about 0.7% of frames
+  uncovered. Rendered, the table-level view shows the plug as a few-pixel sliver along the table edge,
+  the upper half of the image is empty background, and its depth is 18% valid. It passes the ray-cast
+  rule but does not give a usable view of the plug's table position, so it was not adopted (2026-10-27).
+- **During insertion the wrist camera carries the view.** Per-camera share of insertion frames where
+  the socket is *not* seen, on the 30 recorded recovery episodes (real socket pose, every 2nd frame):
+
+  | Phase | `scene_rgb` original | `scene_rgb` current | `wrist_rgb` | `chest_rgb` |
+  | --- | --- | --- | --- | --- |
+  | transit_place | 54% | 0% | 49% | 37% |
+  | approach | 89% | 0% | 0% | 10% |
+  | align | 81% | 0% | 0% | 38% |
+  | insert | 97% | 4.5% | 1.8% | 81% |
+  | hold (plug seated, covering the entry) | 100% | 60% | 83% | 100% |
+  | withdraw | 100% | 0% | 0% | 69% |
+
+  The plug in the hand is hidden from the current `scene_rgb` in about 30% of insertion frames (the
+  fingers cover it) and from the wrist camera in none.
+- Whether this view helps a trained policy is not tested. Datasets recorded before the move used the
+  original pose and no longer replay strictly (the workspace hash changed).
 
 `scene_rgb` was moved on 2026-10-02 from the former corner view, (0.85, −0.90, 0.85) with xyaxes
 (0.8, 0.6, 0, −0.25, 0.333, 0.91), to the overhead mount in all workspace files. It keeps the plug

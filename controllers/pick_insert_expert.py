@@ -586,14 +586,22 @@ class PickFeasibility:
         carry_fixture(m, self.mount_home)   # the pedestal travels with the socket, as in the env
         return basis, entry
 
-    def home_contacts(self, options):
-        """Penetrating contacts between the right arm at the reset (home) posture, fingers open,
-        and the socket + fixture placed per ``options`` (plug and cable ignored). Scratch data
-        only; [] means the home pose is clear."""
-        self._place_socket(options)
-        return self.planner.contacts(self.home, self.open_travel, ignore_plug=True)
+    def _start(self, arm_offset):
+        """(right-arm start posture, full qpos0) for home + ``arm_offset`` (None = home)."""
+        start = self.home if arm_offset is None else self.home + np.asarray(arm_offset, dtype=float)
+        qpos0 = self.qpos0.copy()
+        for i in range(1, 8):
+            qpos0[self.model.jnt_qposadr[self.model.joint(f"openarm_right_joint{i}").id]] = start[i - 1]
+        return start, qpos0
 
-    def __call__(self, options, min_insert_margin=None):
+    def home_contacts(self, options, arm_offset=None):
+        """Penetrating contacts between the right arm at the reset posture (home + ``arm_offset``),
+        fingers open, and the socket + fixture placed per ``options`` (plug and cable ignored).
+        Scratch data only; [] means the start pose is clear."""
+        self._place_socket(options)
+        return self.planner.contacts(self._start(arm_offset)[0], self.open_travel, ignore_plug=True)
+
+    def __call__(self, options, min_insert_margin=None, arm_offset=None):
         """None if the pick is plannable, else the reject reason. ``min_insert_margin`` (rad), with
         require_insert, also rejects a chosen grasp whose insertion plan margin is below it."""
         from envs.openarm_insert import OpenArmInsertEnv
@@ -604,7 +612,8 @@ class PickFeasibility:
                                             yaw_tilt(float(options.get("plug_yaw_deg", 0.)), 0.),
                                             self.table_z, self.geom.rest_z_m)
         insert = (entry, upright_insert_frame(basis, self.geom.half_turn_symmetric)) if self.require_insert else None
-        plan, reason, _ = plan_table_pick(self.planner, self.qpos0, plug_pos, plug_mat, self.home,
+        start, qpos0 = self._start(arm_offset)
+        plan, reason, _ = plan_table_pick(self.planner, qpos0, plug_pos, plug_mat, start,
                                           insert=insert, require_insert=self.require_insert,
                                           travel=self.open_travel)
         if plan is None:
@@ -858,11 +867,13 @@ class PickInsertExpert:
         if plan is None:
             self._fail("ik_infeasible" if reason.startswith("ik_infeasible") else reason, reason)
             return
-        if self._fault_is("wrong_grasp"):
-            self._fault_to("active", "fault_start")
+        miss = self._fault_is("wrong_grasp")
         self.grip = self.geom.preshape_travel_m
         self._start_path("transit_pick", plan["transit"], speed=TRANSIT_SPEED_RAD_S,
                          min_duration=2.0, hold=0.3)
+        if miss:
+            # after the phase change, so the event carries the phase recorded for this step
+            self._fault_to("active", "fault_start")
 
     def _tracking_error(self):
         e = self.env
@@ -1106,18 +1117,26 @@ class PickInsertExpert:
         self.phase_time += e.dt
 
         if self.phase == "survey":
-            # Hold still so the cameras get clean frames of the untouched scene,
-            # then latch one detection and commit to it for the reach.
+            # Camera warm-up now happens in env.reset (tabletop warm-up, config warmup_s), so with
+            # env.warmup_steps > 0 the very first action() latches one detection and commits to the
+            # reach: purposeful motion from step 0. Fallback for an env without a warm-up (old
+            # config, scripted env): the old timed survey, holding still for 0.6 * the survey
+            # timeout (the latching call itself returns a hold).
             self.grip = e.config["grip_open_travel_m"]
-            if self.phase_time > PHASE_TIMEOUT_S["survey"] * 0.6:
-                self.detection = self.detector.sense()
-                truth = self.detector.truth()
-                self.detection_error = {
-                    "plug_pos_m": float(np.linalg.norm(self.detection["plug_pos"] - truth["plug_pos"])),
-                    "socket_pos_m": float(np.linalg.norm(self.detection["socket_pos"] - truth["socket_pos"]))}
-                self.start_plug_z = float(truth["plug_pos"][2])
-                self._begin_pick()
-            return np.r_[e.target[:7], self.grip]
+            timed = getattr(e, "warmup_steps", 0) <= 0
+            if timed and self.phase_time <= PHASE_TIMEOUT_S["survey"] * 0.6:
+                return np.r_[e.target[:7], self.grip]
+            self.detection = self.detector.sense()
+            truth = self.detector.truth()
+            self.detection_error = {
+                "plug_pos_m": float(np.linalg.norm(self.detection["plug_pos"] - truth["plug_pos"])),
+                "socket_pos_m": float(np.linalg.norm(self.detection["socket_pos"] - truth["socket_pos"]))}
+            self.start_plug_z = float(truth["plug_pos"][2])
+            self._begin_pick()
+            if timed or self.failure is not None:
+                return np.r_[e.target[:7], self.grip]
+            self.phase_time = e.dt           # this call is already the first interval of the new phase
+            return self._pick_action()
 
         if self.phase in PICK_PATH_PHASES + ("arrive", "close", "regrasp"):
             return self._pick_action()

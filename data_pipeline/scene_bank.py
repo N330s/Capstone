@@ -177,6 +177,11 @@ class Workspace:
     # the pick check and the noise-margin sweep run on that pose. Needs insert_feasibility (its
     # reset supplies the settled pose). The pre-settle noise sweep is then skipped (same cost).
     certify_settled_pose: bool = False
+    # Start-posture variation (R3): the right arm starts at home_arm_rad + a per-joint uniform offset
+    # in +/- arm_offset_max_rad (0 disables), drawn from its own rng stream (POSTURE_STREAM) so no
+    # other option changes. Redrawn (posture only) up to POSTURE_TRIES times when the home-collision
+    # or pick checks fail from that posture, else the zero offset (which passed them) is used.
+    arm_offset_max_rad: float = 0.05
     randomize_visual: bool = True
     light_azimuth_deg: tuple = (-60.0, 60.0)
     light_elevation_deg: tuple = (35.0, 80.0)
@@ -194,8 +199,10 @@ V2_STAGE1 = dict(plug_x_range=(0.32, 0.43), plug_y_range=(-0.38, -0.06), plug_ya
                  socket_x_range=(0.37, 0.49), socket_y_range=(-0.44, -0.10), socket_yaw_range_deg=(-15.0, 35.0),
                  reach_range_m=(0.25, 0.75), hand_keepout_m=0.06,
                  home_collision_check=True, certify_settled_pose=True,
-                 pick_insert_margin_rad=0.09)
+                 pick_insert_margin_rad=0.09, arm_offset_max_rad=0.05)
 MAX_DRAWS = 200
+POSTURE_STREAM = 0x504F5354     # "POST": second element of the posture rng seed [seed, POSTURE_STREAM]
+POSTURE_TRIES = 8
 
 
 def assert_disjoint():
@@ -274,12 +281,13 @@ def _hand_home_check(options, ws):
     return None
 
 
-def _home_collision_check(options, ws):
-    """'socket_home_collision' if the open right hand at its home posture touches the socket or
-    its fixture. One mj_collision on the sampler's private scratch model."""
+def _home_collision_check(options, ws, arm_offset=None):
+    """'socket_home_collision' if the open right hand at its start posture (home, or home +
+    ``arm_offset``) touches the socket or its fixture. One mj_collision on the sampler's private
+    scratch model."""
     if not (ws.home_collision_check and ws.grasp_feasibility):
         return None
-    return "socket_home_collision" if _pick_feasibility(ws).home_contacts(options) else None
+    return "socket_home_collision" if _pick_feasibility(ws).home_contacts(options, arm_offset) else None
 
 
 def _visual(rng, ws):
@@ -305,7 +313,7 @@ def _pick_feasibility(ws):
     return _FEASIBILITY[key]
 
 
-def _pick_check(options, ws, robust=False):
+def _pick_check(options, ws, robust=False, arm_offset=None):
     """Name of the reason the expert cannot plan this pick, or None.
 
     Pure function of the options: a private model, fixed IK seeds, the reset
@@ -313,7 +321,8 @@ def _pick_check(options, ws, robust=False):
     work until a check is actually needed."""
     if not ws.grasp_feasibility:
         return None
-    return _pick_feasibility(ws)(options, min_insert_margin=ws.pick_insert_margin_rad if robust else None)
+    return _pick_feasibility(ws)(options, min_insert_margin=ws.pick_insert_margin_rad if robust else None,
+                                 arm_offset=arm_offset)
 
 
 _NOISE_BOUNDS = None
@@ -348,7 +357,7 @@ def _perturbed(options, key_pos, key_yaw, axis, delta):
     return o
 
 
-def _pick_noise_margin_check(options, ws):
+def _pick_noise_margin_check(options, ws, arm_offset=None):
     """None if the pick plan survives the plug/socket pose perturbed by the
     noisy Detector's error bound, one axis at a time; else the axis/reason
     that failed. Axis-aligned (not a full cross product) because that already
@@ -364,7 +373,7 @@ def _pick_noise_margin_check(options, ws):
         for axis, bound in (("x", pos_bound), ("y", pos_bound), ("yaw", yaw_bound)):
             for sign in (-1.0, 1.0):
                 perturbed = _perturbed(options, key_pos, key_yaw, axis, sign * bound)
-                bad = _pick_check(perturbed, ws)
+                bad = _pick_check(perturbed, ws, arm_offset=arm_offset)
                 if bad:
                     tag = f"{obj}_{axis}{'+' if sign > 0 else '-'}"
                     return f"noise_margin:{tag}:{bad}"
@@ -420,6 +429,32 @@ def _settled_options(options, settled):
     return out, float(np.linalg.norm(dxy) * 1000.0), dyaw
 
 
+def _sample_posture(seed, options, ws, final_options=None):
+    """Start-posture offset for the right arm. Draws up to POSTURE_TRIES uniform +/-arm_offset_max_rad
+    offsets from default_rng([seed, POSTURE_STREAM]) -- a stream of its own, so every other option of a
+    seed is unchanged -- and keeps the first one from which the home-collision, pick-feasibility and
+    noise-margin checks pass (on the final, settled plug pose when there is one). Falls back to the
+    zero offset, which passed those checks already. Returns (offset list, diagnostics)."""
+    max_rad = float(ws.arm_offset_max_rad)
+    diag = {"max_rad": max_rad, "tries": 0, "rejected": [], "fallback_zero": False}
+    if max_rad <= 0.:
+        return [0.] * 7, diag
+    rng = np.random.default_rng([int(seed), POSTURE_STREAM])
+    check_opts = final_options or options
+    for _ in range(POSTURE_TRIES):
+        offset = rng.uniform(-max_rad, max_rad, 7)
+        diag["tries"] += 1
+        bad = (_home_collision_check(options, ws, offset)
+               or _pick_check(check_opts, ws, robust=True, arm_offset=offset)
+               or _pick_noise_margin_check(check_opts, ws, arm_offset=offset))
+        if bad:
+            diag["rejected"].append(bad)
+            continue
+        return offset.tolist(), diag
+    diag["fallback_zero"] = True
+    return [0.] * 7, diag
+
+
 def sample_scene(seed, ws=WORKSPACE):
     """Pure function of the seed. Returns (options, diagnostics)."""
     rng = np.random.default_rng(seed)
@@ -462,6 +497,7 @@ def sample_scene(seed, ws=WORKSPACE):
             rejected.append(f"insert_infeasible:{bad}")
             continue
         diag = {"draws": draw + 1, "rejected": rejected}
+        final = None
         if settle:
             if settled is None:
                 rejected.append("settled_pose_unavailable")
@@ -477,7 +513,9 @@ def sample_scene(seed, ws=WORKSPACE):
                 continue
             diag["settle_drift_mm"] = round(drift_mm, 2)
             diag["settle_drift_yaw_deg"] = round(drift_deg, 2)
+            final = sopts
         options["visual"] = _visual(rng, ws)
+        options["arm_offset_rad"], diag["posture"] = _sample_posture(seed, options, ws, final)
         return options, diag
     raise ValueError(f"no feasible scene for seed {seed} in {MAX_DRAWS} draws; widen Workspace")
 

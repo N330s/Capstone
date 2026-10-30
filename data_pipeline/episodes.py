@@ -14,6 +14,29 @@ TORQUE_KEYS = ("joint_torque_applied_nm", "joint_torque_applied_peak_nm", "joint
                "joint_torque_constraint_nm")
 
 
+PILOT_CAMERAS = ("scene_rgb", "wrist_rgb")
+
+
+def pilot_contract(manifest=None):
+    """The policy-facing control contract every pilot episode follows (also stored in releases)."""
+    manifest=manifest or {}
+    return {"cameras":list(PILOT_CAMERAS),"state":16,
+            "state_order":manifest.get("state_order","left joint1..7, left mean finger travel, "
+                                       "right joint1..7, right mean finger travel"),
+            "action":8,
+            "action_names":manifest.get("action_names",[f"openarm_right_joint{i}" for i in range(1,8)]
+                                        +["right_finger_travel"]),
+            "action_units":"right joint1..7 absolute targets in rad; finger slide travel in m (0..0.044)",
+            "rate_hz":50,
+            "timing":"observation i precedes action i; observation i+1 follows its executed interval",
+            "timing_note":"executed_dt_s is 0.02 on every step except the terminal one, which may be "
+                          "shorter because the episode ends mid-interval on success",
+            "left_arm":"parked",
+            "label_arrays":["action_label","label_mask"],
+            "extra_arrays_not_policy_inputs":["image_chest_rgb","depth_*","joint_torque_*",
+                                              "visibility_pilot"]}
+
+
 def clean_info(info):
     return {k:v.tolist() if isinstance(v,np.ndarray) else v for k,v in info.items()}
 
@@ -54,7 +77,8 @@ def export_camera_frames(path, observations, folders=CAMERA_FOLDERS, quality=95)
 
 def save_episode(path, observations, requested, applied, states, velocities,
                  rewards, terminated, truncated, durations, phases, infos, manifest,
-                 labels=None, fault=None):
+                 labels=None, fault=None, visibility=None, quality=None, stage_outcomes=None,
+                 replay=None):
     path = Path(path)
     path.mkdir(parents=True,exist_ok=False)
     arrays = {
@@ -69,6 +93,13 @@ def save_episode(path, observations, requested, applied, states, velocities,
     }
     if labels is not None:
         arrays["step_label"]=np.array(labels)
+    # Training-safe labels: action_label is the applied command where it is a usable expert label and NaN
+    # on injected-fault steps. Clean episodes have no step_label, so every step is usable.
+    label_mask=(np.array(labels)!="fault") if labels is not None else np.ones(len(requested),dtype=bool)
+    arrays["label_mask"]=label_mask
+    arrays["action_label"]=np.where(label_mask[:,None],arrays["action_applied"],np.nan)
+    if visibility is not None:
+        arrays["visibility_pilot"]=np.asarray(visibility,dtype=bool)
     for camera in observations[0]["images"]:
         arrays[f"image_{camera}"]=np.stack([o["images"][camera] for o in observations])
     for name in observations[0].get("depth",{}):
@@ -85,7 +116,13 @@ def save_episode(path, observations, requested, applied, states, velocities,
                 "instruction":observations[0]["instruction"], "steps":len(requested),
                 "data_sha256":hashlib.sha256((path/"episode.npz").read_bytes()).hexdigest(),
                 "outcome":infos[-1]["outcome"],
-                "timing":"observation[i] precedes action[i]; observation[i+1] follows its executed interval"}
+                "timing":"observation[i] precedes action[i]; observation[i+1] follows its executed interval",
+                "pilot_contract":pilot_contract(manifest)}
+    for key,value in (("stage_outcomes",stage_outcomes),("quality",quality),("replay",replay)):
+        if value is not None:
+            metadata[key]=value
+    if visibility is not None:
+        metadata["visibility_pilot_columns"]=list(PILOT_CAMERAS)
     if TORQUE_KEYS[0] in arrays:
         metadata["joint_torque"]={"arrays":list(TORQUE_KEYS),"units":"N m","shape":"(T, 14)",
             "order":"left joint1..7, right joint1..7","row":"row i = mean (peak: max |.|) over the "
@@ -142,7 +179,27 @@ def validate_episode(path):
             raise ValueError("Pilot BC export accepts successful expert episodes only")
         if "step_label" in a.files:
             validate_step_labels(a["step_label"], t)
+        if "action_label" in a.files or "label_mask" in a.files:
+            validate_label_arrays(a, t)
+        if "visibility_pilot" in a.files:
+            if a["visibility_pilot"].shape!=(t+1,len(PILOT_CAMERAS)) or a["visibility_pilot"].dtype!=bool:
+                raise ValueError("visibility_pilot schema mismatch")
     return meta
+
+
+def validate_label_arrays(a, steps):
+    """action_label / label_mask: shapes, consistency with step_label, NaN exactly on masked steps."""
+    if "action_label" not in a.files or "label_mask" not in a.files:
+        raise ValueError("action_label and label_mask must come together")
+    mask,label=a["label_mask"],a["action_label"]
+    if mask.shape!=(steps,) or mask.dtype!=bool or label.shape!=(steps,8):
+        raise ValueError("action_label / label_mask shape mismatch")
+    if "step_label" in a.files and not np.array_equal(mask,np.asarray(a["step_label"])!="fault"):
+        raise ValueError("label_mask inconsistent with step_label")
+    if not np.array_equal(np.isnan(label).any(axis=1),~mask) or np.isnan(label).any(axis=1).sum()!=np.isnan(label).all(axis=1).sum():
+        raise ValueError("action_label must be NaN exactly where label_mask is False")
+    if not np.array_equal(label[mask],a["action_applied"][mask]):
+        raise ValueError("action_label differs from action_applied on usable steps")
 
 
 def validate_step_labels(labels, steps):
