@@ -233,6 +233,64 @@ The wrist camera carries an action-camera style visual body: 62 × 45 × 32 mm h
 the optical centre, Ø 18 × 8 mm lens, and a Ø 10 mm bracket to hand-local (0.02, −0.02, 0). All
 three geoms are visual only (no mass, no collision). `wrist_rgb` intrinsics are unchanged.
 
+**Lowered chest camera: `configs/workspace_v2_cable30_cams.json` (2026-10-31, branch `testing`, preview).**
+This file is `workspace_v2_cable30` with one change. The chest camera moves from (0.095, 0, 0.64) to
+(0.09, 0, 0.40) and is aimed level at (0.473, −0.321, 0.40) (pan −40°, tilt 0). The new position is
+on the torso centre line, 8 cm above the table top, on an estimated 6 cm bracket. The real chest
+mount position is not known, so this is not a hardware-validated pose.
+
+Chest visibility on the 51 clean recorded episodes (`v2c30_a/_b/_c`, recorded arm poses, in frame
+and unblocked):
+
+| Phase | Plug, old mount | Plug, new mount | Socket, old mount | Socket, new mount |
+| --- | --- | --- | --- | --- |
+| transit_pick | 0.88 | 1.00 | | |
+| arrive | 0.63 | 1.00 | | |
+| descend | 0.51 | 0.99 | | |
+| close | 0.20 | 0.93 | | |
+| lift | 0.27 | 0.98 | | |
+| transit_place | | | 0.64 | 0.87 |
+| approach | | | 0.83 | 0.89 |
+| align | | | 0.69 | 0.87 |
+| insert | | | 0.14 | 0.11 |
+
+- **What it costs:** the camera looks level from the side, so the upper half of the image is
+  background. The plug is also smaller: median short side 27 px at descend and 21 px at lift, against
+  32 and 33 px before.
+- **The old mount misses because of occlusion.** Higher mounts are worse: the right hand and forearm
+  cover the plug from above. The plug and socket are never outside the old view.
+- **`scene_rgb` is unchanged.** Under "every per-phase plug/socket coverage within 2 points, overhead
+  ∪ wrist still sees the plug before the lift" it can only move about 5% closer. Closer poses lose
+  socket coverage in `insert`/`hold`, and the 5% move does not enlarge the plug or socket.
+- **Lowering or moving the robot instead was tested and rolled back.** Below −0.12 m the hand hits the
+  table at home. Moving the base back or right breaks the expert's planning (`expert_ik_infeasible`).
+
+**Real stock chest mount: `configs/workspace_v2_cable30_stockchest.json` (2026-10-31, preview).**
+
+*The stock bracket.* OpenArm v1's body is a 60×60 aluminium extrusion. The stock
+`D435_camera_mount_v2` bracket (openarm_hardware 1.1.0, `Attachments/chest-camera_D435`) bolts into
+two T-slots of its front face with M6 bolts at 30 mm pitch. That means it can slide to any height,
+but it holds the D435 at a fixed angle: straight ahead, 45° down. The angle comes from the bracket's
+hole axes (the D435 rear M3 pair and the M6 pair are 45° apart). The v1.1 assembly does not place the
+camera.
+
+*The config.* It puts the camera at (0.08, 0, 0.50), straight ahead and 45° down, with the height
+chosen by the user.
+
+*Measured on `data/cams_preview_real`* (same 2 scenes and motion as `data/cams_preview`): the chest
+camera sees the plug in 48 / 34 / 31 / 27% of transit_pick / descend / close / lift frames, and the
+socket in 0% of frames, because the socket is outside the picture to the right. A 12-episode screen
+at 0.35–0.60 m found no stock-angle height that sees the socket.
+
+| `--workspace` | Chest camera |
+| --- | --- |
+| `configs/workspace_v2_cable30.json` | (0.095, 0, 0.64), ~38° right, 34° down (estimated, user deviation 2026-10-15) |
+| `configs/workspace_v2_cable30_cams.json` | (0.09, 0, 0.40), 40° right, level; needs a custom bracket |
+| `configs/workspace_v2_cable30_stockchest.json` | (0.08, 0, 0.50), straight ahead, 45° down; stock bracket |
+
+All three files are otherwise identical. Keep datasets from different files in separate `--output`
+runs; `make_release` refuses to mix workspaces.
+
 ### Solver options (robot scene only)
 
 2 kHz, `implicitfast`, Newton 100 iterations, elliptic cone, **impratio 1000** (was 100). The

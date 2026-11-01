@@ -260,11 +260,19 @@ def make_recorder(env, args):
         return None
 
 
+def make_env(args):
+    """The collection env; --no-depth drops the depth cameras (no depth arrays or PNGs are recorded)."""
+    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
+    if getattr(args, "no_depth", False):
+        env.depth_cameras = {}
+    return env
+
+
 def preflight_pass(args, out, ws):
     """Walk sampled scenes until enough succeed or the attempt budget runs out."""
     accepted, rejected = [], []
     budget = int(args.episodes * args.attempt_ratio)
-    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
+    env = make_env(args)
     viewer, recorder = make_viewer(env, args), make_recorder(env, args)
     started, cursor = time.time(), 0
     try:
@@ -368,6 +376,8 @@ def run_signature(args):
                  "start_row": args.start_row}
     if fault_kinds(args):                   # only for --faults runs, so older progress.json still resume
         signature["faults"] = list(fault_kinds(args))
+    if getattr(args, "no_depth", False):  # only when active, so older progress.json still resume
+        signature["no_depth"] = True
     return signature
 
 
@@ -400,7 +410,7 @@ def collect_pass(args, out, ws, state):
     records, failures = state["records"], state["failures"]
     # One env for both stages: observe() renders only while env.images is set, so a
     # preflight costs no rendering and the process keeps a single model in memory.
-    env = OpenArmInsertEnv(images=False, workspace=args.workspace)
+    env = make_env(args)
     viewer, recorder = make_viewer(env, args), make_recorder(env, args)
     started = time.time()
 
@@ -600,7 +610,8 @@ def _base_manifest(args, out, env, records, failures, complete):
             "scene_bank_sha256": sha256(out / "collection_bank.json"),
             "evaluation_bank_sha256": sha256(out / "evaluation_bank.json"),
             "seed_namespaces": {"collection": COLLECTION_SEED_BASE,
-                                "evaluation": EVALUATION_SEED_BASE}}
+                                "evaluation": EVALUATION_SEED_BASE},
+            **({"no_depth": True} if getattr(args, "no_depth", False) else {})}
 
 
 def main():
@@ -643,6 +654,9 @@ def main():
                    help="recovery demonstrations: one injected fault per scene, then recovery. "
                         "'all' or a comma list of " + ",".join(fault_lib.FAULT_KINDS)
                         + " (kind cycles with the seed). Use a separate --output.")
+    p.add_argument("--no-depth", action="store_true",
+                   help="record no depth (RGB, state and actions only); preview runs usually also pass "
+                        "--no-verify-replay")
     args = p.parse_args()
     if args.start_row < 0:
         p.error("--start-row must be >= 0")

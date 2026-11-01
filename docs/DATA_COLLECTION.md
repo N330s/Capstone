@@ -347,3 +347,19 @@ python scripts/make_release.py --runs data/v2c30_release_clean data/v2c30_releas
 5. Freeze the camera/controller/data bundle before evaluating held-out resets.
    Defer broad contact randomization until supported by calibration or justified
    bounds; retain the unpowered fixture requirement for physical transfer.
+
+## Preview runs: --no-depth
+
+`collect_random.py --no-depth` clears `env.depth_cameras` right after each env is built. No
+`depth_*_mm` arrays or `*_depth` PNG folders are then saved, and `manifest()["depth_cameras"]` is
+`null`. When the flag is set, `manifest.json` and the `--resume` run signature gain `no_depth: true`;
+without it nothing changes.
+
+It saves little time. Measured on one process (2026-10-31): rendering 3 RGB + 3 depth streams
+takes 14 ms per frame, 3 RGB alone 6 ms, and one physics step 150 ms. That is about 13 s per
+~1,650-frame episode. The main gain is memory, since depth is about 40% of the image data held
+while recording. The time goes into the physics, which runs three times per saved episode
+(preflight, record, replay check).
+
+Preview runs usually also pass `--no-verify-replay`. `make_release` cannot package such runs, so
+use a separate `--output` and keep them apart from `v2c30_*` data.
